@@ -44,9 +44,18 @@ function App() {
               className="h-16 w-auto"
             />
           </div>
-          <button className="bg-white/20 backdrop-blur-sm text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-white/30 transition-all border border-white/30">
-            Prova gratis i 7 dagar
-          </button>
+          <a 
+            href="https://play.google.com/store/apps/details?id=com.grodis.storys"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-90 transition-opacity"
+          >
+            <img 
+              src="/images/google-play-badge.png" 
+              alt="Hämta på Google Play" 
+              className="h-16 w-auto"
+            />
+          </a>
         </div>
       </nav>
 
@@ -63,7 +72,7 @@ function App() {
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-white"
+              className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-white drop-shadow-lg"
             >
               Bli huvudperson<br />i din egna magisska saga!
             </motion.h2>
@@ -71,7 +80,7 @@ function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto leading-relaxed"
+              className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto leading-relaxed drop-shadow-md"
             >
               I Grodis magiska värld skapar du dina egna äventyr. Barn älskar att vara huvudperson i sina egna sagor, 
               där varje berättelse är unik och formas av deras val. Barnets namn vävs in i historien och blir en del av det magiska äventyret.
@@ -112,19 +121,11 @@ function App() {
                       />
                     </div>
                   )}
-                  <h3 className="text-2xl font-bold mb-4 text-white">{feature.title}</h3>
-                  <p className="text-gray-200 leading-relaxed">{feature.description}</p>
+                  <h3 className="text-2xl font-bold mb-4 text-white drop-shadow-lg">{feature.title}</h3>
+                  <p className="text-gray-200 leading-relaxed drop-shadow-md">{feature.description}</p>
                 </motion.div>
               ))}
             </div>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white/30 transition-all border border-white/30"
-            >
-              Ladda ner appen
-            </motion.button>
           </div>
         </section>
 
@@ -195,9 +196,18 @@ function App() {
               </div>
               <div>
                 <h4 className="text-lg font-semibold mb-4 text-white">Ladda ner appen</h4>
-                <button className="bg-white/20 backdrop-blur-sm text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-white/30 transition-all border border-white/30">
-                  Prova gratis
-                </button>
+                <a 
+                  href="https://play.google.com/store/apps/details?id=com.grodis.storys"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:opacity-90 transition-opacity"
+                >
+                  <img 
+                    src="/images/google-play-badge.png" 
+                    alt="Hämta på Google Play" 
+                    className="h-14 w-auto"
+                  />
+                </a>
               </div>
             </div>
             <div className="border-t border-white/10 mt-12 pt-8 text-center text-gray-300">
