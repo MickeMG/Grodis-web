@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Grodis-web/static/css/main.2a7add8e.css",
+    "main.js": "/Grodis-web/static/js/main.33cd349a.js",
+    "index.html": "/Grodis-web/index.html",
+    "main.2a7add8e.css.map": "/Grodis-web/static/css/main.2a7add8e.css.map",
+    "main.33cd349a.js.map": "/Grodis-web/static/js/main.33cd349a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2a7add8e.css",
+    "static/js/main.33cd349a.js"
+  ]
+}
