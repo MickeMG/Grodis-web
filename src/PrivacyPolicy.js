@@ -6,8 +6,8 @@ function PrivacyPolicy() {
       {/* Bakgrundsbild med overlay */}
       <div className="fixed inset-0 z-0">
         <img 
-          src="/images/background.webp" 
-          alt="Magical forest background" 
+          src="/Grodis-web/images/background.webp" 
+          alt="" 
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/40" />
