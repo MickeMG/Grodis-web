@@ -83,17 +83,17 @@ function App() {
                 {
                   title: "Interaktiva äventyr",
                   description: "Välj mellan hundratals spännande storys som tar dig med på magiska äventyr under havet, i rymden eller i sagoskogen.",
-                  image: "/images/submarine-adventure.webp"
+                  image: "/images/sub.webp"
                 },
                 {
                   title: "Bli sagans hjälte",
                   description: "Barn älskar att vara i centrum av berättelsen! Barnets namn vävs in i sagan och styr handlingen genom egna val och beslut.",
-                  image: "/images/airplane-adventure.webp"
+                  image: "/images/air.webp"
                 },
                 {
                   title: "Utvecklande läsning",
                   description: "Genom interaktiva val och personliga berättelser utvecklar barnen både sin fantasi och läsförmåga.",
-                  image: "/images/detective-hamster.webp"
+                  image: "/images/det.webp"
                 }
               ].map((feature, index) => (
                 <motion.div
