@@ -24,6 +24,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+        kidzone: ['Kidzone', 'sans-serif'],
       },
     },
   },

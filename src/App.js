@@ -36,62 +36,117 @@ function App() {
 
       {/* Navigation */}
       <nav className="fixed w-full z-50 bg-black/10 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <img 
-              src="/images/logo.png" 
-              alt="Grodis logo" 
-              className="h-16 w-auto"
-            />
+        <div className="container mx-auto px-6 py-6 flex justify-center items-start">
+          <div className="flex-1 flex justify-between items-start">
+            <div className="flex-1" />
+            <div className="flex items-start gap-0">
+              <img 
+                src="/images/logo.png" 
+                alt="Grodis logo" 
+                className="h-32 w-auto drop-shadow-xl -mb-16 mt-[-20px]"
+              />
+              <p className="text-4xl text-white/90 tracking-wide drop-shadow-lg mt-4 font-kidzone -ml-4">
+                Grodis - Interaktiva sagor i en magisk värld!
+              </p>
+            </div>
+            <div className="flex-1 flex justify-end">
+              <a 
+                href="https://play.google.com/store/apps/details?id=com.grodis.storys"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-90 transition-all duration-300 transform hover:scale-105"
+              >
+                <img 
+                  src="/images/google-play-badge.png" 
+                  alt="Hämta på Google Play" 
+                  className="h-16 w-auto"
+                />
+              </a>
+            </div>
           </div>
-          <a 
-            href="https://play.google.com/store/apps/details?id=com.grodis.storys"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:opacity-90 transition-opacity"
-          >
-            <img 
-              src="/images/google-play-badge.png" 
-              alt="Hämta på Google Play" 
-              className="h-16 w-auto"
-            />
-          </a>
         </div>
       </nav>
 
       {/* Main Content */}
       <div className="relative z-10">
         {/* Hero Section */}
-        <section className="pt-32 pb-16 px-4">
+        <section className="pt-40 pb-20 px-4">
           <div className="container mx-auto max-w-4xl text-center">
-            <img 
-              src="/images/logo.png" 
-              alt="Grodis logo" 
-              className="h-48 w-auto mx-auto mb-12"
-            />
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-white drop-shadow-lg"
-            >
-              Bli huvudperson<br />i din egna magisska saga!
-            </motion.h2>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto leading-relaxed drop-shadow-md"
-            >
-              I Grodis magiska värld skapar du dina egna äventyr. Barn älskar att vara huvudperson i sina egna sagor, 
-              där varje berättelse är unik och formas av deras val. Barnets namn vävs in i historien och blir en del av det magiska äventyret.
-            </motion.p>
+          </div>
+        </section>
 
-            {/* Feature Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        {/* Intro Section med varm orange platta */}
+        <section className="w-full bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-md py-24 shadow-2xl">
+          <div className="container mx-auto max-w-6xl px-6">
+            <div className="flex items-center justify-center">
+              <div className="w-[45%] pr-[7px]">
+                <motion.h2 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-5xl md:text-6xl font-bold mb-8 leading-tight text-white drop-shadow-xl text-right tracking-tight"
+                >
+                  Låt barnen bli<br />huvudpersoner i<br />magiska sagor!
+                </motion.h2>
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-xl text-white/90 leading-relaxed drop-shadow-lg text-right tracking-wide"
+                >
+                  Nu kan du och ditt barn skapa magiska äventyr tillsammans med den charmiga grodan Grodis! 
+                  Varje saga är ett unikt äventyr där ditt barn blir huvudpersonen och får ta egna beslut som formar berättelsen. 
+                  Upptäck en värld av fantasi, skratt och läsglädje - perfekt för mysiga lässtunder tillsammans.
+                </motion.p>
+              </div>
+
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="relative h-[500px] w-[55%] pl-[7px]"
+              >
+                {images.map((image, index) => (
+                  <motion.div
+                    key={index}
+                    className="absolute left-[20%] top-1/2 w-80 h-[500px] rounded-2xl shadow-2xl overflow-hidden backdrop-blur-sm bg-black/20 border border-white/30"
+                    initial={{ 
+                      y: "-50%",
+                      rotate: (index - currentImageIndex) * 5,
+                      scale: 1 - Math.abs(index - currentImageIndex) * 0.1,
+                      zIndex: images.length - Math.abs(index - currentImageIndex)
+                    }}
+                    animate={{ 
+                      y: "-50%",
+                      rotate: (index - currentImageIndex) * 5,
+                      scale: 1 - Math.abs(index - currentImageIndex) * 0.1,
+                      zIndex: images.length - Math.abs(index - currentImageIndex)
+                    }}
+                    transition={{ duration: 0.7, ease: "easeInOut" }}
+                    style={{
+                      transformOrigin: "center center"
+                    }}
+                  >
+                    <img 
+                      src={image} 
+                      alt={`Story card ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/60" />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-32">
+          <div className="container mx-auto max-w-4xl px-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {[
                 {
                   title: "Interaktiva äventyr",
-                  description: "Välj mellan hundratals spännande storys som tar dig med på magiska äventyr under havet, i rymden eller i sagoskogen.",
+                  description: "Välj mellan hundratals spännande storys som tar er med på äventyr under havet, i rymden eller i sagoskogen.",
                   image: "/images/sub.webp"
                 },
                 {
@@ -110,10 +165,10 @@ function App() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.2 }}
-                  className="backdrop-blur-md bg-black/20 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-white/20"
+                  className="backdrop-blur-md bg-black/20 rounded-2xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300 border border-white/30 hover:bg-black/30 group"
                 >
                   {feature.image && (
-                    <div className="mb-6 rounded-xl overflow-hidden">
+                    <div className="mb-6 rounded-xl overflow-hidden transform group-hover:scale-[1.02] transition-transform duration-300">
                       <img 
                         src={feature.image} 
                         alt={feature.title}
@@ -121,97 +176,53 @@ function App() {
                       />
                     </div>
                   )}
-                  <h3 className="text-2xl font-bold mb-4 text-white drop-shadow-lg">{feature.title}</h3>
-                  <p className="text-gray-200 leading-relaxed drop-shadow-md">{feature.description}</p>
+                  <h3 className="text-2xl font-bold mb-4 text-white drop-shadow-xl tracking-tight">{feature.title}</h3>
+                  <p className="text-gray-200 leading-relaxed drop-shadow-lg tracking-wide">{feature.description}</p>
                 </motion.div>
               ))}
             </div>
-          </div>
-        </section>
-
-        {/* Card Stack Section */}
-        <section className="py-24">
-          <div className="container mx-auto px-4">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="relative h-[400px] mb-12 max-w-4xl mx-auto"
-            >
-              {images.map((image, index) => (
-                <motion.div
-                  key={index}
-                  className="absolute left-1/2 top-1/2 w-64 h-96 rounded-2xl shadow-xl overflow-hidden backdrop-blur-sm bg-black/20 border border-white/20"
-                  initial={{ 
-                    x: "-50%", 
-                    y: "-50%",
-                    rotate: (index - currentImageIndex) * 5,
-                    scale: 1 - Math.abs(index - currentImageIndex) * 0.1,
-                    zIndex: images.length - Math.abs(index - currentImageIndex)
-                  }}
-                  animate={{ 
-                    rotate: (index - currentImageIndex) * 5,
-                    scale: 1 - Math.abs(index - currentImageIndex) * 0.1,
-                    zIndex: images.length - Math.abs(index - currentImageIndex)
-                  }}
-                  transition={{ duration: 0.5 }}
-                  style={{
-                    transformOrigin: "center center"
-                  }}
-                >
-                  <img 
-                    src={image} 
-                    alt={`Story card ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50" />
-                </motion.div>
-              ))}
-            </motion.div>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="bg-black/60 backdrop-blur-md text-white py-16">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <footer className="text-white py-24 bg-black/40 backdrop-blur-md mt-16">
+          <div className="container mx-auto px-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
               <div>
-                <img 
-                  src="/images/logo.png" 
-                  alt="Grodis logo" 
-                  className="h-20 w-auto mb-4"
-                />
-                <p className="text-gray-300">Interaktiva sagor där barnen blir huvudpersoner</p>
+                <h4 className="text-xl font-semibold mb-6 text-white drop-shadow-lg font-kidzone">Kontakt</h4>
+                <p className="text-gray-300 tracking-wide">info@grodis.app</p>
               </div>
               <div>
-                <h4 className="text-lg font-semibold mb-4 text-white">Kontakt</h4>
-                <p className="text-gray-300">sagor@grodis.com</p>
-              </div>
-              <div>
-                <h4 className="text-lg font-semibold mb-4 text-white">Följ oss</h4>
-                <div className="space-x-4">
-                  <a href="#" className="text-gray-300 hover:text-white transition-colors">Instagram</a>
-                  <a href="#" className="text-gray-300 hover:text-white transition-colors">Facebook</a>
+                <h4 className="text-xl font-semibold mb-6 text-white drop-shadow-lg font-kidzone">Följ oss</h4>
+                <div className="space-x-6">
+                  <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 tracking-wide">Instagram</a>
+                  <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 tracking-wide">Facebook</a>
                 </div>
               </div>
               <div>
-                <h4 className="text-lg font-semibold mb-4 text-white">Ladda ner appen</h4>
+                <h4 className="text-xl font-semibold mb-6 text-white drop-shadow-lg font-kidzone">Ladda ner appen</h4>
                 <a 
                   href="https://play.google.com/store/apps/details?id=com.grodis.storys"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:opacity-90 transition-opacity"
+                  className="hover:opacity-90 transition-all duration-300 transform hover:scale-105 inline-block"
                 >
                   <img 
                     src="/images/google-play-badge.png" 
                     alt="Hämta på Google Play" 
-                    className="h-14 w-auto"
+                    className="h-14 w-auto drop-shadow-lg"
                   />
                 </a>
               </div>
             </div>
-            <div className="border-t border-white/10 mt-12 pt-8 text-center text-gray-300">
-              <p>&copy; 2024 Grodis. Alla rättigheter förbehållna.</p>
+            <div className="border-t border-white/20 mt-16 pt-12 text-center text-gray-300">
+              <p className="tracking-wide mb-4">&copy; 2024 Grodis. Alla rättigheter förbehållna.</p>
+              <a 
+                href="#/privacy-policy" 
+                className="text-gray-300 hover:text-white transition-colors duration-300 tracking-wide underline"
+              >
+                Integritetspolicy
+              </a>
             </div>
           </div>
         </footer>
