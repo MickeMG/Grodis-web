@@ -35,34 +35,21 @@ function App() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed w-full z-50 bg-black/10 backdrop-blur-sm">
-        <div className="container mx-auto px-6 py-6 flex justify-center items-start">
+      <nav className="fixed w-full z-50 bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-sm">
+        <div className="container mx-auto px-6 py-3 flex justify-center items-start">
           <div className="flex-1 flex justify-between items-start">
             <div className="flex-1" />
             <div className="flex items-start gap-0">
               <img 
                 src="/Grodis-web/images/logo.png" 
                 alt="Grodis logo" 
-                className="h-32 w-auto drop-shadow-xl -mb-16 mt-[-20px]"
+                className="h-24 w-auto"
               />
               <p className="text-4xl text-white/90 tracking-wide drop-shadow-lg mt-4 font-kidzone -ml-4">
                 Grodis - Interaktiva sagor i en magisk värld!
               </p>
             </div>
-            <div className="flex-1 flex justify-end">
-              <a 
-                href="https://play.google.com/store/apps/details?id=com.grodis.storys"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-90 transition-all duration-300 transform hover:scale-105"
-              >
-                <img 
-                  src="/Grodis-web/images/google-play-badge.png" 
-                  alt="Hämta på Google Play" 
-                  className="h-16 w-auto"
-                />
-              </a>
-            </div>
+            <div className="flex-1" />
           </div>
         </div>
       </nav>
@@ -93,10 +80,23 @@ function App() {
                   transition={{ delay: 0.2 }}
                   className="text-xl text-white/90 leading-relaxed drop-shadow-lg text-right tracking-wide"
                 >
-                  Nu kan du och ditt barn skapa magiska äventyr tillsammans med den charmiga grodan Grodis! 
-                  Varje saga är ett unikt äventyr där ditt barn blir huvudpersonen och får ta egna beslut som formar berättelsen. 
-                  Upptäck en värld av fantasi, skratt och läsglädje - perfekt för mysiga lässtunder tillsammans.
+                  Nu kan du och ditt barn skapa magiska äventyr tillsammans med Grodis i telefonen eller läsplattan! Varje saga är ett unikt äventyr där ditt barn blir huvudpersonen och får ta egna beslut som formar berättelsen. Upptäck en värld av fantasi, skratt och läsglädje.
                 </motion.p>
+                <motion.a 
+                  href="https://play.google.com/store/apps/details?id=com.grodis.storys"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-block hover:opacity-90 transition-all duration-300 transform hover:scale-105 float-right"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <img 
+                    src="/Grodis-web/images/google-play-badge.png" 
+                    alt="Hämta på Google Play" 
+                    className="h-14 w-auto drop-shadow-lg"
+                  />
+                </motion.a>
               </div>
 
               <motion.div 
@@ -108,7 +108,7 @@ function App() {
                 {images.map((image, index) => (
                   <motion.div
                     key={index}
-                    className="absolute left-[20%] top-1/2 w-80 h-[500px] rounded-2xl shadow-2xl overflow-hidden backdrop-blur-sm bg-black/20 border border-white/30"
+                    className="absolute left-[10%] top-1/2 w-80 h-[500px] rounded-2xl shadow-2xl overflow-hidden backdrop-blur-sm bg-black/20 border border-white/30"
                     initial={{ 
                       y: "-50%",
                       rotate: (index - currentImageIndex) * 5,
@@ -144,7 +144,7 @@ function App() {
           <div className="container mx-auto max-w-4xl px-6">
             <div className="grid grid-cols-3 gap-8">
               {/* Interaktiva äventyr */}
-              <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 hover:bg-black/40 transition-all">
+              <div className="bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-sm rounded-xl p-8 hover:bg-gradient-to-r hover:from-orange-900/80 hover:via-orange-800/80 hover:to-orange-900/80 transition-all">
                 <img 
                   src="/Grodis-web/images/sub.webp" 
                   alt="Interaktiva äventyr" 
@@ -157,7 +157,7 @@ function App() {
               </div>
 
               {/* Bli sagans hjälte */}
-              <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 hover:bg-black/40 transition-all">
+              <div className="bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-sm rounded-xl p-8 hover:bg-gradient-to-r hover:from-orange-900/80 hover:via-orange-800/80 hover:to-orange-900/80 transition-all">
                 <img 
                   src="/Grodis-web/images/air.webp" 
                   alt="Bli sagans hjälte" 
@@ -165,12 +165,12 @@ function App() {
                 />
                 <h3 className="text-2xl font-semibold text-white mb-4 drop-shadow-lg">Bli sagans hjälte</h3>
                 <p className="text-gray-200 leading-relaxed drop-shadow-md">
-                  Barn älskar att vara i centrum av berättelsen! Barnets namn vävs in i sagan och styr handlingen genom egna val och beslut.
+                  Ditt barn blir en del av sagan när namnet vävs in i berättelsen. Genom spännande val och beslut får barnet själv styra äventyrets riktning!
                 </p>
               </div>
 
               {/* Utvecklande läsning */}
-              <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 hover:bg-black/40 transition-all">
+              <div className="bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-sm rounded-xl p-8 hover:bg-gradient-to-r hover:from-orange-900/80 hover:via-orange-800/80 hover:to-orange-900/80 transition-all">
                 <img 
                   src="/Grodis-web/images/det.webp" 
                   alt="Utvecklande läsning" 
@@ -186,22 +186,22 @@ function App() {
         </section>
 
         {/* Footer */}
-        <footer className="text-white py-24 bg-black/40 backdrop-blur-md mt-16">
+        <footer className="text-white py-4 bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-md mt-8">
           <div className="container mx-auto px-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
-                <h4 className="text-xl font-semibold mb-6 text-white drop-shadow-lg font-kidzone">Kontakt</h4>
+                <h4 className="text-xl font-semibold mb-2 text-white drop-shadow-lg">Kontakt</h4>
                 <p className="text-gray-300 tracking-wide">info@grodis.app</p>
               </div>
               <div>
-                <h4 className="text-xl font-semibold mb-6 text-white drop-shadow-lg font-kidzone">Följ oss</h4>
+                <h4 className="text-xl font-semibold mb-2 text-white drop-shadow-lg">Följ oss</h4>
                 <div className="space-x-6">
                   <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 tracking-wide">Instagram</a>
                   <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 tracking-wide">Facebook</a>
                 </div>
               </div>
               <div>
-                <h4 className="text-xl font-semibold mb-6 text-white drop-shadow-lg font-kidzone">Ladda ner appen</h4>
+                <h4 className="text-xl font-semibold mb-2 text-white drop-shadow-lg">Ladda ner appen</h4>
                 <a 
                   href="https://play.google.com/store/apps/details?id=com.grodis.storys"
                   target="_blank"
@@ -211,13 +211,13 @@ function App() {
                   <img 
                     src="/Grodis-web/images/google-play-badge.png" 
                     alt="Hämta på Google Play" 
-                    className="h-14 w-auto drop-shadow-lg"
+                    className="h-12 w-auto drop-shadow-lg"
                   />
                 </a>
               </div>
             </div>
-            <div className="border-t border-white/20 mt-16 pt-12 text-center text-gray-300">
-              <p className="tracking-wide mb-4">&copy; 2024 Grodis. Alla rättigheter förbehållna.</p>
+            <div className="border-t border-white/20 mt-4 pt-3 text-center text-gray-300">
+              <p className="tracking-wide mb-1">&copy; 2024 Grodis. Alla rättigheter förbehållna.</p>
               <a 
                 href="#/privacy-policy" 
                 className="text-gray-300 hover:text-white transition-colors duration-300 tracking-wide underline"
