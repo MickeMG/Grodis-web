@@ -1,13 +1,14 @@
 {
   "files": {
-    "main.css": "/Grodis-web/static/css/main.2a7add8e.css",
-    "main.js": "/Grodis-web/static/js/main.33cd349a.js",
+    "main.css": "/Grodis-web/static/css/main.ca3219a9.css",
+    "main.js": "/Grodis-web/static/js/main.2f24a684.js",
+    "static/media/KidZone.ttf": "/Grodis-web/static/media/KidZone.a48d5e284b1691d276d2.ttf",
     "index.html": "/Grodis-web/index.html",
-    "main.2a7add8e.css.map": "/Grodis-web/static/css/main.2a7add8e.css.map",
-    "main.33cd349a.js.map": "/Grodis-web/static/js/main.33cd349a.js.map"
+    "main.ca3219a9.css.map": "/Grodis-web/static/css/main.ca3219a9.css.map",
+    "main.2f24a684.js.map": "/Grodis-web/static/js/main.2f24a684.js.map"
   },
   "entrypoints": [
-    "static/css/main.2a7add8e.css",
-    "static/js/main.33cd349a.js"
+    "static/css/main.ca3219a9.css",
+    "static/js/main.2f24a684.js"
   ]
 }
