@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 function App() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = [
-    '/images/unnamed.webp',
-    '/images/unnamed (1).webp',
-    '/images/unnamed (2).webp',
-    '/images/unnamed (3).webp',
-    '/images/unnamed (4).webp',
-    '/images/unnamed (5).webp'
+    '/Grodis-web/images/unnamed.webp',
+    '/Grodis-web/images/unnamed (1).webp',
+    '/Grodis-web/images/unnamed (2).webp',
+    '/Grodis-web/images/unnamed (3).webp',
+    '/Grodis-web/images/unnamed (4).webp',
+    '/Grodis-web/images/unnamed (5).webp'
   ];
 
   useEffect(() => {
@@ -27,7 +27,7 @@ function App() {
       {/* Bakgrundsbild med overlay */}
       <div className="fixed inset-0 z-0">
         <img 
-          src="/images/background.webp" 
+          src="/Grodis-web/images/background.webp" 
           alt="Magical forest background" 
           className="w-full h-full object-cover"
         />
@@ -41,7 +41,7 @@ function App() {
             <div className="flex-1" />
             <div className="flex items-start gap-0">
               <img 
-                src="/images/logo.png" 
+                src="/Grodis-web/images/logo.png" 
                 alt="Grodis logo" 
                 className="h-32 w-auto drop-shadow-xl -mb-16 mt-[-20px]"
               />
@@ -57,7 +57,7 @@ function App() {
                 className="hover:opacity-90 transition-all duration-300 transform hover:scale-105"
               >
                 <img 
-                  src="/images/google-play-badge.png" 
+                  src="/Grodis-web/images/google-play-badge.png" 
                   alt="Hämta på Google Play" 
                   className="h-16 w-auto"
                 />
@@ -142,44 +142,45 @@ function App() {
         {/* Features Section */}
         <section className="py-32">
           <div className="container mx-auto max-w-4xl px-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              {[
-                {
-                  title: "Interaktiva äventyr",
-                  description: "Välj mellan hundratals spännande storys som tar er med på äventyr under havet, i rymden eller i sagoskogen.",
-                  image: "/images/sub.webp"
-                },
-                {
-                  title: "Bli sagans hjälte",
-                  description: "Barn älskar att vara i centrum av berättelsen! Barnets namn vävs in i sagan och styr handlingen genom egna val och beslut.",
-                  image: "/images/air.webp"
-                },
-                {
-                  title: "Utvecklande läsning",
-                  description: "Genom interaktiva val och personliga berättelser utvecklar barnen både sin fantasi och läsförmåga.",
-                  image: "/images/det.webp"
-                }
-              ].map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.2 }}
-                  className="backdrop-blur-md bg-black/20 rounded-2xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300 border border-white/30 hover:bg-black/30 group"
-                >
-                  {feature.image && (
-                    <div className="mb-6 rounded-xl overflow-hidden transform group-hover:scale-[1.02] transition-transform duration-300">
-                      <img 
-                        src={feature.image} 
-                        alt={feature.title}
-                        className="w-full h-48 object-cover"
-                      />
-                    </div>
-                  )}
-                  <h3 className="text-2xl font-bold mb-4 text-white drop-shadow-xl tracking-tight">{feature.title}</h3>
-                  <p className="text-gray-200 leading-relaxed drop-shadow-lg tracking-wide">{feature.description}</p>
-                </motion.div>
-              ))}
+            <div className="grid grid-cols-3 gap-8">
+              {/* Interaktiva äventyr */}
+              <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 hover:bg-black/40 transition-all">
+                <img 
+                  src="/Grodis-web/images/sub.webp" 
+                  alt="Interaktiva äventyr" 
+                  className="w-full h-48 object-cover rounded-lg mb-6"
+                />
+                <h3 className="text-2xl font-semibold text-white mb-4 drop-shadow-lg">Interaktiva äventyr</h3>
+                <p className="text-gray-200 leading-relaxed drop-shadow-md">
+                  Välj mellan hundratals spännande storys som tar er med på äventyr under havet, i rymden eller i sagoskogen.
+                </p>
+              </div>
+
+              {/* Bli sagans hjälte */}
+              <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 hover:bg-black/40 transition-all">
+                <img 
+                  src="/Grodis-web/images/air.webp" 
+                  alt="Bli sagans hjälte" 
+                  className="w-full h-48 object-cover rounded-lg mb-6"
+                />
+                <h3 className="text-2xl font-semibold text-white mb-4 drop-shadow-lg">Bli sagans hjälte</h3>
+                <p className="text-gray-200 leading-relaxed drop-shadow-md">
+                  Barn älskar att vara i centrum av berättelsen! Barnets namn vävs in i sagan och styr handlingen genom egna val och beslut.
+                </p>
+              </div>
+
+              {/* Utvecklande läsning */}
+              <div className="bg-black/30 backdrop-blur-sm rounded-xl p-8 hover:bg-black/40 transition-all">
+                <img 
+                  src="/Grodis-web/images/det.webp" 
+                  alt="Utvecklande läsning" 
+                  className="w-full h-48 object-cover rounded-lg mb-6"
+                />
+                <h3 className="text-2xl font-semibold text-white mb-4 drop-shadow-lg">Utvecklande läsning</h3>
+                <p className="text-gray-200 leading-relaxed drop-shadow-md">
+                  Genom interaktiva val och personliga berättelser utvecklar barnen både sin fantasi och läsförmåga.
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -208,7 +209,7 @@ function App() {
                   className="hover:opacity-90 transition-all duration-300 transform hover:scale-105 inline-block"
                 >
                   <img 
-                    src="/images/google-play-badge.png" 
+                    src="/Grodis-web/images/google-play-badge.png" 
                     alt="Hämta på Google Play" 
                     className="h-14 w-auto drop-shadow-lg"
                   />
