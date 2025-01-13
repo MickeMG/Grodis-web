@@ -13,33 +13,8 @@ function PrivacyPolicy() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/40" />
       </div>
 
-      {/* Navigation */}
-      <nav className="fixed w-full z-50 bg-black/10 backdrop-blur-sm">
-        <div className="container mx-auto px-6 py-6 flex justify-between items-center">
-          <a href="#/" className="text-white text-xl font-semibold hover:opacity-90 transition-opacity">
-            <img 
-              src="/images/logo.png" 
-              alt="Grodis logo" 
-              className="h-16 w-auto"
-            />
-          </a>
-          <a 
-            href="https://play.google.com/store/apps/details?id=com.grodis.storys"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:opacity-90 transition-all duration-300 transform hover:scale-105"
-          >
-            <img 
-              src="/images/google-play-badge.png" 
-              alt="Hämta på Google Play" 
-              className="h-16 w-auto"
-            />
-          </a>
-        </div>
-      </nav>
-
       {/* Main Content */}
-      <div className="relative z-10 pt-32 pb-24">
+      <div className="relative z-10 pt-12 pb-24">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
