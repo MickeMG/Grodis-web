@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 function App() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = [
-    '/Grodis-web/images/unnamed.webp',
-    '/Grodis-web/images/unnamed (1).webp',
-    '/Grodis-web/images/unnamed (2).webp',
-    '/Grodis-web/images/unnamed (3).webp',
-    '/Grodis-web/images/unnamed (4).webp',
-    '/Grodis-web/images/unnamed (5).webp'
+    '/images/unnamed.webp',
+    '/images/unnamed (1).webp',
+    '/images/unnamed (2).webp',
+    '/images/unnamed (3).webp',
+    '/images/unnamed (4).webp',
+    '/images/unnamed (5).webp'
   ];
 
   useEffect(() => {
@@ -27,7 +27,7 @@ function App() {
       {/* Bakgrundsbild med overlay */}
       <div className="fixed inset-0 z-0">
         <img 
-          src="/Grodis-web/images/background.webp" 
+          src="/images/background.webp" 
           alt="Magical forest background" 
           className="w-full h-full object-cover"
         />
@@ -41,7 +41,7 @@ function App() {
             <div className="flex-1" />
             <div className="flex items-start gap-0">
               <img 
-                src="/Grodis-web/images/logo.png" 
+                src="/images/logo.png" 
                 alt="Grodis logo" 
                 className="h-24 w-auto"
               />
@@ -92,7 +92,7 @@ function App() {
                   transition={{ delay: 0.3 }}
                 >
                   <img 
-                    src="/Grodis-web/images/google-play-badge.png" 
+                    src="/images/google-play-badge.png" 
                     alt="Hämta på Google Play" 
                     className="h-14 w-auto drop-shadow-lg"
                   />
@@ -146,7 +146,7 @@ function App() {
               {/* Interaktiva äventyr */}
               <div className="bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-sm rounded-xl p-8 hover:bg-gradient-to-r hover:from-orange-900/80 hover:via-orange-800/80 hover:to-orange-900/80 transition-all">
                 <img 
-                  src="/Grodis-web/images/sub.webp" 
+                  src="/images/sub.webp" 
                   alt="Interaktiva äventyr" 
                   className="w-full h-48 object-cover rounded-lg mb-6"
                 />
@@ -159,7 +159,7 @@ function App() {
               {/* Bli sagans hjälte */}
               <div className="bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-sm rounded-xl p-8 hover:bg-gradient-to-r hover:from-orange-900/80 hover:via-orange-800/80 hover:to-orange-900/80 transition-all">
                 <img 
-                  src="/Grodis-web/images/air.webp" 
+                  src="/images/air.webp" 
                   alt="Bli sagans hjälte" 
                   className="w-full h-48 object-cover rounded-lg mb-6"
                 />
@@ -172,7 +172,7 @@ function App() {
               {/* Utvecklande läsning */}
               <div className="bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-sm rounded-xl p-8 hover:bg-gradient-to-r hover:from-orange-900/80 hover:via-orange-800/80 hover:to-orange-900/80 transition-all">
                 <img 
-                  src="/Grodis-web/images/det.webp" 
+                  src="/images/det.webp" 
                   alt="Utvecklande läsning" 
                   className="w-full h-48 object-cover rounded-lg mb-6"
                 />
@@ -209,7 +209,7 @@ function App() {
                   className="hover:opacity-90 transition-all duration-300 transform hover:scale-105 inline-block"
                 >
                   <img 
-                    src="/Grodis-web/images/google-play-badge.png" 
+                    src="/images/google-play-badge.png" 
                     alt="Hämta på Google Play" 
                     className="h-12 w-auto drop-shadow-lg"
                   />

@@ -6,7 +6,7 @@ function PrivacyPolicy() {
       {/* Bakgrundsbild med overlay */}
       <div className="fixed inset-0 z-0">
         <img 
-          src="/Grodis-web/images/background.webp" 
+          src="/images/background.webp" 
           alt="" 
           className="w-full h-full object-cover"
         />
