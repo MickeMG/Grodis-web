@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 
 function App() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const images = [
     '/images/unnamed.webp',
     '/images/unnamed (1).webp',
@@ -10,6 +11,43 @@ function App() {
     '/images/unnamed (3).webp',
     '/images/unnamed (4).webp',
     '/images/unnamed (5).webp'
+  ];
+
+  const stories = [
+    'Björnen_och_skateboarden',
+    'Den_ädle_riddaren',
+    'Det_galaktiska_äventyret',
+    'Drakvännen',
+    'Ekorre_i_storstan',
+    'Göteborgs_spårvagnsmysterium',
+    'Hundbageriet',
+    'Hundvalpen',
+    'Katten_som_körde_taxi',
+    'Kattpolisen',
+    'Katt_Rock',
+    'Pyramiderna',
+    'Resan_till_framtiden',
+    'Resan_till_Hawaii',
+    'Råttan_Räddar_Staden',
+    'Rösten_i_radion_',
+    'Sjörövarskappet',
+    'Skattsökarna_',
+    'Soloflygningen_över_Atlanten',
+    'Staden_i_trädet',
+    'Stenålderssäventyret',
+    'Storsjöodjurets_mysterium',
+    'Tandtrollen_i_badrumsskåpet',
+    'Teddybjörnen',
+    'Trollkarlens_elev',
+    'Trubbel_på_Mars',
+    'Undervattensfärden',
+    'Upptäcktsresan_inuti',
+    'Vikingatiden',
+    'Vilse_i_öknen',
+    'Älvan',
+    'Äventyret_i_Afrika',
+    'Äventyret_i_Nerja',
+    'Äventyret_i_Thailand'
   ];
 
   useEffect(() => {
@@ -20,7 +58,17 @@ function App() {
     }, 5000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [images.length]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentStoryIndex((prevIndex) => 
+        prevIndex === stories.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, [stories.length]);
 
   return (
     <div className="min-h-screen relative">
@@ -72,7 +120,7 @@ function App() {
                   animate={{ opacity: 1, y: 0 }}
                   className="text-4xl md:text-6xl font-bold mb-6 md:mb-8 leading-tight text-white drop-shadow-xl text-center md:text-right tracking-tight"
                 >
-                  Låt barnen bli<br />huvudpersoner i<br />magiska sagor!
+                  Låt barnen bli<br />huvudpersoner i magiska sagor!
                 </motion.h2>
                 <motion.p 
                   initial={{ opacity: 0, y: 20 }}
@@ -103,7 +151,7 @@ function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="relative h-[400px] md:h-[500px] w-full md:w-[50%] mt-8 md:mt-0"
+                className="relative h-[400px] md:h-[500px] w-full md:w-[50%] mx-auto mt-8 md:mt-0"
               >
                 {images.map((image, index) => (
                   <motion.div
@@ -174,14 +222,98 @@ function App() {
               {/* Utvecklande läsning */}
               <div className="bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-sm rounded-xl p-6 md:p-8 hover:bg-gradient-to-r hover:from-orange-900/80 hover:via-orange-800/80 hover:to-orange-900/80 transition-all">
                 <img 
-                  src="/images/det.webp" 
+                  src="/images/reading.webp" 
                   alt="Utvecklande läsning" 
                   className="w-full h-36 md:h-48 object-cover rounded-lg mb-4 md:mb-6"
+                  style={{ objectPosition: "top" }}
                 />
                 <h3 className="text-xl md:text-2xl font-semibold text-white mb-3 md:mb-4 drop-shadow-lg">Utvecklande läsning</h3>
                 <p className="text-sm md:text-base text-gray-200 leading-relaxed drop-shadow-md">
                   Genom interaktiva val och personliga berättelser utvecklar barnen både sin fantasi och läsförmåga.
                 </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Story Cards Carousel Section */}
+        <section className="w-full bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-md py-12 md:py-24 shadow-2xl">
+          <div className="container mx-auto max-w-6xl">
+            <div className="flex flex-col md:flex-row items-center">
+              <div className="w-full md:w-[65%]">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="relative h-[400px] md:h-[500px] w-full mx-auto mt-8 md:mt-0"
+                >
+                  {stories.map((story, index) => (
+                    <motion.div
+                      key={story}
+                      className={`absolute left-1/2 md:left-[60%] top-1/2 w-[322px] md:w-[402px] h-[482px] md:h-[602px] rounded-2xl ${index === currentStoryIndex ? 'shadow-[0_0_25px_rgba(0,0,0,0.7)]' : ''} overflow-hidden backdrop-blur-sm bg-black/20 border border-white/30`}
+                      initial={{ 
+                        x: "-50%",
+                        y: "-50%",
+                        rotate: 0,
+                        scale: 0.95,
+                        zIndex: index === currentStoryIndex ? stories.length : stories.length - Math.abs(index - currentStoryIndex)
+                      }}
+                      animate={{ 
+                        x: "-50%",
+                        y: "-50%",
+                        rotate: 0,
+                        scale: index === currentStoryIndex ? 1 : 0.95,
+                        zIndex: index === currentStoryIndex ? stories.length : stories.length - Math.abs(index - currentStoryIndex)
+                      }}
+                      transition={{ 
+                        duration: 0.5,
+                        ease: index === currentStoryIndex ? "easeOut" : "easeIn"
+                      }}
+                      style={{
+                        transformOrigin: "center center"
+                      }}
+                    >
+                      <img 
+                        src={`/images/stories/${story}.png`}
+                        alt={story.replace(/_/g, ' ')}
+                        className="w-[320px] md:w-[400px] h-[480px] md:h-[600px] object-contain m-[1px]"
+                      />
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </div>
+
+              <div className="w-full md:w-[35%] px-4 md:px-0">
+                <motion.h2 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-4xl md:text-6xl font-bold mb-6 md:mb-8 leading-tight text-white drop-shadow-xl text-center md:text-left tracking-tight"
+                >
+                  Upptäck Grodis<br />magiska sagor.
+                </motion.h2>
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-lg md:text-xl text-white/90 leading-relaxed drop-shadow-lg text-center md:text-left tracking-wide"
+                >
+                  Utforska vårt växande bibliotek med hundratals interaktiva sagor! Nya äventyr tillkommer regelbundet så det finns alltid något spännande att upptäcka. Från rymdfärder till undervattensäventyr - varje saga är en ny chans att låta fantasin flöda.
+                </motion.p>
+                <motion.a 
+                  href="https://play.google.com/store/apps/details?id=com.grodis.storys"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-block hover:opacity-90 transition-all duration-300 transform hover:scale-105 float-none md:float-left mx-auto block md:inline-block"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <img 
+                    src="/images/google-play-badge.png" 
+                    alt="Hämta på Google Play" 
+                    className="h-14 w-auto drop-shadow-lg"
+                  />
+                </motion.a>
               </div>
             </div>
           </div>
