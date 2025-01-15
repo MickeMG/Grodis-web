@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.769f2a85.css",
+    "main.js": "/static/js/main.af5068f3.js",
+    "static/media/KidZone.ttf": "/static/media/KidZone.a48d5e284b1691d276d2.ttf",
+    "index.html": "/index.html",
+    "main.769f2a85.css.map": "/static/css/main.769f2a85.css.map",
+    "main.af5068f3.js.map": "/static/js/main.af5068f3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.769f2a85.css",
+    "static/js/main.af5068f3.js"
+  ]
+}
