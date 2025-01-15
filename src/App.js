@@ -65,8 +65,8 @@ function App() {
         {/* Intro Section med varm orange platta */}
         <section className="w-full bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-md py-12 md:py-24 shadow-2xl">
           <div className="container mx-auto max-w-6xl px-4 md:px-6">
-            <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-0">
-              <div className="w-full md:w-[45%] md:pr-[7px]">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4">
+              <div className="w-full md:w-[40%]">
                 <motion.h2 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -103,12 +103,12 @@ function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="relative h-[400px] md:h-[500px] w-full md:w-[55%] md:pl-[7px] mt-8 md:mt-0"
+                className="relative h-[400px] md:h-[500px] w-full md:w-[50%] mt-8 md:mt-0"
               >
                 {images.map((image, index) => (
                   <motion.div
                     key={index}
-                    className="absolute left-1/2 md:left-[10%] top-1/2 w-64 md:w-80 h-[400px] md:h-[500px] rounded-2xl shadow-2xl overflow-hidden backdrop-blur-sm bg-black/20 border border-white/30"
+                    className="absolute left-1/2 md:left-[20%] top-1/2 w-64 md:w-80 h-[400px] md:h-[500px] rounded-2xl shadow-2xl overflow-hidden backdrop-blur-sm bg-black/20 border border-white/30"
                     initial={{ 
                       x: "-50%",
                       y: "-50%",
