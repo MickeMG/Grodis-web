@@ -134,7 +134,7 @@ function App() {
                   transition={{ delay: 0.2 }}
                   className="text-lg md:text-xl text-white/90 leading-relaxed drop-shadow-lg text-center md:text-right tracking-wide"
                 >
-                  Nu kan du och ditt barn skapa magiska äventyr tillsammans med Grodis i telefonen eller läsplattan! Varje saga är ett unikt äventyr där ditt barn blir huvudpersonen och får ta egna beslut som formar berättelsen. Upptäck en värld av fantasi, skratt och läsglädje.
+                  Nu kan du och ditt barn skapa magiska äventyr tillsammans med Grodis i telefonen eller läsplattan. Varje saga är ett unikt äventyr där ditt barn blir huvudpersonen och får ta egna beslut som formar berättelsen. Upptäck en värld av fantasi, skratt och läsglädje.
                 </motion.p>
                 <motion.a 
                   href="https://play.google.com/store/apps/details?id=com.grodis.storys"
@@ -203,7 +203,7 @@ function App() {
                 <img 
                   src="/images/sub.webp" 
                   alt="Interaktiva äventyr" 
-                  className="w-full h-36 md:h-48 object-cover rounded-lg mb-4 md:mb-6"
+                  className="w-full aspect-square object-cover rounded-lg mb-4 md:mb-6"
                 />
                 <h3 className="text-xl md:text-2xl font-semibold text-white mb-3 md:mb-4 drop-shadow-lg">Interaktiva äventyr</h3>
                 <p className="text-sm md:text-base text-gray-200 leading-relaxed drop-shadow-md">
@@ -216,7 +216,7 @@ function App() {
                 <img 
                   src="/images/air.webp" 
                   alt="Bli sagans hjälte" 
-                  className="w-full h-36 md:h-48 object-cover rounded-lg mb-4 md:mb-6"
+                  className="w-full aspect-square object-cover rounded-lg mb-4 md:mb-6"
                 />
                 <h3 className="text-xl md:text-2xl font-semibold text-white mb-3 md:mb-4 drop-shadow-lg">Bli sagans hjälte</h3>
                 <p className="text-sm md:text-base text-gray-200 leading-relaxed drop-shadow-md">
@@ -229,7 +229,7 @@ function App() {
                 <img 
                   src="/images/reading.webp" 
                   alt="Utvecklande läsning" 
-                  className="w-full h-36 md:h-48 object-cover rounded-lg mb-4 md:mb-6"
+                  className="w-full aspect-square object-cover rounded-lg mb-4 md:mb-6"
                   style={{ objectPosition: "top" }}
                 />
                 <h3 className="text-xl md:text-2xl font-semibold text-white mb-3 md:mb-4 drop-shadow-lg">Utvecklande läsning</h3>
@@ -250,7 +250,7 @@ function App() {
                }}
           />
           <div className="container mx-auto max-w-6xl relative">
-            <div className="flex flex-col md:flex-row items-center">
+            <div className="flex flex-col-reverse md:flex-row items-center">
               <div className="w-full md:w-[65%]">
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
@@ -258,49 +258,61 @@ function App() {
                   transition={{ delay: 0.4 }}
                   className="relative h-[400px] md:h-[500px] w-full mx-auto mt-8 md:mt-0"
                 >
-                  {stories.map((story, index) => (
-                    <motion.div
-                      key={story}
-                      className={`absolute left-1/2 md:left-[60%] top-1/2 w-[322px] md:w-[402px] h-[482px] md:h-[602px] rounded-2xl ${index === currentStoryIndex ? 'shadow-[0_0_25px_rgba(0,0,0,0.7)]' : ''} overflow-hidden backdrop-blur-sm bg-black/20 border border-white/30`}
-                      initial={{ 
-                        x: "-50%",
-                        y: "-50%",
-                        rotate: 0,
-                        scale: 0.95,
-                        zIndex: index === currentStoryIndex ? stories.length : stories.length - Math.abs(index - currentStoryIndex)
-                      }}
-                      animate={{ 
-                        x: "-50%",
-                        y: "-50%",
-                        rotate: 0,
-                        scale: index === currentStoryIndex ? 1 : 0.95,
-                        zIndex: index === currentStoryIndex ? stories.length : stories.length - Math.abs(index - currentStoryIndex)
-                      }}
-                      transition={{ 
-                        duration: 0.5,
-                        ease: index === currentStoryIndex ? "easeOut" : "easeIn"
-                      }}
-                      style={{
-                        transformOrigin: "center center"
-                      }}
-                    >
-                      <img 
-                        src={`/images/stories/${story}.png`}
-                        alt={story.replace(/_/g, ' ')}
-                        className="w-[320px] md:w-[400px] h-[480px] md:h-[600px] object-contain m-[1px]"
-                      />
-                    </motion.div>
-                  ))}
+                  {stories.map((story, index) => {
+                    // Beräkna avståndet från aktuellt kort
+                    const distance = Math.abs(index - currentStoryIndex);
+                    // Visa bara de 5 närmaste korten
+                    if (distance > 2) return null;
+                    
+                    return (
+                      <motion.div
+                        key={story}
+                        className={`absolute left-1/2 md:left-[60%] top-1/2 w-[322px] md:w-[402px] h-[482px] md:h-[602px] rounded-2xl ${index === currentStoryIndex ? 'shadow-[0_0_25px_rgba(0,0,0,0.7)]' : ''} overflow-hidden backdrop-blur-sm bg-black/20 border border-white/30`}
+                        initial={{ 
+                          x: "-50%",
+                          y: "-50%",
+                          rotate: 0,
+                          scale: 0.95,
+                          zIndex: index === currentStoryIndex ? stories.length : stories.length - distance
+                        }}
+                        animate={{ 
+                          x: "-50%",
+                          y: "-50%",
+                          rotate: 0,
+                          scale: index === currentStoryIndex ? 1 : 0.95,
+                          zIndex: index === currentStoryIndex ? stories.length : stories.length - distance,
+                          opacity: 1 - (distance * 0.3)
+                        }}
+                        transition={{ 
+                          duration: 0.5,
+                          ease: index === currentStoryIndex ? "easeOut" : "easeIn"
+                        }}
+                        style={{
+                          transformOrigin: "center center",
+                          willChange: "transform, opacity"
+                        }}
+                      >
+                        <img 
+                          src={`/images/stories/desktop/${story}.webp`}
+                          srcSet={`/images/stories/mobile/${story}.webp 320w, /images/stories/desktop/${story}.webp 400w`}
+                          sizes="(max-width: 768px) 320px, 400px"
+                          alt={story.replace(/_/g, ' ')}
+                          className="w-[320px] md:w-[400px] h-[480px] md:h-[600px] object-contain m-[1px]"
+                          loading={distance === 0 ? "eager" : "lazy"}
+                        />
+                      </motion.div>
+                    );
+                  })}
                 </motion.div>
               </div>
 
-              <div className="w-full md:w-[35%] px-4 md:px-0">
+              <div className="w-full md:w-[35%] px-4 md:px-0 mb-8 md:mb-0">
                 <motion.h2 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="text-4xl md:text-6xl font-bold mb-6 md:mb-8 leading-tight text-white drop-shadow-xl text-center md:text-left tracking-tight"
                 >
-                  Upptäck Grodis<br />magiska sagor.
+                  Upptäck Grodis<br />fantastiska äventyr.
                 </motion.h2>
                 <motion.p 
                   initial={{ opacity: 0, y: 20 }}
@@ -339,10 +351,9 @@ function App() {
                 <p className="text-gray-300 tracking-wide">info@grodis.app</p>
               </div>
               <div className="text-center">
-                <h4 className="text-xl font-semibold mb-2 text-white drop-shadow-lg">Följ oss</h4>
-                <div className="space-x-6">
-                  <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 tracking-wide">Instagram</a>
-                  <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 tracking-wide">Facebook</a>
+                <h4 className="text-xl font-semibold mb-2 text-white drop-shadow-lg">Följ Grodis</h4>
+                <div>
+                  <a href="https://www.facebook.com/profile.php?id=61572057778646" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors duration-300 tracking-wide">Facebook</a>
                 </div>
               </div>
               <div className="text-center md:text-right">
