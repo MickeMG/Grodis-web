@@ -111,9 +111,15 @@ function App() {
         </section>
 
         {/* Intro Section med varm orange platta */}
-        <section className="w-full bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-md py-12 md:py-24 shadow-2xl">
-          <div className="container mx-auto max-w-6xl px-4 md:px-6">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4">
+        <section className="w-full relative py-12 md:py-24 shadow-2xl overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-transparent backdrop-blur-md" 
+               style={{
+                 maskImage: 'linear-gradient(to right, black 60%, transparent)',
+                 WebkitMaskImage: 'linear-gradient(to right, black 60%, transparent)'
+               }}
+          />
+          <div className="container mx-auto max-w-6xl px-4 md:px-6 relative">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-12 md:gap-16">
               <div className="w-full md:w-[40%]">
                 <motion.h2 
                   initial={{ opacity: 0, y: 20 }}
@@ -151,12 +157,12 @@ function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="relative h-[400px] md:h-[500px] w-full md:w-[50%] mx-auto mt-8 md:mt-0"
+                className="relative h-[484px] md:h-[604px] w-full md:w-[50%] mx-auto mt-8 md:mt-0"
               >
                 {images.map((image, index) => (
                   <motion.div
                     key={index}
-                    className="absolute left-1/2 md:left-[20%] top-1/2 w-64 md:w-80 h-[400px] md:h-[500px] rounded-2xl shadow-2xl overflow-hidden backdrop-blur-sm bg-black/20 border border-white/30"
+                    className="absolute left-1/2 md:left-[20%] top-1/2 w-[219px] md:w-[274px] h-[480px] md:h-[600px] rounded-2xl shadow-2xl overflow-hidden backdrop-blur-sm bg-black/20 border border-white/30"
                     initial={{ 
                       x: "-50%",
                       y: "-50%",
@@ -179,9 +185,8 @@ function App() {
                     <img 
                       src={image} 
                       alt={`Story card ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-[217px] md:w-[272px] h-[480px] md:h-[600px] object-contain m-[1px]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/60" />
                   </motion.div>
                 ))}
               </motion.div>
@@ -190,11 +195,11 @@ function App() {
         </section>
 
         {/* Features Section */}
-        <section className="py-16 md:py-32">
+        <section className="relative py-16 md:py-32">
           <div className="container mx-auto max-w-4xl px-4 md:px-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {/* Interaktiva äventyr */}
-              <div className="bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-sm rounded-xl p-6 md:p-8 hover:bg-gradient-to-r hover:from-orange-900/80 hover:via-orange-800/80 hover:to-orange-900/80 transition-all">
+              <div className="bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-sm rounded-xl p-6 md:p-8 hover:bg-gradient-to-r hover:from-yellow-700/80 hover:via-yellow-600/80 hover:to-yellow-700/80 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                 <img 
                   src="/images/sub.webp" 
                   alt="Interaktiva äventyr" 
@@ -207,7 +212,7 @@ function App() {
               </div>
 
               {/* Bli sagans hjälte */}
-              <div className="bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-sm rounded-xl p-6 md:p-8 hover:bg-gradient-to-r hover:from-orange-900/80 hover:via-orange-800/80 hover:to-orange-900/80 transition-all">
+              <div className="bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-sm rounded-xl p-6 md:p-8 hover:bg-gradient-to-r hover:from-yellow-700/80 hover:via-yellow-600/80 hover:to-yellow-700/80 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                 <img 
                   src="/images/air.webp" 
                   alt="Bli sagans hjälte" 
@@ -220,7 +225,7 @@ function App() {
               </div>
 
               {/* Utvecklande läsning */}
-              <div className="bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-sm rounded-xl p-6 md:p-8 hover:bg-gradient-to-r hover:from-orange-900/80 hover:via-orange-800/80 hover:to-orange-900/80 transition-all">
+              <div className="bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-sm rounded-xl p-6 md:p-8 hover:bg-gradient-to-r hover:from-yellow-700/80 hover:via-yellow-600/80 hover:to-yellow-700/80 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                 <img 
                   src="/images/reading.webp" 
                   alt="Utvecklande läsning" 
@@ -237,8 +242,14 @@ function App() {
         </section>
 
         {/* Story Cards Carousel Section */}
-        <section className="w-full bg-gradient-to-r from-orange-900/70 via-orange-800/70 to-orange-900/70 backdrop-blur-md py-12 md:py-24 shadow-2xl">
-          <div className="container mx-auto max-w-6xl">
+        <section className="w-full relative py-12 md:py-24 shadow-2xl overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-l from-orange-900/70 via-orange-800/70 to-transparent backdrop-blur-md" 
+               style={{
+                 maskImage: 'linear-gradient(to left, black 60%, transparent)',
+                 WebkitMaskImage: 'linear-gradient(to left, black 60%, transparent)'
+               }}
+          />
+          <div className="container mx-auto max-w-6xl relative">
             <div className="flex flex-col md:flex-row items-center">
               <div className="w-full md:w-[65%]">
                 <motion.div 
@@ -321,8 +332,8 @@ function App() {
 
         {/* Footer */}
         <footer className="text-white py-4 bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-md mt-8">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
+          <div className="container mx-auto max-w-4xl px-4 md:px-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-2">
               <div className="text-center md:text-left">
                 <h4 className="text-xl font-semibold mb-2 text-white drop-shadow-lg">Kontakt</h4>
                 <p className="text-gray-300 tracking-wide">info@grodis.app</p>
