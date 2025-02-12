@@ -140,7 +140,7 @@ function App() {
                   href="https://play.google.com/store/apps/details?id=com.grodis.storys"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-6 inline-block hover:opacity-90 transition-all duration-300 transform hover:scale-105 float-none md:float-right mx-auto block md:inline-block"
+                  className="mt-6 inline-block hover:opacity-90 transition-all duration-300 transform hover:scale-105 float-none md:float-right mx-auto block md:inline-block mr-4"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
@@ -148,6 +148,21 @@ function App() {
                   <img 
                     src="/images/google-play-badge.png" 
                     alt="Hämta på Google Play" 
+                    className="h-14 w-auto drop-shadow-lg"
+                  />
+                </motion.a>
+                <motion.a 
+                  href="https://apps.apple.com/us/app/grodis-storys/id6720724764?platform=iphone"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-block hover:opacity-90 transition-all duration-300 transform hover:scale-105 float-none md:float-right mx-auto block md:inline-block"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <img 
+                    src="/images/app-store-badge.png" 
+                    alt="Hämta på App Store" 
                     className="h-14 w-auto drop-shadow-lg"
                   />
                 </motion.a>
@@ -326,7 +341,7 @@ function App() {
                   href="https://play.google.com/store/apps/details?id=com.grodis.storys"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-6 inline-block hover:opacity-90 transition-all duration-300 transform hover:scale-105 float-none md:float-left mx-auto block md:inline-block"
+                  className="mt-6 inline-block hover:opacity-90 transition-all duration-300 transform hover:scale-105 float-none md:float-left mx-auto block md:inline-block mr-4"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
@@ -334,6 +349,21 @@ function App() {
                   <img 
                     src="/images/google-play-badge.png" 
                     alt="Hämta på Google Play" 
+                    className="h-14 w-auto drop-shadow-lg"
+                  />
+                </motion.a>
+                <motion.a 
+                  href="https://apps.apple.com/us/app/grodis-storys/id6720724764?platform=iphone"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-block hover:opacity-90 transition-all duration-300 transform hover:scale-105 float-none md:float-left mx-auto block md:inline-block"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <img 
+                    src="/images/app-store-badge.png" 
+                    alt="Hämta på App Store" 
                     className="h-14 w-auto drop-shadow-lg"
                   />
                 </motion.a>
@@ -358,18 +388,32 @@ function App() {
               </div>
               <div className="text-center md:text-right">
                 <h4 className="text-xl font-semibold mb-2 text-white drop-shadow-lg">Ladda ner appen</h4>
-                <a 
-                  href="https://play.google.com/store/apps/details?id=com.grodis.storys"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:opacity-90 transition-all duration-300 transform hover:scale-105 inline-block"
-                >
-                  <img 
-                    src="/images/google-play-badge.png" 
-                    alt="Hämta på Google Play" 
-                    className="h-12 w-auto drop-shadow-lg mx-auto md:ml-auto md:mr-0"
-                  />
-                </a>
+                <div className="flex flex-col md:flex-row justify-center md:justify-end gap-4">
+                  <a 
+                    href="https://play.google.com/store/apps/details?id=com.grodis.storys"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:opacity-90 transition-all duration-300 transform hover:scale-105 inline-block"
+                  >
+                    <img 
+                      src="/images/google-play-badge.png" 
+                      alt="Hämta på Google Play" 
+                      className="h-12 w-auto drop-shadow-lg mx-auto md:ml-auto md:mr-0"
+                    />
+                  </a>
+                  <a 
+                    href="https://apps.apple.com/us/app/grodis-storys/id6720724764?platform=iphone"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:opacity-90 transition-all duration-300 transform hover:scale-105 inline-block"
+                  >
+                    <img 
+                      src="/images/app-store-badge.png" 
+                      alt="Hämta på App Store" 
+                      className="h-12 w-auto drop-shadow-lg mx-auto md:ml-auto md:mr-0"
+                    />
+                  </a>
+                </div>
               </div>
             </div>
             <div className="border-t border-white/20 mt-6 pt-4 text-center text-gray-300">
