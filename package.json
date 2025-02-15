@@ -2,7 +2,7 @@
   "name": "grodis-web",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "https://mickemg.github.io/Grodis-web",
   "dependencies": {
     "@heroicons/react": "^2.1.1",
     "@testing-library/jest-dom": "^5.17.0",
