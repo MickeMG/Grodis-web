@@ -2,7 +2,7 @@
   "name": "grodis-web",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://mickemg.github.io/Grodis-web/",
+  "homepage": "https://www.grodis.app",
   "dependencies": {
     "@heroicons/react": "^2.1.1",
     "@svgr/plugin-svgo": "^8.1.0",
