@@ -5,12 +5,12 @@ function App() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const images = [
-    '/Grodis-web/images/unnamed.webp',
-    '/Grodis-web/images/unnamed (1).webp',
-    '/Grodis-web/images/unnamed (2).webp',
-    '/Grodis-web/images/unnamed (3).webp',
-    '/Grodis-web/images/unnamed (4).webp',
-    '/Grodis-web/images/unnamed (5).webp'
+    '/images/unnamed.webp',
+    '/images/unnamed (1).webp',
+    '/images/unnamed (2).webp',
+    '/images/unnamed (3).webp',
+    '/images/unnamed (4).webp',
+    '/images/unnamed (5).webp'
   ];
 
   const stories = [
@@ -75,7 +75,7 @@ function App() {
       {/* Bakgrundsbild med overlay */}
       <div className="fixed inset-0 z-0">
         <img 
-          src="/Grodis-web/images/background.webp" 
+          src="/images/background.webp" 
           alt="Magical forest background" 
           className="w-full h-full object-cover"
         />
@@ -89,7 +89,7 @@ function App() {
             <div className="flex-1" />
             <div className="flex flex-col md:flex-row items-center gap-0">
               <img 
-                src="/Grodis-web/images/logo.png" 
+                src="/images/logo.png" 
                 alt="Grodis logo" 
                 className="h-16 md:h-24 w-auto"
               />
@@ -146,7 +146,7 @@ function App() {
                   transition={{ delay: 0.3 }}
                 >
                   <img 
-                    src="/Grodis-web/images/google-play-badge.png" 
+                    src="/images/google-play-badge.png" 
                     alt="Hämta på Google Play" 
                     className="h-14 w-auto drop-shadow-lg"
                   />
@@ -161,7 +161,7 @@ function App() {
                   transition={{ delay: 0.4 }}
                 >
                   <img 
-                    src="/Grodis-web/images/app-store-badge.png" 
+                    src="/images/app-store-badge.png" 
                     alt="Hämta på App Store" 
                     className="h-14 w-auto drop-shadow-lg"
                   />
@@ -216,7 +216,7 @@ function App() {
               {/* Interaktiva äventyr */}
               <div className="bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-sm rounded-xl p-6 md:p-8 hover:bg-gradient-to-r hover:from-yellow-700/80 hover:via-yellow-600/80 hover:to-yellow-700/80 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                 <img 
-                  src="/Grodis-web/images/sub.webp" 
+                  src="/images/sub.webp" 
                   alt="Interaktiva äventyr" 
                   className="w-full aspect-square object-cover rounded-lg mb-4 md:mb-6"
                 />
@@ -229,7 +229,7 @@ function App() {
               {/* Bli sagans hjälte */}
               <div className="bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-sm rounded-xl p-6 md:p-8 hover:bg-gradient-to-r hover:from-yellow-700/80 hover:via-yellow-600/80 hover:to-yellow-700/80 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                 <img 
-                  src="/Grodis-web/images/air.webp" 
+                  src="/images/air.webp" 
                   alt="Bli sagans hjälte" 
                   className="w-full aspect-square object-cover rounded-lg mb-4 md:mb-6"
                 />
@@ -242,7 +242,7 @@ function App() {
               {/* Utvecklande läsning */}
               <div className="bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-sm rounded-xl p-6 md:p-8 hover:bg-gradient-to-r hover:from-yellow-700/80 hover:via-yellow-600/80 hover:to-yellow-700/80 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                 <img 
-                  src="/Grodis-web/images/reading.webp" 
+                  src="/images/reading.webp" 
                   alt="Utvecklande läsning" 
                   className="w-full aspect-square object-cover rounded-lg mb-4 md:mb-6"
                   style={{ objectPosition: "top" }}
@@ -308,8 +308,8 @@ function App() {
                         }}
                       >
                         <img 
-                          src={`/Grodis-web/images/stories/desktop/${story}.webp`}
-                          srcSet={`/Grodis-web/images/stories/mobile/${story}.webp 320w, /Grodis-web/images/stories/desktop/${story}.webp 400w`}
+                          src={`/images/stories/desktop/${story}.webp`}
+                          srcSet={`/images/stories/mobile/${story}.webp 320w, /images/stories/desktop/${story}.webp 400w`}
                           sizes="(max-width: 768px) 320px, 400px"
                           alt={story.replace(/_/g, ' ')}
                           className="w-[320px] md:w-[400px] h-[480px] md:h-[600px] object-contain m-[1px]"
@@ -347,7 +347,7 @@ function App() {
                   transition={{ delay: 0.3 }}
                 >
                   <img 
-                    src="/Grodis-web/images/google-play-badge.png" 
+                    src="/images/google-play-badge.png" 
                     alt="Hämta på Google Play" 
                     className="h-14 w-auto drop-shadow-lg"
                   />
@@ -362,7 +362,7 @@ function App() {
                   transition={{ delay: 0.4 }}
                 >
                   <img 
-                    src="/Grodis-web/images/app-store-badge.png" 
+                    src="/images/app-store-badge.png" 
                     alt="Hämta på App Store" 
                     className="h-14 w-auto drop-shadow-lg"
                   />
@@ -396,7 +396,7 @@ function App() {
                     className="hover:opacity-90 transition-all duration-300 transform hover:scale-105 inline-block"
                   >
                     <img 
-                      src="/Grodis-web/images/google-play-badge.png" 
+                      src="/images/google-play-badge.png" 
                       alt="Hämta på Google Play" 
                       className="h-12 w-auto drop-shadow-lg mx-auto md:ml-auto md:mr-0"
                     />
@@ -408,7 +408,7 @@ function App() {
                     className="hover:opacity-90 transition-all duration-300 transform hover:scale-105 inline-block"
                   >
                     <img 
-                      src="/Grodis-web/images/app-store-badge.png" 
+                      src="/images/app-store-badge.png" 
                       alt="Hämta på App Store" 
                       className="h-12 w-auto drop-shadow-lg mx-auto md:ml-auto md:mr-0"
                     />
