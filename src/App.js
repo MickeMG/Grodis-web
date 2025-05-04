@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import StartAdventure from './StartAdventure';
 
-function App() {
+function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+  const navigate = useNavigate();
   const images = [
     '/images/unnamed.webp',
     '/images/unnamed (1).webp',
@@ -105,8 +108,15 @@ function App() {
       {/* Main Content */}
       <div className="relative z-10">
         {/* Hero Section */}
-        <section className="pt-32 md:pt-40 pb-20 px-4">
+        <section className="pt-32 md:pt-40 pb-8 px-4">
           <div className="container mx-auto max-w-4xl text-center">
+            <button
+              className="bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-600 text-white text-2xl md:text-3xl font-bold py-6 px-12 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-105 mt-4 mb-8 drop-shadow-xl tracking-wide border-4 border-yellow-700/60 hover:border-yellow-400/80 focus:outline-none focus:ring-4 focus:ring-yellow-300/60"
+              style={{ letterSpacing: '0.05em', fontFamily: 'inherit' }}
+              onClick={() => navigate('/start')}
+            >
+              STARTA DITT LÄSÄVENTYR HÄR
+            </button>
           </div>
         </section>
 
@@ -432,4 +442,4 @@ function App() {
   );
 }
 
-export default App; 
+export default Home; 
