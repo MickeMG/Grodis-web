@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import PrivacyPolicy from './PrivacyPolicy';
 import StartAdventure from './StartAdventure';
+import ReadStory from './ReadStory';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
 
 const router = createHashRouter([
@@ -18,6 +19,10 @@ const router = createHashRouter([
   {
     path: '/privacy-policy',
     element: <PrivacyPolicy />
+  },
+  {
+    path: '/read/:id',
+    element: <ReadStory />
   }
 ]);
 

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function StartAdventure() {
   const [names, setNames] = useState(['']);
+  const [genders, setGenders] = useState(['kvinna']);
   const [showModal, setShowModal] = useState(false);
   const [selectedStory, setSelectedStory] = useState(null);
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (showModal && stories.length === 0 && !loading) {
@@ -33,17 +36,30 @@ export default function StartAdventure() {
     setNames(newNames);
   };
 
+  const handleGenderChange = (index, value) => {
+    const newGenders = [...genders];
+    newGenders[index] = value;
+    setGenders(newGenders);
+  };
+
   const handleAdd = () => {
-    if (names.length < 2) setNames([...names, '']);
+    if (names.length < 2) {
+      setNames([...names, '']);
+      setGenders([...genders, 'kvinna']);
+    }
   };
 
   const handleRemove = (index) => {
     setNames(names.filter((_, i) => i !== index));
+    setGenders(genders.filter((_, i) => i !== index));
   };
 
   const handleChooseStory = (story) => {
     setSelectedStory(story);
     setShowModal(false);
+    setTimeout(() => {
+      navigate(`/read/${story.id}`, { state: { names, genders } });
+    }, 300);
   };
 
   return (
@@ -85,7 +101,7 @@ export default function StartAdventure() {
         {/* Namnfält */}
         <div className="flex flex-col gap-4 w-full max-w-xs mb-4">
           {names.map((name, idx) => (
-            <div key={idx} className="flex items-center bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 rounded-2xl px-4 py-3 shadow-lg border-2 border-white/70">
+            <div key={idx} className="flex items-center bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 rounded-2xl px-4 py-3 shadow-lg border-2 border-white/70 gap-2">
               <input
                 type="text"
                 value={name}
@@ -95,6 +111,15 @@ export default function StartAdventure() {
                 className="flex-1 bg-transparent text-white text-lg font-semibold outline-none placeholder-white/70"
                 style={{textShadow: '0 1px 4px #0008'}}
               />
+              <select
+                value={genders[idx]}
+                onChange={e => handleGenderChange(idx, e.target.value)}
+                className="ml-2 rounded-lg px-2 py-1 bg-white text-orange-700 font-bold border-2 border-orange-300 focus:outline-none"
+              >
+                <option value="kvinna">Hon</option>
+                <option value="man">Han</option>
+                <option value="hen">Hen</option>
+              </select>
               {names.length > 1 && (
                 <button
                   onClick={() => handleRemove(idx)}
