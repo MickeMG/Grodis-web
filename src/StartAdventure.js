@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function StartAdventure() {
-  const [names, setNames] = useState(['']);
+  const [names, setNames] = useState(['Annie']);
   const [genders, setGenders] = useState(['kvinna']);
   const [showModal, setShowModal] = useState(false);
   const [selectedStory, setSelectedStory] = useState(null);

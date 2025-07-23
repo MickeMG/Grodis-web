@@ -18,6 +18,7 @@ export default function ReadStory() {
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -85,15 +86,43 @@ export default function ReadStory() {
   const mainName = names[0] || "Kim";
   const mainPronoun = pronounMap[genders[0]] || "hen";
 
-  // Ersätt {namn} och {pronomen} i texten
+  // Ersätt platshållare för namn och pronomen för flera personer
   function personalize(text) {
-    return text
+    let result = text;
+    // Ersätt {namn} och {pronomen} (bakåtkompatibilitet)
+    result = result
       .replace(/\{namn\}/gi, mainName)
       .replace(/\{pronomen\}/gi, mainPronoun);
+    // Ersätt {person1}, {han/hon1}, {person2}, {han/hon2} osv.
+    for (let i = 0; i < names.length; i++) {
+      const name = names[i] || '';
+      const gender = genders[i] || 'hen';
+      const pronoun = pronounMap[gender] || 'hen';
+      // {person1}, {person2} ...
+      const nameRegex = new RegExp(`\\{person${i+1}\\}`, 'gi');
+      result = result.replace(nameRegex, name);
+      // {person1s}, {person2s} ...
+      const possessiveRegex = new RegExp(`\\{person${i+1}s\\}`, 'gi');
+      result = result.replace(possessiveRegex, name ? name + 's' : '');
+      // {han/hon1}, {han/hon2} ...
+      const pronounRegex = new RegExp(`\\{han\/hon${i+1}\\}`, 'gi');
+      result = result.replace(pronounRegex, pronoun);
+      // {sig själv1}, {sig själv2} ...
+      const selfRegex = new RegExp(`\\{sig själv${i+1}\\}`, 'gi');
+      result = result.replace(selfRegex, 'sig själv');
+    }
+    return result;
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-2 relative">
+    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-2 relative" style={{
+      background: 'linear-gradient(180deg, #b63a1b 0%, #f7a13d 100%)',
+      minHeight: '100vh',
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
       {/* Bakgrundsbild */}
       <div className="fixed inset-0 z-0">
         <img 
@@ -103,44 +132,135 @@ export default function ReadStory() {
           style={{ zIndex: 0, position: 'absolute' }}
         />
       </div>
-      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8" style={{ zIndex: 10, position: 'relative' }}>
-        <button className="text-green-700 font-bold mb-4" onClick={() => navigate(-1)}>
+      <div className="w-full max-w-xl mx-auto" style={{
+        background: 'linear-gradient(180deg, #b63a1b 0%, #f7a13d 100%)',
+        border: '5px solid #fff',
+        borderRadius: '2rem',
+        boxShadow: '0 8px 32px #0004',
+        padding: '2.5rem 1.5rem',
+        position: 'relative',
+        zIndex: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}>
+        <button className="font-bold mb-4" onClick={() => navigate(-1)} style={{
+          background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
+          color: '#fff',
+          borderRadius: '1rem',
+          border: '2px solid #fff8',
+          boxShadow: '0 2px 8px #0008',
+          padding: '0.5rem 1.5rem',
+          fontFamily: 'Kidzone',
+          textShadow: '0 2px 8px #0008',
+        }}>
           &larr; Tillbaka till alla berättelser
         </button>
-        <h1 className="text-3xl font-bold text-green-700 mb-2">{story.title}</h1>
-        <p className="italic text-gray-600 mb-6">{story.description}</p>
-        <hr className="mb-6" />
-        <h2 className="text-2xl font-bold mb-4">Kapitel {current + 1}</h2>
-        <div className="flex gap-2 mb-6">
-          {chapters.map((_, idx) => (
+        {showIntro ? (
+          <>
+            <div style={{
+              background: '#a13a1b',
+              color: '#fff',
+              borderRadius: '1rem',
+              padding: '0.75rem 2rem',
+              fontSize: '2.2rem',
+              fontWeight: 700,
+              marginBottom: '2rem',
+              textAlign: 'center',
+              boxShadow: '0 2px 8px #0004',
+              fontFamily: 'Kidzone',
+            }}>
+              {story.title}
+            </div>
+            <p className="italic text-white mb-8" style={{ fontSize: '1.2rem', textAlign: 'center', fontFamily: 'inherit' }}>{personalize(story.description)}</p>
             <button
-              key={idx}
-              className={`rounded-full w-10 h-10 flex items-center justify-center font-bold border-2 ${idx === current ? 'bg-green-500 text-white border-green-700' : 'bg-gray-100 text-gray-700 border-gray-300'}`}
-              onClick={() => setCurrent(idx)}
+              className="font-bold py-3 px-8 text-xl mt-4 transition-all"
+              style={{
+                background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
+                color: '#fff',
+                borderRadius: '1rem',
+                border: '2px solid #fff8',
+                boxShadow: '0 2px 8px #0008',
+                fontFamily: 'Kidzone',
+                textShadow: '0 2px 8px #0008',
+              }}
+              onClick={() => setShowIntro(false)}
             >
-              {idx + 1}
+              Börja läsa
             </button>
-          ))}
-        </div>
-        <div className="mb-8 text-lg text-gray-800 min-h-[120px]">
-          {chapters[current] ? personalize(chapters[current].content) : 'Ingen text.'}
-        </div>
-        <div className="flex gap-4">
-          <button
-            className="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded-xl"
-            onClick={() => setCurrent(c => Math.max(0, c - 1))}
-            disabled={current === 0}
-          >
-            Föregående kapitel
-          </button>
-          <button
-            className="bg-green-500 text-white font-bold py-2 px-4 rounded-xl"
-            onClick={() => setCurrent(c => Math.min(chapters.length - 1, c + 1))}
-            disabled={current === chapters.length - 1}
-          >
-            Nästa kapitel
-          </button>
-        </div>
+          </>
+        ) : (
+          <>
+            <div style={{
+              background: '#a13a1b',
+              color: '#fff',
+              borderRadius: '1rem',
+              padding: '0.75rem 2rem',
+              fontSize: '2.2rem',
+              fontWeight: 700,
+              marginBottom: '2rem',
+              textAlign: 'center',
+              boxShadow: '0 2px 8px #0004',
+              fontFamily: 'Kidzone',
+            }}>
+              {story.title}
+            </div>
+            <div style={{
+              color: '#ffd43b',
+              fontWeight: 700,
+              fontSize: '1.5rem',
+              marginBottom: '1.2rem',
+              textAlign: 'center',
+              fontFamily: 'Kidzone',
+              letterSpacing: '0.02em',
+            }}>
+              Kapitel {current + 1}/{chapters.length}
+            </div>
+            <div className="mb-8 text-white" style={{
+              fontSize: '1.25rem',
+              textAlign: 'center',
+              fontFamily: 'inherit',
+              lineHeight: 1.6,
+              marginBottom: '2rem',
+            }}>
+              {chapters[current] ? personalize(chapters[current].content) : 'Ingen text.'}
+            </div>
+            <div className="flex gap-4 justify-center">
+              <button
+                className="font-bold py-2 px-4"
+                style={{
+                  background: 'linear-gradient(90deg, #ffe066 0%, #ffd43b 60%, #ffb300 100%)',
+                  color: '#4a2c06',
+                  borderRadius: '1rem',
+                  border: '2px solid #fff8',
+                  boxShadow: '0 2px 8px #0008',
+                  fontFamily: 'Kidzone',
+                  textShadow: '0 2px 8px #0008',
+                }}
+                onClick={() => setCurrent(c => Math.max(0, c - 1))}
+                disabled={current === 0}
+              >
+                Föregående kapitel
+              </button>
+              <button
+                className="font-bold py-2 px-4"
+                style={{
+                  background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
+                  color: '#fff',
+                  borderRadius: '1rem',
+                  border: '2px solid #fff8',
+                  boxShadow: '0 2px 8px #0008',
+                  fontFamily: 'Kidzone',
+                  textShadow: '0 2px 8px #0008',
+                }}
+                onClick={() => setCurrent(c => Math.min(chapters.length - 1, c + 1))}
+                disabled={current === chapters.length - 1}
+              >
+                Nästa kapitel
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
