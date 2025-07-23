@@ -139,30 +139,20 @@ export default function StartAdventure() {
           className="w-full h-full object-cover"
         />
       </div>
-      {/* Navigation */}
-      <nav className="fixed w-full z-50 bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-3 flex justify-center items-start">
-          <div className="flex-1 flex justify-between items-start">
-            <div className="flex-1" />
-            <div className="flex flex-col md:flex-row items-center gap-0">
-              <img 
-                src="/images/logo.png" 
-                alt="Grodis logo" 
-                className="h-16 md:h-24 w-auto"
-              />
-              <p className="text-2xl md:text-4xl text-white/90 tracking-wide drop-shadow-lg mt-2 md:mt-4 font-kidzone md:-ml-4 text-center md:text-left">
-                Grodis - Interaktiva sagor i en magisk värld!
-              </p>
-            </div>
-            <div className="flex-1" />
-          </div>
-        </div>
-      </nav>
+
       {/* Dialogruta */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen pt-40">
+        {/* Grodbild */}
+        <div className="flex justify-center mb-2" style={{ zIndex: 9999, position: 'relative' }}>
+          <img 
+            src="/images/logo.png" 
+            alt="Grodis logo" 
+            className="h-62 md:h-88 w-auto"
+          />
+        </div>
         {/* Rubrik */}
-        <div className="rounded-2xl px-8 py-8 mb-6 bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-2 border-white/80 shadow-xl" style={{maxWidth: 420, width: '100%'}}>
-          <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-xl text-center" style={{textShadow: '0 2px 8px #0008', fontFamily: 'Kidzone'}}>Vilka ska vara med i storyn?</h1>
+        <div className="rounded-2xl px-8 py-8 mb-6 bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-2 border-white/80 shadow-xl" style={{maxWidth: 420, width: '100%', marginTop: '-50px'}}>
+          <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-xl text-center" style={{textShadow: '0 2px 8px #0008', fontFamily: 'Kidzone'}}>Vad heter du?</h1>
         </div>
         {/* Namnfält */}
         <div className="flex flex-col gap-4 w-full mb-4" style={{maxWidth: 340, width: '100%'}}>
@@ -290,18 +280,20 @@ export default function StartAdventure() {
           ))}
         </div>
         {/* Lägg till-knapp */}
-        <button
-          onClick={handleAdd}
-          disabled={names.length >= 2}
-          className={`bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 text-white font-bold py-2 px-6 rounded-xl shadow-md border-2 border-white/70 mb-6 transition-all duration-200 ${names.length >= 2 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}`}
-          style={{
-            fontFamily: 'Kidzone',
-            textShadow: '0 2px 8px #0008',
-            fontWeight: 700
-          }}
-        >
-          Lägg till
-        </button>
+        <div className="flex items-center mb-6" style={{gap: '1rem'}}>
+          <button
+            disabled
+            className="bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 text-white font-bold py-2 px-6 rounded-xl shadow-md border-2 border-white/70 opacity-50 cursor-not-allowed"
+            style={{
+              fontFamily: 'Kidzone',
+              textShadow: '0 2px 8px #0008',
+              fontWeight: 700
+            }}
+          >
+            Lägg till fler
+          </button>
+          <span style={{color: '#fff', fontFamily: 'Kidzone', fontWeight: 700, fontSize: '1.1rem', textShadow: '0 2px 8px #0008'}}>(Kommer snart)</span>
+        </div>
         {/* Välj Story-knapp */}
         <button
           onClick={() => setShowModal(true)}
