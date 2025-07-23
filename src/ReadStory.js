@@ -68,7 +68,7 @@ export default function ReadStory() {
           className="w-full h-full object-cover" 
         />
       </div>
-      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8" style={{ position: 'relative', zIndex: 10 }}>
+      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8">
         <button className="text-green-700 font-bold mb-4" onClick={() => navigate(-1)}>
           &larr; Tillbaka till alla berättelser
         </button>

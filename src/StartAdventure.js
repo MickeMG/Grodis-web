@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function StartAdventure() {
@@ -10,6 +10,18 @@ export default function StartAdventure() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [genderDropdownOpen, setGenderDropdownOpen] = useState(-1);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setGenderDropdownOpen(-1);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   useEffect(() => {
     if (showModal && stories.length === 0 && !loading) {
@@ -63,7 +75,7 @@ export default function StartAdventure() {
   };
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative" style={{ fontFamily: 'Kidzone', textShadow: '0 2px 8px #0008' }}>
       {/* Bakgrundsbild */}
       <div className="fixed inset-0 z-0">
         <img 
@@ -94,31 +106,120 @@ export default function StartAdventure() {
       {/* Dialogruta */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen pt-40">
         {/* Rubrik */}
-        <div className="rounded-2xl px-8 py-4 mb-6 bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-2 border-white/80 shadow-xl">
-          <h1 className="text-2xl md:text-3xl font-bold text-white drop-shadow-xl text-center" style={{textShadow: '0 2px 8px #0008'}}>Vilka ska vara med i storyn?</h1>
+        <div className="rounded-2xl px-8 py-8 mb-6 bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-2 border-white/80 shadow-xl" style={{maxWidth: 420, width: '100%'}}>
+          <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-xl text-center" style={{textShadow: '0 2px 8px #0008', fontFamily: 'Kidzone'}}>Vilka ska vara med i storyn?</h1>
         </div>
         {/* Namnfält */}
-        <div className="flex flex-col gap-4 w-full max-w-xs mb-4">
+        <div className="flex flex-col gap-4 w-full mb-4" style={{maxWidth: 340, width: '100%'}}>
           {names.map((name, idx) => (
-            <div key={idx} className="flex items-center bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 rounded-2xl px-4 py-3 shadow-lg border-2 border-white/70 gap-2">
+            <div key={idx} className="flex items-center" style={{
+              background: 'linear-gradient(90deg, #ffe066 0%, #ffd43b 60%, #ffb300 100%)',
+              borderRadius: '1rem',
+              boxShadow: '0 4px 24px 0 rgba(255, 180, 0, 0.25), 0 1.5px 0 #fff8',
+              border: '2px solid #fff8',
+              padding: '0.75rem 1.25rem',
+              maxWidth: 340,
+              width: '100%',
+              gap: '0.5rem',
+              alignItems: 'center',
+              marginBottom: '0.5rem'
+            }}>
               <input
                 type="text"
                 value={name}
                 maxLength={20}
                 onChange={e => handleNameChange(idx, e.target.value)}
                 placeholder={idx === 0 ? 'Namn' : 'Namn'}
-                className="flex-1 bg-transparent text-white text-lg font-semibold outline-none placeholder-white/70"
-                style={{textShadow: '0 1px 4px #0008'}}
+                className="flex-1 text-lg font-semibold outline-none placeholder-white rounded-xl border-none focus:ring-2 focus:ring-yellow-300"
+                style={{
+                  color: '#fff',
+                  fontFamily: 'Kidzone',
+                  textShadow: '0 2px 12px #000a, 0 1px 0 #ffb300',
+                  letterSpacing: '0.5px',
+                  fontWeight: 700,
+                  fontSize: '2rem',
+                  minWidth: 120,
+                  maxWidth: 220,
+                  margin: '0 0.5rem',
+                  paddingLeft: 48,
+                  paddingRight: 48,
+                  paddingTop: 8,
+                  paddingBottom: 8,
+                  height: '36px',
+                  overflow: 'visible',
+                  boxSizing: 'content-box',
+                  background: 'transparent'
+                }}
               />
-              <select
-                value={genders[idx]}
-                onChange={e => handleGenderChange(idx, e.target.value)}
-                className="ml-2 rounded-lg px-2 py-1 bg-white text-orange-700 font-bold border-2 border-orange-300 focus:outline-none"
-              >
-                <option value="kvinna">Hon</option>
-                <option value="man">Han</option>
-                <option value="hen">Hen</option>
-              </select>
+              {/* Custom gender dropdown */}
+              <div ref={dropdownRef} style={{ position: 'relative', minWidth: 90 }}>
+                <button
+                  type="button"
+                  onClick={() => setGenderDropdownOpen(genderDropdownOpen === idx ? -1 : idx)}
+                  className="rounded-xl px-4 py-2 font-bold border-2 border-white/70 shadow-md focus:outline-none"
+                  style={{
+                    background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
+                    color: '#fff',
+                    fontFamily: 'Kidzone',
+                    textShadow: '0 2px 8px #0008',
+                    fontWeight: 700,
+                    letterSpacing: '0.08em',
+                    fontSize: '1.1rem',
+                    minWidth: 80,
+                    borderRadius: '1rem',
+                    boxShadow: '0 2px 8px #0008'
+                  }}
+                >
+                  {genders[idx] === 'kvinna' ? 'Flicka' : 'Pojke'}
+                  <span style={{ marginLeft: 8, fontSize: 18, verticalAlign: 'middle' }}>▼</span>
+                </button>
+                {genderDropdownOpen === idx && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '110%',
+                    left: 0,
+                    zIndex: 20,
+                    background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
+                    borderRadius: '1rem',
+                    boxShadow: '0 8px 32px #0008',
+                    minWidth: 100,
+                    padding: '0.25rem 0',
+                    border: '2px solid #fff8',
+                  }}>
+                    {[
+                      { value: 'kvinna', label: 'Flicka' },
+                      { value: 'man', label: 'Pojke' }
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => { setGenderDropdownOpen(-1); handleGenderChange(idx, opt.value); }}
+                        style={{
+                          display: 'block',
+                          width: '100%',
+                          background: 'none',
+                          border: '2px solid #fff',
+                          color: '#fff',
+                          fontFamily: 'Kidzone',
+                          fontWeight: 700,
+                          textShadow: '0 2px 8px #0008',
+                          letterSpacing: '0.08em',
+                          fontSize: '1.1rem',
+                          padding: '0.5rem 1.5rem',
+                          borderRadius: '0.75rem',
+                          cursor: 'pointer',
+                          margin: '0.1rem 0',
+                          transition: 'background 0.2s',
+                          boxShadow: '0 2px 8px #0008',
+                        }}
+                        onMouseDown={e => e.preventDefault()}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               {names.length > 1 && (
                 <button
                   onClick={() => handleRemove(idx)}
@@ -138,13 +239,25 @@ export default function StartAdventure() {
           onClick={handleAdd}
           disabled={names.length >= 2}
           className={`bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 text-white font-bold py-2 px-6 rounded-xl shadow-md border-2 border-white/70 mb-6 transition-all duration-200 ${names.length >= 2 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}`}
+          style={{
+            fontFamily: 'Kidzone',
+            textShadow: '0 2px 8px #0008',
+            fontWeight: 700
+          }}
         >
           Lägg till
         </button>
         {/* Välj Story-knapp */}
         <button
           onClick={() => setShowModal(true)}
-          className="w-full max-w-xs py-4 rounded-2xl text-2xl font-bold text-white bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-2 border-white/80 shadow-xl mt-2 hover:scale-105 transition-all duration-200"
+          className="w-full py-8 rounded-2xl text-3xl font-bold text-white bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-2 border-white/80 shadow-xl mt-2 hover:scale-105 transition-all duration-200"
+          style={{
+            fontFamily: 'Kidzone',
+            textShadow: '0 2px 8px #0008',
+            fontWeight: 700,
+            maxWidth: 420,
+            width: '100%'
+          }}
         >
           {selectedStory ? (selectedStory.title || selectedStory.name || '').replace(/_/g, ' ') : 'Välj Story här'}
         </button>
