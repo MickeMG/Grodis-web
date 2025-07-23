@@ -14,6 +14,7 @@ export default function StartAdventure() {
   const navigate = useNavigate();
   const [genderDropdownOpen, setGenderDropdownOpen] = useState(-1);
   const dropdownRef = useRef(null);
+  const gendersRef = useRef(genders);
 
   useEffect(() => {
     function handleClick(e) {
@@ -24,6 +25,10 @@ export default function StartAdventure() {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
+
+  useEffect(() => {
+    gendersRef.current = genders;
+  }, [genders]);
 
   useEffect(() => {
     if (showModal && stories.length === 0 && !loading) {
@@ -44,6 +49,11 @@ export default function StartAdventure() {
     }
   }, [showModal, stories.length, loading]);
 
+  useEffect(() => {
+    // Normalisera ALLTID genders-arrayen till 'man' eller 'kvinna' vid mount
+    setGenders(genders => genders.map(g => g === 'pojke' ? 'man' : g === 'flicka' ? 'kvinna' : g));
+  }, []);
+
   const handleNameChange = (index, value) => {
     const newNames = [...names];
     newNames[index] = value;
@@ -52,7 +62,7 @@ export default function StartAdventure() {
 
   const handleGenderChange = (index, value) => {
     const newGenders = [...genders];
-    newGenders[index] = value;
+    newGenders[index] = value === 'pojke' ? 'man' : value === 'flicka' ? 'kvinna' : value;
     setGenders(newGenders);
   };
 
@@ -109,7 +119,13 @@ export default function StartAdventure() {
     setSelectedStory(story);
     setShowModal(false);
     setTimeout(() => {
-      navigate(`/read/${story.id}`, { state: { names, genders } });
+      const normalizedGenders = gendersRef.current.map(g => {
+        if (g === 'pojke') return 'man';
+        if (g === 'flicka') return 'kvinna';
+        return g;
+      });
+      console.log('SKICKAR:', normalizedGenders);
+      navigate(`/read/${story.id}`, { state: { names, genders: normalizedGenders } });
     }, 300);
   };
 

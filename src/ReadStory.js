@@ -82,6 +82,7 @@ export default function ReadStory() {
   // Hantera namn och kön
   const names = state.names || ["Kim"];
   const genders = state.genders || ["kvinna"];
+  console.log('MOTTAR:', genders);
   const mainName = names[0] || "Kim";
   const mainPronoun = pronounMap[genders[0]] || "hen";
 
@@ -91,7 +92,10 @@ export default function ReadStory() {
     // Ersätt {namn} och {pronomen} (bakåtkompatibilitet)
     result = result
       .replace(/\{namn\}/gi, mainName)
-      .replace(/\{pronomen\}/gi, mainPronoun);
+      .replace(/\{pronomen\}/gi, mainPronoun)
+      .replace(/\{hans\/hennes\}/gi, mainPronoun === 'han' ? 'hans' : 'hennes')
+      .replace(/\{honom\/henne\}/gi, mainPronoun === 'han' ? 'honom' : 'henne')
+      .replace(/\{pojke\/flicka\}/gi, mainPronoun === 'han' ? 'pojke' : 'flicka');
     // Ersätt {person1}, {han/hon1}, {person2}, {han/hon2} osv.
     for (let i = 0; i < names.length; i++) {
       const name = names[i] || '';
@@ -106,6 +110,15 @@ export default function ReadStory() {
       // {han/hon1}, {han/hon2} ...
       const pronounRegex = new RegExp(`\\{han\/hon${i+1}\\}`, 'gi');
       result = result.replace(pronounRegex, pronoun);
+      // {hans/hennes1}, {hans/hennes2} ...
+      const possessiveRegex2 = new RegExp(`\\{hans\/hennes${i+1}\\}`, 'gi');
+      result = result.replace(possessiveRegex2, pronoun === 'han' ? 'hans' : 'hennes');
+      // {honom/henne1}, {honom/henne2} ...
+      const objectRegex = new RegExp(`\\{honom\/henne${i+1}\\}`, 'gi');
+      result = result.replace(objectRegex, pronoun === 'han' ? 'honom' : 'henne');
+      // {pojke/flicka1}, {pojke/flicka2} ...
+      const genderWordRegex = new RegExp(`\\{pojke\/flicka${i+1}\\}`, 'gi');
+      result = result.replace(genderWordRegex, pronoun === 'han' ? 'pojke' : 'flicka');
       // {sig själv1}, {sig själv2} ...
       const selfRegex = new RegExp(`\\{sig själv${i+1}\\}`, 'gi');
       result = result.replace(selfRegex, 'sig själv');
