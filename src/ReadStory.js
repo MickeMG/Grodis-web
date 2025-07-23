@@ -18,7 +18,6 @@ export default function ReadStory() {
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -122,7 +121,24 @@ export default function ReadStory() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      position: 'relative',
     }}>
+      <div style={{ zIndex: 20, position: 'relative', width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+        <button className="font-bold" onClick={() => navigate(-1)} style={{
+          background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
+          color: '#fff',
+          borderRadius: '1rem',
+          border: '2px solid #fff8',
+          boxShadow: '0 2px 8px #0008',
+          padding: '0.5rem 1.5rem',
+          fontFamily: 'Kidzone',
+          textShadow: '0 2px 8px #0008',
+          fontSize: '1.1rem',
+          minWidth: '240px',
+        }}>
+          &larr; Tillbaka till alla äventyr
+        </button>
+      </div>
       {/* Bakgrundsbild */}
       <div className="fixed inset-0 z-0">
         <img 
@@ -144,53 +160,7 @@ export default function ReadStory() {
         flexDirection: 'column',
         alignItems: 'center',
       }}>
-        <button className="font-bold mb-4" onClick={() => navigate(-1)} style={{
-          background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
-          color: '#fff',
-          borderRadius: '1rem',
-          border: '2px solid #fff8',
-          boxShadow: '0 2px 8px #0008',
-          padding: '0.5rem 1.5rem',
-          fontFamily: 'Kidzone',
-          textShadow: '0 2px 8px #0008',
-        }}>
-          &larr; Tillbaka till alla berättelser
-        </button>
-        {showIntro ? (
-          <>
-            <div style={{
-              background: '#a13a1b',
-              color: '#fff',
-              borderRadius: '1rem',
-              padding: '0.75rem 2rem',
-              fontSize: '2.2rem',
-              fontWeight: 700,
-              marginBottom: '2rem',
-              textAlign: 'center',
-              boxShadow: '0 2px 8px #0004',
-              fontFamily: 'Kidzone',
-            }}>
-              {story.title}
-            </div>
-            <p className="italic text-white mb-8" style={{ fontSize: '1.2rem', textAlign: 'center', fontFamily: 'inherit' }}>{personalize(story.description)}</p>
-            <button
-              className="font-bold py-3 px-8 text-xl mt-4 transition-all"
-              style={{
-                background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
-                color: '#fff',
-                borderRadius: '1rem',
-                border: '2px solid #fff8',
-                boxShadow: '0 2px 8px #0008',
-                fontFamily: 'Kidzone',
-                textShadow: '0 2px 8px #0008',
-              }}
-              onClick={() => setShowIntro(false)}
-            >
-              Börja läsa
-            </button>
-          </>
-        ) : (
-          <>
+        {/* Kapitelvy direkt */}
             <div style={{
               background: '#a13a1b',
               color: '#fff',
@@ -276,8 +246,6 @@ export default function ReadStory() {
                 </button>
               )}
             </div>
-          </>
-        )}
       </div>
     </div>
   );

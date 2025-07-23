@@ -9,6 +9,8 @@ export default function StartAdventure() {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filter, setFilter] = useState('all');
   const navigate = useNavigate();
   const [genderDropdownOpen, setGenderDropdownOpen] = useState(-1);
   const dropdownRef = useRef(null);
@@ -64,6 +66,43 @@ export default function StartAdventure() {
   const handleRemove = (index) => {
     setNames(names.filter((_, i) => i !== index));
     setGenders(genders.filter((_, i) => i !== index));
+  };
+
+  const filteredStories = () => {
+    let filtered = stories;
+    
+    // Filtrera baserat på sökterm först
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase().trim();
+      filtered = stories.filter(story => 
+        (story.title?.toLowerCase() || '').includes(searchLower) ||
+        (story.name?.toLowerCase() || '').includes(searchLower) ||
+        (story.description?.toLowerCase() || '').includes(searchLower)
+      );
+    }
+    
+    // Sedan applicera sorterings-filter
+    switch (filter) {
+      case 'favorites':
+        // Placeholder för favoriter
+        return filtered;
+      case 'latest':
+        return [...filtered].sort((a, b) => {
+          const idA = typeof a.id === 'string' ? parseInt(a.id, 10) || 0 : a.id;
+          const idB = typeof b.id === 'string' ? parseInt(b.id, 10) || 0 : b.id;
+          return idB - idA;
+        });
+      case 'oldest':
+        return [...filtered].sort((a, b) => {
+          const idA = typeof a.id === 'string' ? parseInt(a.id, 10) || 0 : a.id;
+          const idB = typeof b.id === 'string' ? parseInt(b.id, 10) || 0 : b.id;
+          return idA - idB;
+        });
+      case 'random':
+        return [...filtered].sort(() => Math.random() - 0.5);
+      default:
+        return filtered;
+    }
   };
 
   const handleChooseStory = (story) => {
@@ -265,47 +304,339 @@ export default function StartAdventure() {
       {/* Modal för att välja story */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-gradient-to-br from-yellow-100 via-orange-100 to-yellow-200 rounded-2xl p-6 md:p-10 shadow-2xl max-w-4xl w-full relative">
+          <div 
+            className="rounded-2xl p-6 md:p-8 shadow-2xl max-w-2xl w-full mx-4 relative"
+            style={{
+              background: `
+                linear-gradient(135deg, 
+                  rgba(139, 69, 19, 0.95) 0%, 
+                  rgba(210, 105, 30, 0.95) 25%, 
+                  rgba(255, 140, 0, 0.95) 50%, 
+                  rgba(178, 34, 34, 0.95) 75%, 
+                  rgba(139, 69, 19, 0.95) 100%
+                )
+              `,
+              backdropFilter: 'blur(10px)',
+              border: '3px solid rgba(255, 255, 255, 0.3)',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+              maxHeight: '90vh'
+            }}
+          >
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-gray-700 hover:text-red-500 text-2xl font-bold"
+              className="absolute top-4 right-4 text-white hover:text-red-300 text-3xl font-bold z-10"
+              style={{
+                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                transition: 'all 0.3s ease'
+              }}
               title="Stäng"
             >
               ×
             </button>
-            <h2 className="text-2xl md:text-3xl font-bold text-orange-700 mb-6 text-center">Välj en story</h2>
-            {loading && <div className="text-center text-orange-700 font-bold py-8">Laddar stories...</div>}
-            {error && <div className="text-center text-red-600 font-bold py-8">{error}</div>}
-            {!loading && !error && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-h-[70vh] overflow-y-auto">
-                {stories.map(story => (
+            
+            {/* Header med sökfält */}
+            <div className="text-center mb-6">
+              <h2 
+                className="text-3xl font-bold mb-6"
+                style={{
+                  color: 'white',
+                  textShadow: '2px 2px 6px rgba(0, 0, 0, 0.7)',
+                  fontFamily: 'Kidzone'
+                }}
+              >
+                🔍 Sök bland storys...
+              </h2>
+              
+              {/* Sökfält */}
+              <div 
+                className="relative mb-6"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.9)',
+                  borderRadius: '25px',
+                  padding: '5px',
+                  border: '2px solid rgba(255, 255, 255, 0.7)',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)'
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder="Sök bland storys..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 20px',
+                    fontSize: '16px',
+                    border: 'none',
+                    borderRadius: '25px',
+                    outline: 'none',
+                    backgroundColor: 'transparent',
+                    color: '#8B4513',
+                    fontWeight: '600'
+                  }}
+                />
+              </div>
+              
+              {/* Filterknappar */}
+              <div className="flex justify-center gap-3 mb-6 flex-wrap">
+                {[
+                  { key: 'all', label: 'Alla' },
+                  { key: 'favorites', label: 'Favoriter' },
+                  { key: 'latest', label: 'Lästa' },
+                  { key: 'oldest', label: 'Olästa' },
+                  { key: 'random', label: 'Slumpa' }
+                ].map(filterOption => (
                   <button
-                    key={story.id || story.title || story.name}
-                    onClick={() => handleChooseStory(story)}
-                    className={`flex flex-col items-start bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 rounded-2xl p-0 border-2 shadow-lg transition-all duration-200 overflow-hidden h-[320px] ${selectedStory && (selectedStory.id === story.id) ? 'border-green-400 scale-105' : 'border-white/70 hover:scale-105'}`}
+                    key={filterOption.key}
+                    onClick={() => setFilter(filterOption.key)}
+                    style={{
+                      padding: '10px 18px',
+                      borderRadius: '20px',
+                      border: '2px solid rgba(255, 255, 255, 0.6)',
+                      backgroundColor: filter === filterOption.key ? '#d2691e' : 'rgba(139, 69, 19, 0.7)',
+                      color: 'white',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
+                      fontSize: '14px',
+                      transform: filter === filterOption.key ? 'scale(1.05)' : 'scale(1)',
+                      boxShadow: filter === filterOption.key ? 
+                        '0 4px 12px rgba(210, 105, 30, 0.4)' : 
+                        '0 2px 8px rgba(139, 69, 19, 0.3)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (filter !== filterOption.key) {
+                        e.target.style.backgroundColor = 'rgba(160, 82, 45, 0.8)';
+                        e.target.style.transform = 'scale(1.02)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (filter !== filterOption.key) {
+                        e.target.style.backgroundColor = 'rgba(139, 69, 19, 0.7)';
+                        e.target.style.transform = 'scale(1)';
+                      }
+                    }}
                   >
-                    {story.thumbnail_url && (
-                      <img
-                        src={story.thumbnail_url}
-                        alt={story.title || story.name}
-                        className="w-full h-40 object-cover"
-                      />
-                    )}
-                    <div className="p-4 flex flex-col flex-1 w-full justify-between">
-                      <span className="text-xl font-bold text-white drop-shadow mb-2" style={{textShadow: '0 1px 4px #0008'}}>
-                        {(story.title || story.name || '').replace(/_/g, ' ')}
-                      </span>
-                      <span className="text-base text-white/90 mb-2" style={{textShadow: '0 1px 4px #0008'}}>
-                        {story.description}
-                      </span>
-                      {selectedStory && selectedStory.id === story.id && (
-                        <span className="mt-2 text-green-200 font-bold">Vald</span>
-                      )}
-                    </div>
+                    {filterOption.label}
                   </button>
                 ))}
               </div>
+            </div>
+            
+            {loading && (
+              <div 
+                className="text-center font-bold py-8"
+                style={{
+                  color: 'white',
+                  textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+                  fontSize: '18px'
+                }}
+              >
+                Laddar stories...
+              </div>
             )}
+            
+            {error && (
+              <div 
+                className="text-center font-bold py-8"
+                style={{
+                  color: '#ff6b6b',
+                  textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+                  fontSize: '18px'
+                }}
+              >
+                {error}
+              </div>
+            )}
+            
+            {!loading && !error && (
+              <div 
+                style={{
+                  maxHeight: '50vh',
+                  overflowY: 'auto',
+                  padding: '10px 5px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '15px',
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: '#d2691e rgba(255, 255, 255, 0.2)'
+                }}
+              >
+                {filteredStories().length === 0 ? (
+                  <div 
+                    className="text-center py-8"
+                    style={{
+                      color: 'white',
+                      textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+                      fontSize: '18px'
+                    }}
+                  >
+                    Inga stories matchade din sökning
+                  </div>
+                ) : (
+                  filteredStories().map(story => (
+                    <div
+                      key={story.id || story.title || story.name}
+                      style={{
+                        marginLeft: '10px',
+                        marginRight: '10px',
+                        marginTop: '10px',
+                        marginBottom: '10px',
+                        borderRadius: '12px',
+                        padding: '4px',
+                        backgroundColor: 'rgba(255, 140, 0, 0.9)',
+                        overflow: 'visible',
+                        width: '80%',
+                        alignSelf: 'center',
+                        margin: '10px auto',
+                        boxShadow: '0 6px 7px rgba(0, 0, 0, 0.5)',
+                        maxWidth: '320px'
+                      }}
+                    >
+                      {/* Gradient inuti */}
+                      <div style={{
+                        background: 'linear-gradient(180deg, rgba(178, 34, 34, 0.9) 0%, rgba(255, 140, 0, 0.9) 100%)',
+                        padding: '8px',
+                        borderRadius: '8px',
+                        overflow: 'hidden'
+                      }}>
+                        {/* Titel Banner */}
+                        <div style={{
+                          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                          padding: '8px',
+                          borderRadius: '15px',
+                          marginBottom: '8px'
+                        }}>
+                          <span style={{
+                            fontSize: '20px',
+                            color: 'white',
+                            fontFamily: 'KidZone',
+                            textAlign: 'center',
+                            display: 'block',
+                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+                          }}>
+                            {(story.name || story.title || 'Namnlös saga').replace(/_/g, ' ')}
+                          </span>
+                        </div>
+
+                        {/* Image Frame */}
+                        <div style={{
+                          width: '100%',
+                          aspectRatio: '1/1',
+                          borderWidth: '2px',
+                          borderStyle: 'solid',
+                          borderColor: 'rgba(64, 64, 64, 0.8)',
+                          borderRadius: '8px',
+                          overflow: 'hidden',
+                          marginBottom: '8px'
+                        }}>
+                          {story.thumbnail_url && (
+                            <img
+                              src={story.thumbnail_url}
+                              alt={story.title || story.name}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover'
+                              }}
+                            />
+                          )}
+                        </div>
+
+                        {/* Text Box */}
+                        <div style={{
+                          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                          padding: '8px',
+                          borderRadius: '5px',
+                          marginBottom: '8px',
+                          minHeight: '60px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <span style={{
+                            fontSize: '16px',
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            fontFamily: 'KidZone',
+                            textAlign: 'center',
+                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                            lineHeight: '22px'
+                          }}>
+                            {story.description || 'När man är så liten att man knappt syns.'}
+                          </span>
+                        </div>
+
+                        {/* Status Bar */}
+                        <div style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'space-evenly',
+                          alignItems: 'center',
+                          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                          padding: '6px',
+                          borderRadius: '5px'
+                        }}>
+                          {/* Favorite Button */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log('Markerat som favorit:', story.title || story.name);
+                            }}
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              gap: '5px',
+                              justifyContent: 'center',
+                              background: 'transparent',
+                              border: 'none',
+                              cursor: 'pointer',
+                              padding: '4px 8px'
+                            }}
+                          >
+                            <span style={{
+                              fontSize: '16px',
+                              color: 'white'
+                            }}>☆</span>
+                            <span style={{
+                              fontFamily: 'KidZone',
+                              fontSize: '14px',
+                              color: 'white',
+                              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+                            }}>
+                              Markera som favorit
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+            
+            {/* Scrollbar styling */}
+            <style>
+              {`
+                div[style*="overflowY: auto"]::-webkit-scrollbar {
+                  width: 12px;
+                }
+                div[style*="overflowY: auto"]::-webkit-scrollbar-track {
+                  background: rgba(139, 69, 19, 0.2);
+                  border-radius: 10px;
+                }
+                div[style*="overflowY: auto"]::-webkit-scrollbar-thumb {
+                  background: linear-gradient(180deg, #d2691e, #8b4513);
+                  border-radius: 10px;
+                  border: 2px solid rgba(139, 69, 19, 0.3);
+                  background-clip: padding-box;
+                }
+                div[style*="overflowY: auto"]::-webkit-scrollbar-thumb:hover {
+                  background: linear-gradient(180deg, #ff8c00, #a0522d);
+                }
+              `}
+            </style>
           </div>
         </div>
       )}
