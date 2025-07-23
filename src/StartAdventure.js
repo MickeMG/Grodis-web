@@ -141,7 +141,7 @@ export default function StartAdventure() {
       </div>
 
       {/* Dialogruta */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen pt-40">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen pt-1">
         {/* Grodbild */}
         <div className="flex justify-center mb-2" style={{ zIndex: 9999, position: 'relative' }}>
           <img 
@@ -152,7 +152,7 @@ export default function StartAdventure() {
         </div>
         {/* Rubrik */}
         <div className="rounded-2xl px-8 py-8 mb-6 bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-2 border-white/80 shadow-xl" style={{maxWidth: 420, width: '100%', marginTop: '-50px'}}>
-          <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-xl text-center" style={{textShadow: '0 2px 8px #0008', fontFamily: 'Kidzone'}}>Vad heter du?</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-xl text-center" style={{textShadow: '0 2px 8px #0008', fontFamily: 'Kidzone'}}>Vad heter du?</h1>
         </div>
         {/* Namnfält */}
         <div className="flex flex-col gap-4 w-full mb-4" style={{maxWidth: 340, width: '100%'}}>
@@ -182,7 +182,7 @@ export default function StartAdventure() {
                   textShadow: '0 2px 12px #000a, 0 1px 0 #ffb300',
                   letterSpacing: '0.5px',
                   fontWeight: 700,
-                  fontSize: '2rem',
+                  fontSize: '2.5rem',
                   minWidth: 120,
                   maxWidth: 220,
                   margin: '0 0.5rem',
@@ -209,7 +209,7 @@ export default function StartAdventure() {
                     textShadow: '0 2px 8px #0008',
                     fontWeight: 700,
                     letterSpacing: '0.08em',
-                    fontSize: '1.1rem',
+                    fontSize: '1.3rem',
                     minWidth: 80,
                     borderRadius: '1rem',
                     boxShadow: '0 2px 8px #0008'
@@ -249,7 +249,7 @@ export default function StartAdventure() {
                           fontWeight: 700,
                           textShadow: '0 2px 8px #0008',
                           letterSpacing: '0.08em',
-                          fontSize: '1.1rem',
+                          fontSize: '1.3rem',
                           padding: '0.5rem 1.5rem',
                           borderRadius: '0.75rem',
                           cursor: 'pointer',
@@ -292,12 +292,12 @@ export default function StartAdventure() {
           >
             Lägg till fler
           </button>
-          <span style={{color: '#fff', fontFamily: 'Kidzone', fontWeight: 700, fontSize: '1.1rem', textShadow: '0 2px 8px #0008'}}>(Kommer snart)</span>
+          <span style={{color: '#fff', fontFamily: 'Kidzone', fontWeight: 700, fontSize: '1.3rem', textShadow: '0 2px 8px #0008'}}>(Kommer snart)</span>
         </div>
         {/* Välj Story-knapp */}
         <button
           onClick={() => setShowModal(true)}
-          className="w-full py-8 rounded-2xl text-3xl font-bold text-white bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-2 border-white/80 shadow-xl mt-2 hover:scale-105 transition-all duration-200"
+          className="w-full py-8 rounded-2xl text-5xl font-bold text-white bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-2 border-white/80 shadow-xl mt-2 hover:scale-105 transition-all duration-200"
           style={{
             fontFamily: 'Kidzone',
             textShadow: '0 2px 8px #0008',
