@@ -59,8 +59,16 @@ export default function ReadStory() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 py-12 px-2">
-      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-2 relative">
+      {/* Bakgrundsbild */}
+      <div className="fixed inset-0 z-0">
+        <img 
+          src="/grodisbackground.png" 
+          alt="Bakgrund" 
+          className="w-full h-full object-cover" 
+        />
+      </div>
+      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8" style={{ position: 'relative', zIndex: 10 }}>
         <button className="text-green-700 font-bold mb-4" onClick={() => navigate(-1)}>
           &larr; Tillbaka till alla berättelser
         </button>

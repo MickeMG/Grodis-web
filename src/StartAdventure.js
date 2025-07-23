@@ -64,14 +64,13 @@ export default function StartAdventure() {
 
   return (
     <div className="min-h-screen relative">
-      {/* Bakgrundsbild med overlay */}
+      {/* Bakgrundsbild */}
       <div className="fixed inset-0 z-0">
         <img 
-          src="/images/background.webp" 
-          alt="Magical forest background" 
+          src="/grodisbackground.png"
+          alt="Bakgrund"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/40" />
       </div>
       {/* Navigation */}
       <nav className="fixed w-full z-50 bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-sm">
