@@ -475,143 +475,159 @@ export default function StartAdventure() {
                     Inga stories matchade din sökning
                   </div>
                 ) : (
-                  filteredStories().map(story => (
-                    <div
-                      key={story.id || story.title || story.name}
-                      style={{
-                        marginLeft: '10px',
-                        marginRight: '10px',
-                        marginTop: '10px',
-                        marginBottom: '10px',
-                        borderRadius: '12px',
-                        padding: '4px',
-                        backgroundColor: 'rgba(255, 140, 0, 0.9)',
-                        overflow: 'visible',
-                        width: '80%',
-                        alignSelf: 'center',
-                        margin: '10px auto',
-                        boxShadow: '0 6px 7px rgba(0, 0, 0, 0.5)',
-                        maxWidth: '320px'
-                      }}
-                    >
-                      {/* Gradient inuti */}
-                      <div style={{
-                        background: 'linear-gradient(180deg, rgba(178, 34, 34, 0.9) 0%, rgba(255, 140, 0, 0.9) 100%)',
-                        padding: '8px',
-                        borderRadius: '8px',
-                        overflow: 'hidden'
-                      }}>
-                        {/* Titel Banner */}
+                  filteredStories().map(story => {
+                    let touchStartY = null;
+                    let touchMoved = false;
+                    return (
+                      <div
+                        key={story.id || story.title || story.name}
+                        style={{
+                          marginLeft: '10px',
+                          marginRight: '10px',
+                          marginTop: '10px',
+                          marginBottom: '10px',
+                          borderRadius: '12px',
+                          padding: '4px',
+                          backgroundColor: 'rgba(255, 140, 0, 0.9)',
+                          overflow: 'visible',
+                          width: '80%',
+                          alignSelf: 'center',
+                          margin: '10px auto',
+                          boxShadow: '0 6px 7px rgba(0, 0, 0, 0.5)',
+                          maxWidth: '320px',
+                          cursor: 'pointer',
+                          userSelect: 'none',
+                          touchAction: 'manipulation',
+                        }}
+                        onClick={e => {
+                          if (!touchMoved) handleChooseStory(story);
+                        }}
+                        onTouchStart={e => {
+                          touchMoved = false;
+                          if (e.touches && e.touches.length === 1) {
+                            touchStartY = e.touches[0].clientY;
+                          }
+                        }}
+                        onTouchMove={e => {
+                          if (e.touches && e.touches.length === 1 && touchStartY !== null) {
+                            const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+                            if (deltaY > 10) touchMoved = true;
+                          }
+                        }}
+                        onTouchEnd={e => {
+                          if (!touchMoved) handleChooseStory(story);
+                          touchStartY = null;
+                          touchMoved = false;
+                        }}
+                      >
+                        {/* Gradient inuti */}
                         <div style={{
-                          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                          background: 'linear-gradient(180deg, rgba(178, 34, 34, 0.9) 0%, rgba(255, 140, 0, 0.9) 100%)',
                           padding: '8px',
-                          borderRadius: '15px',
-                          marginBottom: '8px'
-                        }}>
-                          <span style={{
-                            fontSize: '20px',
-                            color: 'white',
-                            fontFamily: 'KidZone',
-                            textAlign: 'center',
-                            display: 'block',
-                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
-                          }}>
-                            {(story.name || story.title || 'Namnlös saga').replace(/_/g, ' ')}
-                          </span>
-                        </div>
-
-                        {/* Image Frame */}
-                        <div style={{
-                          width: '100%',
-                          aspectRatio: '1/1',
-                          borderWidth: '2px',
-                          borderStyle: 'solid',
-                          borderColor: 'rgba(64, 64, 64, 0.8)',
                           borderRadius: '8px',
-                          overflow: 'hidden',
-                          marginBottom: '8px'
+                          overflow: 'hidden'
                         }}>
-                          {story.thumbnail_url && (
-                            <img
-                              src={story.thumbnail_url}
-                              alt={story.title || story.name}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover'
-                              }}
-                            />
-                          )}
-                        </div>
-
-                        {/* Text Box */}
-                        <div style={{
-                          backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                          padding: '8px',
-                          borderRadius: '5px',
-                          marginBottom: '8px',
-                          minHeight: '60px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}>
-                          <span style={{
-                            fontSize: '16px',
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            fontFamily: 'KidZone',
-                            textAlign: 'center',
-                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                            lineHeight: '22px'
+                          {/* Titel Banner */}
+                          <div style={{
+                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                            padding: '8px',
+                            borderRadius: '15px',
+                            marginBottom: '8px'
                           }}>
-                            {story.description || 'När man är så liten att man knappt syns.'}
-                          </span>
-                        </div>
-
-                        {/* Status Bar */}
-                        <div style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          justifyContent: 'space-evenly',
-                          alignItems: 'center',
-                          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                          padding: '6px',
-                          borderRadius: '5px'
-                        }}>
-                          {/* Favorite Button */}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              console.log('Markerat som favorit:', story.title || story.name);
-                            }}
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              gap: '5px',
-                              justifyContent: 'center',
-                              background: 'transparent',
-                              border: 'none',
-                              cursor: 'pointer',
-                              padding: '4px 8px'
-                            }}
-                          >
                             <span style={{
-                              fontSize: '16px',
-                              color: 'white'
-                            }}>☆</span>
-                            <span style={{
-                              fontFamily: 'KidZone',
-                              fontSize: '14px',
+                              fontSize: '20px',
                               color: 'white',
+                              fontFamily: 'KidZone',
+                              textAlign: 'center',
+                              display: 'block',
                               textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
                             }}>
-                              Markera som favorit
+                              {(story.name || story.title || 'Namnlös saga').replace(/_/g, ' ')}
                             </span>
-                          </button>
+                          </div>
+
+                          {/* Image Frame */}
+                          <div style={{
+                            width: '100%',
+                            aspectRatio: '1/1',
+                            borderWidth: '2px',
+                            borderStyle: 'solid',
+                            borderColor: 'rgba(64, 64, 64, 0.8)',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            marginBottom: '8px'
+                          }}>
+                            {story.thumbnail_url && (
+                              <img
+                                src={story.thumbnail_url}
+                                alt={story.title || story.name}
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover'
+                                }}
+                              />
+                            )}
+                          </div>
+
+                          {/* Text Box */}
+                          <div style={{
+                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                            padding: '8px',
+                            borderRadius: '5px',
+                            marginBottom: '8px',
+                            minHeight: '60px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}>
+                            <span style={{
+                              fontSize: '16px',
+                              color: 'rgba(255, 255, 255, 0.8)',
+                              fontFamily: 'KidZone',
+                              textAlign: 'center',
+                              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                              lineHeight: '22px'
+                            }}>
+                              {story.description || 'När man är så liten att man knappt syns.'}
+                            </span>
+                          </div>
+
+                          {/* Status Bar */}
+                          <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-evenly',
+                            alignItems: 'center',
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            padding: '6px',
+                            borderRadius: '5px'
+                          }}>
+                            {/* Favorite Button */}
+                            <button
+                              onClick={e => { e.stopPropagation(); console.log('Markerat som favorit:', story.title || story.name); }}
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: '5px',
+                                justifyContent: 'center',
+                                background: 'transparent',
+                                border: 'none',
+                                cursor: 'pointer',
+                                padding: '4px 8px'
+                              }}
+                            >
+                              <span style={{ fontSize: '16px', color: 'white' }}>☆</span>
+                              <span style={{ fontFamily: 'KidZone', fontSize: '14px', color: 'white', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
+                                Markera som favorit
+                              </span>
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             )}
