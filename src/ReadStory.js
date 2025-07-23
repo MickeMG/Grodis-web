@@ -202,6 +202,7 @@ export default function ReadStory() {
               textAlign: 'center',
               boxShadow: '0 2px 8px #0004',
               fontFamily: 'Kidzone',
+              border: '2.5px solid #bbb',
             }}>
               {story.title}
             </div>
@@ -226,38 +227,54 @@ export default function ReadStory() {
               {chapters[current] ? personalize(chapters[current].content) : 'Ingen text.'}
             </div>
             <div className="flex gap-4 justify-center">
-              <button
-                className="font-bold py-2 px-4"
-                style={{
-                  background: 'linear-gradient(90deg, #ffe066 0%, #ffd43b 60%, #ffb300 100%)',
-                  color: '#4a2c06',
-                  borderRadius: '1rem',
-                  border: '2px solid #fff8',
-                  boxShadow: '0 2px 8px #0008',
-                  fontFamily: 'Kidzone',
-                  textShadow: '0 2px 8px #0008',
-                }}
-                onClick={() => setCurrent(c => Math.max(0, c - 1))}
-                disabled={current === 0}
-              >
-                Föregående kapitel
-              </button>
-              <button
-                className="font-bold py-2 px-4"
-                style={{
-                  background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
-                  color: '#fff',
-                  borderRadius: '1rem',
-                  border: '2px solid #fff8',
-                  boxShadow: '0 2px 8px #0008',
-                  fontFamily: 'Kidzone',
-                  textShadow: '0 2px 8px #0008',
-                }}
-                onClick={() => setCurrent(c => Math.min(chapters.length - 1, c + 1))}
-                disabled={current === chapters.length - 1}
-              >
-                Nästa kapitel
-              </button>
+              {current > 0 && (
+                <button
+                  className="font-bold"
+                  style={{
+                    background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
+                    color: '#fff',
+                    borderRadius: '1rem',
+                    border: '2px solid #fff8',
+                    boxShadow: '0 2px 8px #0008',
+                    fontFamily: 'Kidzone',
+                    textShadow: '0 2px 8px #0008',
+                    padding: '0.75rem 1.75rem',
+                    fontSize: '1.15rem',
+                    minWidth: '180px',
+                    margin: '0 0.25rem',
+                    cursor: 'pointer',
+                    opacity: 1,
+                    transition: 'opacity 0.2s',
+                  }}
+                  onClick={() => setCurrent(c => Math.max(0, c - 1))}
+                >
+                  Föregående kapitel
+                </button>
+              )}
+              {current < chapters.length - 1 && (
+                <button
+                  className="font-bold"
+                  style={{
+                    background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
+                    color: '#fff',
+                    borderRadius: '1rem',
+                    border: '2px solid #fff8',
+                    boxShadow: '0 2px 8px #0008',
+                    fontFamily: 'Kidzone',
+                    textShadow: '0 2px 8px #0008',
+                    padding: '0.75rem 1.75rem',
+                    fontSize: '1.15rem',
+                    minWidth: '180px',
+                    margin: '0 0.25rem',
+                    cursor: 'pointer',
+                    opacity: 1,
+                    transition: 'opacity 0.2s',
+                  }}
+                  onClick={() => setCurrent(c => Math.min(chapters.length - 1, c + 1))}
+                >
+                  Nästa kapitel
+                </button>
+              )}
             </div>
           </>
         )}
