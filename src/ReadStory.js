@@ -42,8 +42,42 @@ export default function ReadStory() {
   }, [id]);
 
   if (loading) return <div className="text-center py-12">Laddar berättelse...</div>;
-  if (error) return <div className="text-center text-red-600 py-12">{error}</div>;
-  if (!story) return null;
+  if (error) return (
+    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-2 relative">
+      <div className="fixed inset-0 z-0">
+        <img 
+          src="/grodisbackground.png" 
+          alt="Bakgrund" 
+          className="w-full h-full object-cover" 
+        />
+      </div>
+      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8 text-center">
+        <h2 className="text-2xl font-bold text-red-600 mb-4">Något gick fel</h2>
+        <p className="text-lg text-gray-700 mb-6">{error}</p>
+        <button className="bg-green-500 text-white font-bold py-2 px-4 rounded-xl" onClick={() => navigate(-1)}>
+          &larr; Tillbaka
+        </button>
+      </div>
+    </div>
+  );
+  if (!story) return (
+    <div className="min-h-screen flex flex-col items-center justify-center py-12 px-2 relative">
+      <div className="fixed inset-0 z-0">
+        <img 
+          src="/grodisbackground.png" 
+          alt="Bakgrund" 
+          className="w-full h-full object-cover" 
+        />
+      </div>
+      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8 text-center">
+        <h2 className="text-2xl font-bold text-red-600 mb-4">Berättelsen hittades inte</h2>
+        <p className="text-lg text-gray-700 mb-6">Det gick inte att ladda berättelsen. Prova att gå tillbaka och välj en annan story.</p>
+        <button className="bg-green-500 text-white font-bold py-2 px-4 rounded-xl" onClick={() => navigate(-1)}>
+          &larr; Tillbaka
+        </button>
+      </div>
+    </div>
+  );
 
   // Hantera namn och kön
   const names = state.names || ["Kim"];
@@ -66,9 +100,10 @@ export default function ReadStory() {
           src="/grodisbackground.png" 
           alt="Bakgrund" 
           className="w-full h-full object-cover" 
+          style={{ zIndex: 0, position: 'absolute' }}
         />
       </div>
-      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8">
+      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8" style={{ zIndex: 10, position: 'relative' }}>
         <button className="text-green-700 font-bold mb-4" onClick={() => navigate(-1)}>
           &larr; Tillbaka till alla berättelser
         </button>
