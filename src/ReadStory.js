@@ -187,7 +187,7 @@ export default function ReadStory() {
               fontFamily: 'Kidzone',
               border: '2.5px solid #bbb',
             }}>
-              {story.title}
+              {personalize(story.title)}
             </div>
             <div style={{
               color: '#ffd43b',

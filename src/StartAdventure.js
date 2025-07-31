@@ -115,6 +115,58 @@ export default function StartAdventure() {
     }
   };
 
+  // Pronomen-map för personalisering
+  const pronounMap = {
+    'man': 'han',
+    'kvinna': 'hon',
+    'pojke': 'han',
+    'flicka': 'hon'
+  };
+
+  // Ersätt platshållare för namn och pronomen för flera personer
+  function personalize(text) {
+    if (!text) return text;
+    let result = text;
+    const mainName = names[0] || "Kim";
+    const mainPronoun = pronounMap[genders[0]] || "hen";
+    
+    // Ersätt {namn} och {pronomen} (bakåtkompatibilitet)
+    result = result
+      .replace(/\{namn\}/gi, mainName)
+      .replace(/\{pronomen\}/gi, mainPronoun)
+      .replace(/\{hans\/hennes\}/gi, mainPronoun === 'han' ? 'hans' : 'hennes')
+      .replace(/\{honom\/henne\}/gi, mainPronoun === 'han' ? 'honom' : 'henne')
+      .replace(/\{pojke\/flicka\}/gi, mainPronoun === 'han' ? 'pojke' : 'flicka');
+    // Ersätt {person1}, {han/hon1}, {person2}, {han/hon2} osv.
+    for (let i = 0; i < names.length; i++) {
+      const name = names[i] || '';
+      const gender = genders[i] || 'hen';
+      const pronoun = pronounMap[gender] || 'hen';
+      // {person1}, {person2} ...
+      const nameRegex = new RegExp(`\\{person${i+1}\\}`, 'gi');
+      result = result.replace(nameRegex, name);
+      // {person1s}, {person2s} ...
+      const possessiveRegex = new RegExp(`\\{person${i+1}s\\}`, 'gi');
+      result = result.replace(possessiveRegex, name ? name + 's' : '');
+      // {han/hon1}, {han/hon2} ...
+      const pronounRegex = new RegExp(`\\{han\/hon${i+1}\\}`, 'gi');
+      result = result.replace(pronounRegex, pronoun);
+      // {hans/hennes1}, {hans/hennes2} ...
+      const possessiveRegex2 = new RegExp(`\\{hans\/hennes${i+1}\\}`, 'gi');
+      result = result.replace(possessiveRegex2, pronoun === 'han' ? 'hans' : 'hennes');
+      // {honom/henne1}, {honom/henne2} ...
+      const objectRegex = new RegExp(`\\{honom\/henne${i+1}\\}`, 'gi');
+      result = result.replace(objectRegex, pronoun === 'han' ? 'honom' : 'henne');
+      // {pojke/flicka1}, {pojke/flicka2} ...
+      const genderWordRegex = new RegExp(`\\{pojke\/flicka${i+1}\\}`, 'gi');
+      result = result.replace(genderWordRegex, pronoun === 'han' ? 'pojke' : 'flicka');
+      // {sig själv1}, {sig själv2} ...
+      const selfRegex = new RegExp(`\\{sig själv${i+1}\\}`, 'gi');
+      result = result.replace(selfRegex, 'sig själv');
+    }
+    return result;
+  }
+
   const handleChooseStory = (story) => {
     setSelectedStory(story);
     setShowModal(false);
@@ -306,7 +358,7 @@ export default function StartAdventure() {
             width: '100%'
           }}
         >
-          {selectedStory ? (selectedStory.title || selectedStory.name || '').replace(/_/g, ' ') : 'Välj Story här'}
+                                    {selectedStory ? personalize((selectedStory.title || selectedStory.name || '').replace(/_/g, ' ')) : 'Välj Story här'}
         </button>
       </div>
       {/* Modal för att välja story */}
@@ -550,7 +602,7 @@ export default function StartAdventure() {
                               display: 'block',
                               textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
                             }}>
-                              {(story.name || story.title || 'Namnlös saga').replace(/_/g, ' ')}
+                              {personalize((story.name || story.title || 'Namnlös saga').replace(/_/g, ' '))}
                             </span>
                           </div>
 
@@ -597,7 +649,7 @@ export default function StartAdventure() {
                               textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
                               lineHeight: '22px'
                             }}>
-                              {story.description || 'När man är så liten att man knappt syns.'}
+                              {personalize(story.description || 'När man är så liten att man knappt syns.')}
                             </span>
                           </div>
 
