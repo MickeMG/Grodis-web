@@ -67,7 +67,7 @@ export default function StartAdventure() {
   };
 
   const handleAdd = () => {
-    if (names.length < 2) {
+    if (names.length < 3) {
       setNames([...names, '']);
       setGenders([...genders, 'kvinna']);
     }
@@ -81,10 +81,21 @@ export default function StartAdventure() {
   const filteredStories = () => {
     let filtered = stories;
     
-    // Filtrera baserat på sökterm först
+    // Filtrera baserat på antal deltagare först
+    const participantCount = names.length;
+    filtered = stories.filter(story => {
+      // Om story har participant_count, matcha det med antal deltagare
+      if (story.participant_count) {
+        return story.participant_count === participantCount;
+      }
+      // Om story inte har participant_count, visa bara för 1 deltagare (bakåtkompatibilitet)
+      return participantCount === 1;
+    });
+    
+    // Filtrera baserat på sökterm sedan
     if (searchTerm.trim()) {
       const searchLower = searchTerm.toLowerCase().trim();
-      filtered = stories.filter(story => 
+      filtered = filtered.filter(story => 
         (story.title?.toLowerCase() || '').includes(searchLower) ||
         (story.name?.toLowerCase() || '').includes(searchLower) ||
         (story.description?.toLowerCase() || '').includes(searchLower)
@@ -334,8 +345,13 @@ export default function StartAdventure() {
         {/* Lägg till-knapp */}
         <div className="flex items-center mb-6" style={{gap: '1rem'}}>
           <button
-            disabled
-            className="bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 text-white font-bold py-2 px-6 rounded-xl shadow-md border-2 border-white/70 opacity-50 cursor-not-allowed"
+            onClick={handleAdd}
+            disabled={names.length >= 3}
+            className={`bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 text-white font-bold py-2 px-6 rounded-xl shadow-md border-2 border-white/70 transition-all duration-200 ${
+              names.length >= 3 
+                ? 'opacity-50 cursor-not-allowed' 
+                : 'hover:scale-105 hover:shadow-lg'
+            }`}
             style={{
               fontFamily: 'Kidzone',
               textShadow: '0 2px 8px #0008',
@@ -344,7 +360,35 @@ export default function StartAdventure() {
           >
             Lägg till fler
           </button>
-          <span style={{color: '#fff', fontFamily: 'Kidzone', fontWeight: 700, fontSize: '1.3rem', textShadow: '0 2px 8px #0008'}}>(Kommer snart)</span>
+          {names.length >= 3 && (
+            <span style={{color: '#fff', fontFamily: 'Kidzone', fontWeight: 700, fontSize: '1.3rem', textShadow: '0 2px 8px #0008'}}>
+              (Max 3 deltagare)
+            </span>
+          )}
+        </div>
+        
+        {/* Deltagare-indikator */}
+        <div className="mb-4 text-center">
+          <div style={{
+            color: '#fff', 
+            fontFamily: 'Kidzone', 
+            fontWeight: 700, 
+            fontSize: '1.1rem', 
+            textShadow: '0 2px 8px #0008',
+            background: 'rgba(255, 255, 255, 0.2)',
+            borderRadius: '1rem',
+            padding: '0.5rem 1rem',
+            display: 'inline-block',
+            border: '2px solid rgba(255, 255, 255, 0.3)'
+          }}>
+            {names.length === 1 ? (
+              '👤 En deltagare - Visar stories för en person'
+            ) : names.length === 2 ? (
+              '👥 Två deltagare - Visar stories för två personer'
+            ) : (
+              '👥👤 Tre deltagare - Visar stories för tre personer'
+            )}
+          </div>
         </div>
         {/* Välj Story-knapp */}
         <button
@@ -511,18 +555,39 @@ export default function StartAdventure() {
             )}
             
             {!loading && !error && (
-              <div 
-                style={{
-                  maxHeight: '50vh',
-                  overflowY: 'auto',
-                  padding: '10px 5px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '15px',
-                  scrollbarWidth: 'thin',
-                  scrollbarColor: '#d2691e rgba(255, 255, 255, 0.2)'
-                }}
-              >
+              <>
+                {/* Stories-matchning indikator */}
+                <div 
+                  className="text-center mb-4"
+                  style={{
+                    color: 'white',
+                    textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+                    fontSize: '16px',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    padding: '8px 12px',
+                    border: '1px solid rgba(255, 255, 255, 0.2)'
+                  }}
+                >
+                  {filteredStories().length === 0 ? (
+                    `Inga stories för ${names.length} deltagare`
+                  ) : (
+                    `${filteredStories().length} story${filteredStories().length === 1 ? '' : 's'} för ${names.length} deltagare`
+                  )}
+                </div>
+                
+                <div 
+                  style={{
+                    maxHeight: '50vh',
+                    overflowY: 'auto',
+                    padding: '10px 5px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '15px',
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: '#d2691e rgba(255, 255, 255, 0.2)'
+                  }}
+                >
                 {filteredStories().length === 0 ? (
                   <div 
                     className="text-center py-8"
@@ -690,6 +755,7 @@ export default function StartAdventure() {
                   })
                 )}
               </div>
+            </>
             )}
             
             {/* Scrollbar styling */}
