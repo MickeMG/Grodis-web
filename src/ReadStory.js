@@ -123,7 +123,73 @@ export default function ReadStory() {
       const selfRegex = new RegExp(`\\{sig själv${i+1}\\}`, 'gi');
       result = result.replace(selfRegex, 'sig själv');
     }
+    
+    // Textformateringen är redan gjord när kapitlen skapades, så vi behöver inte göra det igen
+    // result = improveTextFormatting(result);
+    
     return result;
+  }
+  
+  // Funktion för att förbättra textformateringen (används inte längre)
+  function improveTextFormatting(text) {
+    if (!text) return text;
+    
+    let formattedText = text;
+    
+    // Lägg till radbrytningar efter meningar som slutar med punkt, utropstecken eller frågetecken
+    formattedText = formattedText.replace(/([.!?])\s+/g, '$1\n\n');
+    
+    // Lägg till radbrytningar efter dialoger (citat)
+    formattedText = formattedText.replace(/([""])\s+/g, '$1\n\n');
+    
+    // Lägg till radbrytningar efter viktiga övergångar
+    const transitionWords = [
+      'Plötsligt', 'Sedan', 'Då', 'Men', 'Och', 'Så', 'När', 'Medan', 'Efter', 'Före',
+      'Suddenly', 'Then', 'But', 'And', 'So', 'When', 'While', 'After', 'Before'
+    ];
+    
+    transitionWords.forEach(word => {
+      const regex = new RegExp(`\\b${word}\\b`, 'gi');
+      formattedText = formattedText.replace(regex, `\n\n${word}`);
+    });
+    
+    // Lägg till radbrytningar efter beskrivningar av handlingar
+    const actionPatterns = [
+      /([.!?])\s+([A-ZÅÄÖ][a-zåäö]+ börjar)/g,
+      /([.!?])\s+([A-ZÅÄÖ][a-zåäö]+ känner)/g,
+      /([.!?])\s+([A-ZÅÄÖ][a-zåäö]+ ser)/g,
+      /([.!?])\s+([A-ZÅÄÖ][a-zåäö]+ hör)/g,
+      /([.!?])\s+([A-ZÅÄÖ][a-zåäö]+ tänker)/g
+    ];
+    
+    actionPatterns.forEach(pattern => {
+      formattedText = formattedText.replace(pattern, '$1\n\n$2');
+    });
+    
+    // Lägg till radbrytningar efter specifika ord som ofta markerar nya händelser
+    const eventWords = [
+      'När', 'Efter', 'Före', 'Medan', 'Sedan', 'Då', 'Men', 'Och', 'Så',
+      'Plötsligt', 'Oväntat', 'Chockerande', 'Otroligt', 'Amazing', 'Incredible'
+    ];
+    
+    eventWords.forEach(word => {
+      const regex = new RegExp(`\\b${word}\\b`, 'gi');
+      formattedText = formattedText.replace(regex, `\n\n${word}`);
+    });
+    
+    // Lägg till radbrytningar efter dialoger som slutar med utropstecken eller frågetecken
+    formattedText = formattedText.replace(/([""][^"]*[!?])\s+/g, '$1\n\n');
+    
+    // Rensa upp extra radbrytningar (max 2 i rad)
+    formattedText = formattedText.replace(/\n{3,}/g, '\n\n');
+    
+    // Rensa upp mellanrum i början och slutet av rader
+    formattedText = formattedText.replace(/^\s+|\s+$/gm, '');
+    
+    // Ta bort tomma rader i början och slutet
+    formattedText = formattedText.trim();
+    
+    return formattedText;
   }
 
   return (
@@ -202,10 +268,12 @@ export default function ReadStory() {
             </div>
             <div className="mb-8 text-white" style={{
               fontSize: '1.25rem',
-              textAlign: 'center',
+              textAlign: 'left',
               fontFamily: 'inherit',
-              lineHeight: 1.6,
+              lineHeight: 1.8,
               marginBottom: '2rem',
+              whiteSpace: 'pre-line',
+              wordWrap: 'break-word',
             }}>
               {chapters[current] ? personalize(chapters[current].content) : 'Ingen text.'}
             </div>
