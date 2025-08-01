@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { getApiUrl } from './config';
 
 const pronounMap = {
   man: 'han',
@@ -23,17 +24,18 @@ export default function ReadStory() {
     async function fetchData() {
       setLoading(true);
       try {
-        const sRes = await fetch(`/api/stories2/${id}`);
+        const sRes = await fetch(`${getApiUrl()}/api/stories2/${id}`);
         if (!sRes.ok) throw new Error('Kunde inte hämta story');
         const sData = await sRes.json();
         setStory(sData);
-        const cRes = await fetch(`/api/stories2/${id}/chapters`);
+        const cRes = await fetch(`${getApiUrl()}/api/stories2/${id}/chapters`);
         if (!cRes.ok) throw new Error('Kunde inte hämta kapitel');
         const cData = await cRes.json();
         setChapters(cData);
         setError(null);
       } catch (err) {
-        setError('Kunde inte hämta berättelsen.');
+        console.error('API-fel:', err);
+        setError('Kunde inte hämta berättelsen. Kontrollera din internetanslutning.');
       } finally {
         setLoading(false);
       }

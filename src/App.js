@@ -146,36 +146,7 @@ function Home() {
                 >
                   Nu kan du och ditt barn skapa magiska äventyr tillsammans med Grodis i telefonen eller läsplattan. Varje saga är ett unikt äventyr där ditt barn blir huvudpersonen och får ta egna beslut som formar berättelsen. Upptäck en värld av fantasi, skratt och läsglädje.
                 </motion.p>
-                <motion.a 
-                  href="https://play.google.com/store/apps/details?id=com.grodis.storys"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 inline-block hover:opacity-90 transition-all duration-300 transform hover:scale-105 float-none md:float-right mx-auto block md:inline-block mr-4"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <img 
-                    src="/images/google-play-badge.png" 
-                    alt="Hämta på Google Play" 
-                    className="h-14 w-auto drop-shadow-lg"
-                  />
-                </motion.a>
-                <motion.a 
-                  href="https://apps.apple.com/us/app/grodis-storys/id6720724764?platform=iphone"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 inline-block hover:opacity-90 transition-all duration-300 transform hover:scale-105 float-none md:float-right mx-auto block md:inline-block"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <img 
-                    src="/images/app-store-badge.png" 
-                    alt="Hämta på App Store" 
-                    className="h-14 w-auto drop-shadow-lg"
-                  />
-                </motion.a>
+
               </div>
 
               <motion.div 
@@ -347,36 +318,7 @@ function Home() {
                 >
                   Utforska vårt växande bibliotek med hundratals interaktiva sagor! Nya äventyr tillkommer regelbundet så det finns alltid något spännande att upptäcka. Från rymdfärder till undervattensäventyr - varje saga är en ny chans att låta fantasin flöda.
                 </motion.p>
-                <motion.a 
-                  href="https://play.google.com/store/apps/details?id=com.grodis.storys"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 inline-block hover:opacity-90 transition-all duration-300 transform hover:scale-105 float-none md:float-left mx-auto block md:inline-block mr-4"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <img 
-                    src="/images/google-play-badge.png" 
-                    alt="Hämta på Google Play" 
-                    className="h-14 w-auto drop-shadow-lg"
-                  />
-                </motion.a>
-                <motion.a 
-                  href="https://apps.apple.com/us/app/grodis-storys/id6720724764?platform=iphone"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 inline-block hover:opacity-90 transition-all duration-300 transform hover:scale-105 float-none md:float-left mx-auto block md:inline-block"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <img 
-                    src="/images/app-store-badge.png" 
-                    alt="Hämta på App Store" 
-                    className="h-14 w-auto drop-shadow-lg"
-                  />
-                </motion.a>
+
               </div>
             </div>
           </div>
@@ -385,7 +327,7 @@ function Home() {
         {/* Footer */}
         <footer className="text-white py-4 bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-md mt-8">
           <div className="container mx-auto max-w-4xl px-4 md:px-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-2">
               <div className="text-center md:text-left">
                 <h4 className="text-xl font-semibold mb-2 text-white drop-shadow-lg">Kontakt</h4>
                 <p className="text-gray-300 tracking-wide">info@grodis.app</p>
@@ -396,35 +338,7 @@ function Home() {
                   <a href="https://www.facebook.com/profile.php?id=61572057778646" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors duration-300 tracking-wide">Facebook</a>
                 </div>
               </div>
-              <div className="text-center md:text-right">
-                <h4 className="text-xl font-semibold mb-2 text-white drop-shadow-lg">Ladda ner appen</h4>
-                <div className="flex flex-col md:flex-row justify-center md:justify-end gap-4">
-                  <a 
-                    href="https://play.google.com/store/apps/details?id=com.grodis.storys"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:opacity-90 transition-all duration-300 transform hover:scale-105 inline-block"
-                  >
-                    <img 
-                      src="/images/google-play-badge.png" 
-                      alt="Hämta på Google Play" 
-                      className="h-12 w-auto drop-shadow-lg mx-auto md:ml-auto md:mr-0"
-                    />
-                  </a>
-                  <a 
-                    href="https://apps.apple.com/us/app/grodis-storys/id6720724764?platform=iphone"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:opacity-90 transition-all duration-300 transform hover:scale-105 inline-block"
-                  >
-                    <img 
-                      src="/images/app-store-badge.png" 
-                      alt="Hämta på App Store" 
-                      className="h-12 w-auto drop-shadow-lg mx-auto md:ml-auto md:mr-0"
-                    />
-                  </a>
-                </div>
-              </div>
+
             </div>
             <div className="border-t border-white/20 mt-6 pt-4 text-center text-gray-300">
               <p className="tracking-wide mb-2 text-sm md:text-base">&copy; 2024 Grodis. Alla rättigheter förbehållna.</p>

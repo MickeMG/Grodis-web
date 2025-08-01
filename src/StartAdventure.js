@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getApiUrl } from './config';
 
 export default function StartAdventure() {
   const [names, setNames] = useState(['Annie']);
@@ -33,7 +34,7 @@ export default function StartAdventure() {
   useEffect(() => {
     if (showModal && stories.length === 0 && !loading) {
       setLoading(true);
-      fetch('/api/stories2')
+      fetch(`${getApiUrl()}/api/stories2`)
         .then(res => {
           if (!res.ok) throw new Error('Kunde inte hämta stories');
           return res.json();
@@ -43,7 +44,8 @@ export default function StartAdventure() {
           setError(null);
         })
         .catch(err => {
-          setError('Kunde inte hämta stories.');
+          console.error('API-fel:', err);
+          setError('Kunde inte hämta stories. Kontrollera din internetanslutning.');
         })
         .finally(() => setLoading(false));
     }
