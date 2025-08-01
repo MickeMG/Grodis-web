@@ -1,0 +1,23 @@
+[
+  {
+    "id": "chapter1",
+    "title": "Kapitel 1",
+    "content": "I ett avlägset berg bodde en ensam drake. En dag kom {namn} vandrande uppför bergsstigen.",
+    "order": 1,
+    "created_at": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "chapter2",
+    "title": "Kapitel 2",
+    "content": "{namn} var inte rädd för draken. Istället sträckte {pronomen} fram handen i vänskap.",
+    "order": 2,
+    "created_at": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "chapter3",
+    "title": "Kapitel 3",
+    "content": "Från den dagen blev {namn} och draken bästa vänner. De flög tillsammans över molnen varje dag.",
+    "order": 3,
+    "created_at": "2024-01-15T10:00:00.000Z"
+  }
+] 
