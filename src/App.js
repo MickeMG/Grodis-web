@@ -73,6 +73,9 @@ function Home() {
     return () => clearInterval(timer);
   }, [stories.length]);
 
+  // Kolla om vi är i utvecklingsläge (localhost)
+  const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
   return (
     <div className="min-h-screen relative">
       {/* Bakgrundsbild med overlay */}
@@ -110,13 +113,25 @@ function Home() {
         {/* Hero Section */}
         <section className="pt-32 md:pt-40 pb-8 px-4">
           <div className="container mx-auto max-w-4xl text-center">
-            <button
-              className="bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-600 text-white text-2xl md:text-3xl font-bold py-6 px-12 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-105 mt-4 mb-8 drop-shadow-xl tracking-wide border-4 border-yellow-700/60 hover:border-yellow-400/80 focus:outline-none focus:ring-4 focus:ring-yellow-300/60"
-              style={{ letterSpacing: '0.05em', fontFamily: 'inherit' }}
-              onClick={() => navigate('/start')}
-            >
-              STARTA DITT LÄSÄVENTYR HÄR
-            </button>
+            {isDevelopment ? (
+              // Under utveckling: liten tom cirkel i högra hörnet
+              <div className="flex justify-end">
+                <button
+                  className="w-8 h-8 rounded-full border-2 border-white/50 bg-transparent hover:border-white/80 transition-all duration-300"
+                  onClick={() => navigate('/start')}
+                  title="Starta äventyr (dev)"
+                />
+              </div>
+            ) : (
+              // I produktion: stor knapp
+              <button
+                className="bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-600 text-white text-2xl md:text-3xl font-bold py-6 px-12 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-105 mt-4 mb-8 drop-shadow-xl tracking-wide border-4 border-yellow-700/60 hover:border-yellow-400/80 focus:outline-none focus:ring-4 focus:ring-yellow-300/60"
+                style={{ letterSpacing: '0.05em', fontFamily: 'inherit' }}
+                onClick={() => navigate('/start')}
+              >
+                STARTA DITT LÄSÄVENTYR HÄR
+              </button>
+            )}
           </div>
         </section>
 
