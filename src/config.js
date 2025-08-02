@@ -4,9 +4,9 @@ const config = {
   development: {
     apiUrl: 'http://localhost:3001'
   },
-  // Produktion (Statiska JSON-filer)
+  // Produktion (Firebase Functions)
   production: {
-    apiUrl: 'https://www.grodis.app' // GitHub Pages URL
+    apiUrl: 'https://us-central1-grodis-a3cc8.cloudfunctions.net' // Firebase Functions URL
   }
 };
 
@@ -18,7 +18,7 @@ export const API_BASE_URL = currentConfig.apiUrl;
 
 // Fallback till lokal API om produktion inte är konfigurerad ännu
 export const getApiUrl = () => {
-  if (environment === 'production' && !currentConfig.apiUrl.includes('grodis.app')) {
+  if (environment === 'production' && !currentConfig.apiUrl.includes('cloudfunctions.net')) {
     return config.development.apiUrl;
   }
   return currentConfig.apiUrl;

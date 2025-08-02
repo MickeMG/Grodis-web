@@ -24,11 +24,11 @@ export default function ReadStory() {
     async function fetchData() {
       setLoading(true);
       try {
-        const sRes = await fetch(`${getApiUrl()}/api/stories2/${id}`);
+        const sRes = await fetch(`${getApiUrl()}/getStory/${id}`);
         if (!sRes.ok) throw new Error('Kunde inte hämta story');
         const sData = await sRes.json();
         setStory(sData);
-        const cRes = await fetch(`${getApiUrl()}/api/stories2/${id}/chapters`);
+        const cRes = await fetch(`${getApiUrl()}/getChapters/${id}`);
         if (!cRes.ok) throw new Error('Kunde inte hämta kapitel');
         const cData = await cRes.json();
         setChapters(cData);

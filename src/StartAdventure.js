@@ -34,7 +34,7 @@ export default function StartAdventure() {
   useEffect(() => {
     if (showModal && stories.length === 0 && !loading) {
       setLoading(true);
-      fetch(`${getApiUrl()}/api/stories2`)
+      fetch(`${getApiUrl()}/getStories`)
         .then(res => {
           if (!res.ok) throw new Error('Kunde inte hämta stories');
           return res.json();
