@@ -7,6 +7,8 @@ import StartAdventure from './StartAdventure';
 import ReadStory from './ReadStory';
 import StorySelector from './StorySelector';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
+// Initialize Firebase Analytics säkert
+import './firebase-config';
 
 const router = createHashRouter([
   {
