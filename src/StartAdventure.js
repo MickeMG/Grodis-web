@@ -1,10 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from './config';
+import userDataManager, { 
+  updateNamesAndGenders, 
+  toggleFavorite, 
+  isFavorite, 
+  markAsRead, 
+  isRead,
+  setLastReadStory,
+  getLastReadStory,
+  clearAllData
+} from './utils/cookieManager';
 
 export default function StartAdventure() {
-  const [names, setNames] = useState(['Annie']);
-  const [genders, setGenders] = useState(['kvinna']);
+  const [names, setNames] = useState(userDataManager.userData.names.length > 0 && userDataManager.userData.names[0] ? userDataManager.userData.names : ['']);
+  const [genders, setGenders] = useState(userDataManager.userData.genders.length > 0 ? userDataManager.userData.genders : ['kvinna']);
   const [showModal, setShowModal] = useState(false);
   const [selectedStory, setSelectedStory] = useState(null);
   const [stories, setStories] = useState([]);
@@ -60,24 +70,36 @@ export default function StartAdventure() {
     const newNames = [...names];
     newNames[index] = value;
     setNames(newNames);
+    // Spara till cookies
+    updateNamesAndGenders(newNames, genders);
   };
 
   const handleGenderChange = (index, value) => {
     const newGenders = [...genders];
     newGenders[index] = value === 'pojke' ? 'man' : value === 'flicka' ? 'kvinna' : value;
     setGenders(newGenders);
+    // Spara till cookies
+    updateNamesAndGenders(names, newGenders);
   };
 
   const handleAdd = () => {
     if (names.length < 3) {
-      setNames([...names, '']);
-      setGenders([...genders, 'kvinna']);
+      const newNames = [...names, ''];
+      const newGenders = [...genders, 'kvinna'];
+      setNames(newNames);
+      setGenders(newGenders);
+      // Spara till cookies
+      updateNamesAndGenders(newNames, newGenders);
     }
   };
 
   const handleRemove = (index) => {
-    setNames(names.filter((_, i) => i !== index));
-    setGenders(genders.filter((_, i) => i !== index));
+    const newNames = names.filter((_, i) => i !== index);
+    const newGenders = genders.filter((_, i) => i !== index);
+    setNames(newNames);
+    setGenders(newGenders);
+    // Spara till cookies
+    updateNamesAndGenders(newNames, newGenders);
   };
 
   const filteredStories = () => {
@@ -107,7 +129,19 @@ export default function StartAdventure() {
     // Sedan applicera sorterings-filter
     switch (filter) {
       case 'favorites':
-        // Placeholder för favoriter
+        return filtered.filter(story => isFavorite(story.id));
+      case 'read':
+        return filtered.filter(story => isRead(story.id));
+      case 'unread':
+        return filtered.filter(story => !isRead(story.id));
+      case 'lastRead':
+        const lastReadId = getLastReadStory();
+        if (lastReadId) {
+          const lastReadStory = filtered.find(story => story.id === lastReadId);
+          if (lastReadStory) {
+            return [lastReadStory, ...filtered.filter(story => story.id !== lastReadId)];
+          }
+        }
         return filtered;
       case 'latest':
         return [...filtered].sort((a, b) => {
@@ -140,7 +174,7 @@ export default function StartAdventure() {
   function personalize(text) {
     if (!text) return text;
     let result = text;
-    const mainName = names[0] || "Kim";
+    const mainName = (names[0] && names[0].trim()) || "Kim";
     const mainPronoun = pronounMap[genders[0]] || "hen";
     
     // Ersätt {namn} och {pronomen} (bakåtkompatibilitet)
@@ -152,8 +186,8 @@ export default function StartAdventure() {
       .replace(/\{pojke\/flicka\}/gi, mainPronoun === 'han' ? 'pojke' : 'flicka');
     // Ersätt {person1}, {han/hon1}, {person2}, {han/hon2} osv.
     for (let i = 0; i < names.length; i++) {
-      const name = names[i] || '';
-      const gender = genders[i] || 'hen';
+      const name = (names[i] && names[i].trim()) || `Person ${i + 1}`;
+      const gender = genders[i] || 'kvinna';
       const pronoun = pronounMap[gender] || 'hen';
       // {person1}, {person2} ...
       const nameRegex = new RegExp(`\\{person${i+1}\\}`, 'gi');
@@ -183,6 +217,11 @@ export default function StartAdventure() {
   const handleChooseStory = (story) => {
     setSelectedStory(story);
     setShowModal(false);
+    
+    // Markera som läst och sätt som senast läst
+    markAsRead(story.id);
+    setLastReadStory(story.id);
+    
     setTimeout(() => {
       const normalizedGenders = gendersRef.current.map(g => {
         if (g === 'pojke') return 'man';
@@ -239,7 +278,7 @@ export default function StartAdventure() {
                 value={name}
                 maxLength={20}
                 onChange={e => handleNameChange(idx, e.target.value)}
-                placeholder={idx === 0 ? 'Namn' : 'Namn'}
+                placeholder="Namn"
                 className="flex-1 text-lg font-semibold outline-none placeholder-white rounded-xl border-none focus:ring-2 focus:ring-yellow-300"
                 style={{
                   color: '#fff',
@@ -392,6 +431,41 @@ export default function StartAdventure() {
             )}
           </div>
         </div>
+        
+        {/* Rensa data knapp */}
+        <div className="mb-4 text-center">
+          <button
+            onClick={() => {
+              if (window.confirm('Är du säker på att du vill rensa all data? Detta kan inte ångras.')) {
+                clearAllData();
+                setNames(['']);
+                setGenders(['kvinna']);
+                window.location.reload();
+              }
+            }}
+            style={{
+              background: 'rgba(255, 255, 255, 0.1)',
+              color: 'rgba(255, 255, 255, 0.7)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: '0.5rem',
+              padding: '0.25rem 0.75rem',
+              fontSize: '0.8rem',
+              cursor: 'pointer',
+              fontFamily: 'Kidzone',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+              e.target.style.color = 'rgba(255, 255, 255, 0.9)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+              e.target.style.color = 'rgba(255, 255, 255, 0.7)';
+            }}
+          >
+            🗑️ Rensa all data
+          </button>
+        </div>
         {/* Välj Story-knapp */}
         <button
           onClick={() => setShowModal(true)}
@@ -488,8 +562,9 @@ export default function StartAdventure() {
                 {[
                   { key: 'all', label: 'Alla' },
                   { key: 'favorites', label: 'Favoriter' },
-                  { key: 'latest', label: 'Lästa' },
-                  { key: 'oldest', label: 'Olästa' },
+                  { key: 'read', label: 'Lästa' },
+                  { key: 'unread', label: 'Olästa' },
+                  { key: 'lastRead', label: 'Senast läst' },
                   { key: 'random', label: 'Slumpa' }
                 ].map(filterOption => (
                   <button
@@ -576,6 +651,22 @@ export default function StartAdventure() {
                   ) : (
                     `${filteredStories().length} story${filteredStories().length === 1 ? '' : 's'} för ${names.length} deltagare`
                   )}
+                </div>
+                
+                {/* Statistik för användaren */}
+                <div 
+                  className="text-center mb-4"
+                  style={{
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+                    fontSize: '14px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    borderRadius: '8px',
+                    padding: '6px 10px',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                  }}
+                >
+                  📚 Lästa: {userDataManager.getStats().totalRead} | ⭐ Favoriter: {userDataManager.getStats().totalFavorites}
                 </div>
                 
                 <div 
@@ -679,10 +770,11 @@ export default function StartAdventure() {
                             aspectRatio: '1/1',
                             borderWidth: '2px',
                             borderStyle: 'solid',
-                            borderColor: 'rgba(64, 64, 64, 0.8)',
+                            borderColor: isRead(story.id) ? 'rgba(76, 175, 80, 0.8)' : 'rgba(64, 64, 64, 0.8)',
                             borderRadius: '8px',
                             overflow: 'hidden',
-                            marginBottom: '8px'
+                            marginBottom: '8px',
+                            position: 'relative'
                           }}>
                             {story.thumbnail_url && (
                               <img
@@ -691,9 +783,31 @@ export default function StartAdventure() {
                                 style={{
                                   width: '100%',
                                   height: '100%',
-                                  objectFit: 'cover'
+                                  objectFit: 'cover',
+                                  opacity: isRead(story.id) ? 0.8 : 1
                                 }}
                               />
+                            )}
+                            {/* Läst-indikator */}
+                            {isRead(story.id) && (
+                              <div style={{
+                                position: 'absolute',
+                                top: '8px',
+                                right: '8px',
+                                background: 'rgba(76, 175, 80, 0.9)',
+                                color: 'white',
+                                borderRadius: '50%',
+                                width: '24px',
+                                height: '24px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '12px',
+                                fontWeight: 'bold',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                              }}>
+                                ✓
+                              </div>
                             )}
                           </div>
 
@@ -732,7 +846,12 @@ export default function StartAdventure() {
                           }}>
                             {/* Favorite Button */}
                             <button
-                              onClick={e => { e.stopPropagation(); console.log('Markerat som favorit:', story.title || story.name); }}
+                              onClick={e => { 
+                                e.stopPropagation(); 
+                                toggleFavorite(story.id);
+                                // Uppdatera UI genom att tvinga re-render
+                                setStories([...stories]);
+                              }}
                               style={{
                                 display: 'flex',
                                 flexDirection: 'row',
@@ -745,9 +864,20 @@ export default function StartAdventure() {
                                 padding: '4px 8px'
                               }}
                             >
-                              <span style={{ fontSize: '16px', color: 'white' }}>☆</span>
-                              <span style={{ fontFamily: 'KidZone', fontSize: '14px', color: 'white', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
-                                Markera som favorit
+                              <span style={{ 
+                                fontSize: '16px', 
+                                color: isFavorite(story.id) ? '#FFD700' : 'white',
+                                textShadow: isFavorite(story.id) ? '0 0 8px #FFD700' : 'none'
+                              }}>
+                                {isFavorite(story.id) ? '★' : '☆'}
+                              </span>
+                              <span style={{ 
+                                fontFamily: 'KidZone', 
+                                fontSize: '14px', 
+                                color: isFavorite(story.id) ? '#FFD700' : 'white', 
+                                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' 
+                              }}>
+                                {isFavorite(story.id) ? 'Favorit' : 'Markera som favorit'}
                               </span>
                             </button>
                           </div>
