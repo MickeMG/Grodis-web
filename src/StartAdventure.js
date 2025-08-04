@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from './config';
 import userDataManager, { 
@@ -22,6 +22,7 @@ export default function StartAdventure() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
+  const [randomSeed, setRandomSeed] = useState(0);
   const navigate = useNavigate();
   const [genderDropdownOpen, setGenderDropdownOpen] = useState(-1);
   const dropdownRef = useRef(null);
@@ -102,7 +103,7 @@ export default function StartAdventure() {
     updateNamesAndGenders(newNames, newGenders);
   };
 
-  const filteredStories = () => {
+  const filteredStories = useMemo(() => {
     let filtered = stories;
     
     // Filtrera baserat på antal deltagare först
@@ -156,11 +157,22 @@ export default function StartAdventure() {
           return idA - idB;
         });
       case 'random':
-        return [...filtered].sort(() => Math.random() - 0.5);
-      default:
+        // Visa bara EN slumpmässig story (använd randomSeed för att tvinga ny slumpmässig story)
+        if (filtered.length > 0) {
+          const seededRandom = (randomSeed + filtered.length) % filtered.length;
+          const randomIndex = Math.floor((Math.random() + seededRandom) * filtered.length) % filtered.length;
+          return [filtered[randomIndex]];
+        }
         return filtered;
+      default:
+        // "Alla" - visa senaste stories först (högst ID först)
+        return [...filtered].sort((a, b) => {
+          const idA = typeof a.id === 'string' ? parseInt(a.id, 10) || 0 : a.id;
+          const idB = typeof b.id === 'string' ? parseInt(b.id, 10) || 0 : b.id;
+          return idB - idA;
+        });
     }
-  };
+  }, [stories, names.length, searchTerm, filter, randomSeed]);
 
   // Pronomen-map för personalisering
   const pronounMap = {
@@ -256,7 +268,7 @@ export default function StartAdventure() {
         </div>
         {/* Rubrik */}
         <div className="rounded-2xl px-8 py-8 mb-6 bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-2 border-white/80 shadow-xl" style={{maxWidth: 420, width: '100%', marginTop: '-50px'}}>
-          <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-xl text-center" style={{textShadow: '0 2px 8px #0008', fontFamily: 'Kidzone'}}>Vad heter du?</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-xl text-center" style={{textShadow: '0 2px 8px #0008', fontFamily: 'Kidzone'}}>Vem ska vara med i berättelsen?</h1>
         </div>
         {/* Namnfält */}
         <div className="flex flex-col gap-4 w-full mb-4" style={{maxWidth: 340, width: '100%'}}>
@@ -273,35 +285,68 @@ export default function StartAdventure() {
               alignItems: 'center',
               marginBottom: '0.5rem'
             }}>
-              <input
-                type="text"
-                value={name}
-                maxLength={20}
-                onChange={e => handleNameChange(idx, e.target.value)}
-                placeholder="Namn"
-                className="flex-1 text-lg font-semibold outline-none placeholder-white rounded-xl border-none focus:ring-2 focus:ring-yellow-300"
-                style={{
-                  color: '#fff',
-                  fontFamily: 'Kidzone',
-                  textShadow: '0 2px 12px #000a, 0 1px 0 #ffb300',
-                  letterSpacing: '0.5px',
-                  fontWeight: 700,
-                  fontSize: '2.5rem',
-                  minWidth: 120,
-                  maxWidth: 220,
-                  margin: '0 0.5rem',
-                  paddingLeft: 48,
-                  paddingRight: 48,
-                  paddingTop: 8,
-                  paddingBottom: 8,
-                  height: '36px',
-                  overflow: 'visible',
-                  boxSizing: 'content-box',
-                  background: 'transparent'
-                }}
-              />
+              {/* Papperskorg-ikon före namnfältet */}
+              {names.length > 1 && (
+                <button
+                  onClick={() => handleRemove(idx)}
+                  className="mr-2 text-white hover:text-red-200 p-1"
+                  title="Ta bort namn"
+                  style={{
+                    background: 'rgba(220, 53, 69, 0.9)',
+                    borderRadius: '50%',
+                    width: '36px',
+                    height: '36px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s',
+                    border: '2px solid rgba(255, 255, 255, 0.6)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+                    flexShrink: 0
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(220, 53, 69, 1)';
+                    e.target.style.transform = 'scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(220, 53, 69, 0.9)';
+                    e.target.style.transform = 'scale(1)';
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              )}
+                              <input
+                  type="text"
+                  value={name}
+                  maxLength={20}
+                  onChange={e => handleNameChange(idx, e.target.value)}
+                  placeholder="Namn"
+                  className="flex-1 text-lg font-semibold outline-none placeholder-white rounded-xl border-none focus:ring-2 focus:ring-yellow-300"
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'Kidzone',
+                    textShadow: '0 2px 12px #000a, 0 1px 0 #ffb300',
+                    letterSpacing: '0.5px',
+                    fontWeight: 700,
+                    fontSize: '2.5rem',
+                    minWidth: names.length > 1 ? 100 : 120,
+                    maxWidth: names.length > 1 ? 180 : 220,
+                    margin: '0 0.5rem',
+                    paddingLeft: 48,
+                    paddingRight: 48,
+                    paddingTop: 8,
+                    paddingBottom: 8,
+                    height: '36px',
+                    overflow: 'visible',
+                    boxSizing: 'content-box',
+                    background: 'transparent'
+                  }}
+                />
               {/* Custom gender dropdown */}
-              <div ref={dropdownRef} style={{ position: 'relative', minWidth: 90 }}>
+              <div ref={dropdownRef} style={{ position: 'relative', minWidth: names.length > 1 ? 80 : 90 }}>
                 <button
                   type="button"
                   onClick={() => setGenderDropdownOpen(genderDropdownOpen === idx ? -1 : idx)}
@@ -313,8 +358,8 @@ export default function StartAdventure() {
                     textShadow: '0 2px 8px #0008',
                     fontWeight: 700,
                     letterSpacing: '0.08em',
-                    fontSize: '1.3rem',
-                    minWidth: 80,
+                    fontSize: names.length > 1 ? '1.1rem' : '1.3rem',
+                    minWidth: names.length > 1 ? 70 : 80,
                     borderRadius: '1rem',
                     boxShadow: '0 2px 8px #0008'
                   }}
@@ -331,7 +376,7 @@ export default function StartAdventure() {
                     background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
                     borderRadius: '1rem',
                     boxShadow: '0 8px 32px #0008',
-                    minWidth: 100,
+                    minWidth: names.length > 1 ? 80 : 100,
                     padding: '0.25rem 0',
                     border: '2px solid #fff8',
                   }}>
@@ -353,8 +398,8 @@ export default function StartAdventure() {
                           fontWeight: 700,
                           textShadow: '0 2px 8px #0008',
                           letterSpacing: '0.08em',
-                          fontSize: '1.3rem',
-                          padding: '0.5rem 1.5rem',
+                          fontSize: names.length > 1 ? '1.1rem' : '1.3rem',
+                          padding: names.length > 1 ? '0.4rem 1.2rem' : '0.5rem 1.5rem',
                           borderRadius: '0.75rem',
                           cursor: 'pointer',
                           margin: '0.1rem 0',
@@ -369,17 +414,6 @@ export default function StartAdventure() {
                   </div>
                 )}
               </div>
-              {names.length > 1 && (
-                <button
-                  onClick={() => handleRemove(idx)}
-                  className="ml-2 text-white hover:text-red-200 p-1"
-                  title="Ta bort namn"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
             </div>
           ))}
         </div>
@@ -408,64 +442,9 @@ export default function StartAdventure() {
           )}
         </div>
         
-        {/* Deltagare-indikator */}
-        <div className="mb-4 text-center">
-          <div style={{
-            color: '#fff', 
-            fontFamily: 'Kidzone', 
-            fontWeight: 700, 
-            fontSize: '1.1rem', 
-            textShadow: '0 2px 8px #0008',
-            background: 'rgba(255, 255, 255, 0.2)',
-            borderRadius: '1rem',
-            padding: '0.5rem 1rem',
-            display: 'inline-block',
-            border: '2px solid rgba(255, 255, 255, 0.3)'
-          }}>
-            {names.length === 1 ? (
-              '👤 En deltagare - Visar stories för en person'
-            ) : names.length === 2 ? (
-              '👥 Två deltagare - Visar stories för två personer'
-            ) : (
-              '👥👤 Tre deltagare - Visar stories för tre personer'
-            )}
-          </div>
-        </div>
+
         
-        {/* Rensa data knapp */}
-        <div className="mb-4 text-center">
-          <button
-            onClick={() => {
-              if (window.confirm('Är du säker på att du vill rensa all data? Detta kan inte ångras.')) {
-                clearAllData();
-                setNames(['']);
-                setGenders(['kvinna']);
-                window.location.reload();
-              }
-            }}
-            style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              color: 'rgba(255, 255, 255, 0.7)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              borderRadius: '0.5rem',
-              padding: '0.25rem 0.75rem',
-              fontSize: '0.8rem',
-              cursor: 'pointer',
-              fontFamily: 'Kidzone',
-              transition: 'all 0.2s'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-              e.target.style.color = 'rgba(255, 255, 255, 0.9)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-              e.target.style.color = 'rgba(255, 255, 255, 0.7)';
-            }}
-          >
-            🗑️ Rensa all data
-          </button>
-        </div>
+
         {/* Välj Story-knapp */}
         <button
           onClick={() => setShowModal(true)}
@@ -516,16 +495,6 @@ export default function StartAdventure() {
             
             {/* Header med sökfält */}
             <div className="text-center mb-6">
-              <h2 
-                className="text-3xl font-bold mb-6"
-                style={{
-                  color: 'white',
-                  textShadow: '2px 2px 6px rgba(0, 0, 0, 0.7)',
-                  fontFamily: 'Kidzone'
-                }}
-              >
-                🔍 Sök bland storys...
-              </h2>
               
               {/* Sökfält */}
               <div 
@@ -558,7 +527,14 @@ export default function StartAdventure() {
               </div>
               
               {/* Filterknappar */}
-              <div className="flex justify-center gap-3 mb-6 flex-wrap">
+              <div className="flex justify-center gap-3 mb-6 flex-wrap" style={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                borderRadius: '1rem',
+                padding: '0.75rem 1rem',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)'
+              }}>
                 {[
                   { key: 'all', label: 'Alla' },
                   { key: 'favorites', label: 'Favoriter' },
@@ -569,35 +545,54 @@ export default function StartAdventure() {
                 ].map(filterOption => (
                   <button
                     key={filterOption.key}
-                    onClick={() => setFilter(filterOption.key)}
+                    onClick={() => {
+                      if (filterOption.key === 'random' && filter === 'random') {
+                        // Om man klickar på "Slumpa" igen, öka randomSeed för ny slumpmässig story
+                        setRandomSeed(prev => prev + 1);
+                      } else {
+                        setFilter(filterOption.key);
+                        if (filterOption.key === 'random') {
+                          setRandomSeed(prev => prev + 1);
+                        }
+                      }
+                    }}
                     style={{
-                      padding: '10px 18px',
-                      borderRadius: '20px',
-                      border: '2px solid rgba(255, 255, 255, 0.6)',
-                      backgroundColor: filter === filterOption.key ? '#d2691e' : 'rgba(139, 69, 19, 0.7)',
+                      padding: '12px 20px',
+                      borderRadius: '25px',
+                      border: '2px solid rgba(255, 255, 255, 0.3)',
+                      backgroundColor: filter === filterOption.key ? 
+                        'linear-gradient(135deg, #ff8c00, #ff6b35)' : 
+                        'rgba(255, 255, 255, 0.15)',
+                      background: filter === filterOption.key ? 
+                        'linear-gradient(135deg, #ff8c00, #ff6b35)' : 
+                        'rgba(255, 255, 255, 0.15)',
                       color: 'white',
                       fontWeight: 'bold',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
-                      textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
-                      fontSize: '14px',
+                      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
+                      fontSize: '15px',
                       transform: filter === filterOption.key ? 'scale(1.05)' : 'scale(1)',
                       boxShadow: filter === filterOption.key ? 
-                        '0 4px 12px rgba(210, 105, 30, 0.4)' : 
-                        '0 2px 8px rgba(139, 69, 19, 0.3)'
+                        '0 6px 20px rgba(255, 140, 0, 0.5)' : 
+                        '0 2px 8px rgba(0, 0, 0, 0.2)',
+                      backdropFilter: 'blur(5px)',
+                      minWidth: '80px'
                     }}
-                    onMouseEnter={(e) => {
-                      if (filter !== filterOption.key) {
-                        e.target.style.backgroundColor = 'rgba(160, 82, 45, 0.8)';
-                        e.target.style.transform = 'scale(1.02)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (filter !== filterOption.key) {
-                        e.target.style.backgroundColor = 'rgba(139, 69, 19, 0.7)';
-                        e.target.style.transform = 'scale(1)';
-                      }
-                    }}
+                                          onMouseEnter={(e) => {
+                        if (filter !== filterOption.key) {
+                          e.target.style.background = 'rgba(255, 255, 255, 0.25)';
+                          e.target.style.transform = 'scale(1.02)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (filter !== filterOption.key) {
+                          e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                          e.target.style.transform = 'scale(1)';
+                          e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.2)';
+                        }
+                      }}
                   >
                     {filterOption.label}
                   </button>
@@ -633,25 +628,7 @@ export default function StartAdventure() {
             
             {!loading && !error && (
               <>
-                {/* Stories-matchning indikator */}
-                <div 
-                  className="text-center mb-4"
-                  style={{
-                    color: 'white',
-                    textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
-                    fontSize: '16px',
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px',
-                    padding: '8px 12px',
-                    border: '1px solid rgba(255, 255, 255, 0.2)'
-                  }}
-                >
-                  {filteredStories().length === 0 ? (
-                    `Inga stories för ${names.length} deltagare`
-                  ) : (
-                    `${filteredStories().length} story${filteredStories().length === 1 ? '' : 's'} för ${names.length} deltagare`
-                  )}
-                </div>
+
                 
                 {/* Statistik för användaren */}
                 <div 
@@ -681,7 +658,7 @@ export default function StartAdventure() {
                     scrollbarColor: '#d2691e rgba(255, 255, 255, 0.2)'
                   }}
                 >
-                {filteredStories().length === 0 ? (
+                {filteredStories.length === 0 ? (
                   <div 
                     className="text-center py-8"
                     style={{
@@ -693,7 +670,7 @@ export default function StartAdventure() {
                     Inga stories matchade din sökning
                   </div>
                 ) : (
-                  filteredStories().map(story => {
+                  filteredStories.map(story => {
                     let touchStartY = null;
                     let touchMoved = false;
                     return (
