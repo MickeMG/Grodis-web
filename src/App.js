@@ -7,6 +7,17 @@ function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const navigate = useNavigate();
+  
+  // Logga besök när komponenten laddas
+  useEffect(() => {
+    if (window.logFirebaseEvent) {
+      window.logFirebaseEvent('page_view', {
+        page_title: 'Grodis Landing Page',
+        page_location: window.location.href
+      });
+    }
+  }, []);
+  
   const images = [
     '/images/unnamed.webp',
     '/images/unnamed (1).webp',
@@ -74,7 +85,17 @@ function Home() {
   }, [stories.length]);
 
   // Kolla om vi är i utvecklingsläge (localhost)
-  const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const isDevelopment = window.location.hostname === 'localhost';
+
+  // Logga när användare klickar på "Starta äventyr"
+  const handleStartAdventure = () => {
+    if (window.logFirebaseEvent) {
+      window.logFirebaseEvent('start_adventure_click', {
+        button_location: 'hero_section'
+      });
+    }
+    navigate('/start');
+  };
 
   return (
     <div className="min-h-screen relative">
@@ -117,7 +138,7 @@ function Home() {
             <div className="flex justify-end">
               <button
                 className="w-8 h-8 rounded-full border-2 border-white/50 bg-transparent hover:border-white/80 transition-all duration-300"
-                onClick={() => navigate('/start')}
+                onClick={handleStartAdventure}
                 title="Starta äventyr"
               />
             </div>
@@ -148,48 +169,64 @@ function Home() {
                   transition={{ delay: 0.2 }}
                   className="text-lg md:text-xl text-white/90 leading-relaxed drop-shadow-lg text-center md:text-right tracking-wide"
                 >
-                  Nu kan du och ditt barn skapa magiska äventyr tillsammans med Grodis i telefonen eller läsplattan. Varje saga är ett unikt äventyr där ditt barn blir huvudpersonen och får ta egna beslut som formar berättelsen. Upptäck en värld av fantasi, skratt och läsglädje.
+                  Upptäck vår magiska värld där varje barn blir huvudpersonen i sina egna fantastiska äventyr. Från rymdfärder till undervattensäventyr - varje saga är en ny chans att låta fantasin flöda.
+                </motion.p>
+              </div>
+
+              <div className="w-full md:w-[60%] relative">
+                <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+                  <motion.div 
+                    className="flex transition-transform duration-500 ease-in-out"
+                    style={{ transform: `translateX(-${currentStoryIndex * 100}%)` }}
+                  >
+                    {stories.map((story, index) => {
+                      // Beräkna avståndet från aktuellt kort
+                      const distance = Math.abs(index - currentStoryIndex);
+                      
+                      return (
+                        <motion.div
+                          key={story}
+                          className="flex-shrink-0 w-full"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ 
+                            opacity: distance === 0 ? 1 : 0.3,
+                            scale: distance === 0 ? 1 : 0.9
+                          }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <img 
+                            src={`/images/stories/desktop/${story}.webp`}
+                            srcSet={`/images/stories/mobile/${story}.webp 320w, /images/stories/desktop/${story}.webp 400w`}
+                            sizes="(max-width: 768px) 320px, 400px"
+                            alt={story.replace(/_/g, ' ')}
+                            className="w-[320px] md:w-[400px] h-[480px] md:h-[600px] object-contain m-[1px]"
+                            loading={distance === 0 ? "eager" : "lazy"}
+                          />
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
+                </div>
+              </div>
+
+              <div className="w-full md:w-[35%] px-4 md:px-0 mb-8 md:mb-0">
+                <motion.h2 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-4xl md:text-6xl font-bold mb-6 md:mb-8 leading-tight text-white drop-shadow-xl text-center md:text-left tracking-tight"
+                >
+                  Upptäck Grodis<br />fantastiska äventyr.
+                </motion.h2>
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-lg md:text-xl text-white/90 leading-relaxed drop-shadow-lg text-center md:text-left tracking-wide"
+                >
+                  Utforska vårt växande bibliotek med hundratals interaktiva sagor! Nya äventyr tillkommer regelbundet så det finns alltid något spännande att upptäcka. Från rymdfärder till undervattensäventyr - varje saga är en ny chans att låta fantasin flöda.
                 </motion.p>
 
               </div>
-
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="relative h-[484px] md:h-[604px] w-full md:w-[50%] mx-auto mt-8 md:mt-0"
-              >
-                {images.map((image, index) => (
-                  <motion.div
-                    key={index}
-                    className="absolute left-1/2 md:left-[20%] top-1/2 w-[219px] md:w-[274px] h-[480px] md:h-[600px] rounded-2xl shadow-2xl overflow-hidden backdrop-blur-sm bg-black/20 border border-white/30"
-                    initial={{ 
-                      x: "-50%",
-                      y: "-50%",
-                      rotate: (index - currentImageIndex) * 5,
-                      scale: 1 - Math.abs(index - currentImageIndex) * 0.1,
-                      zIndex: images.length - Math.abs(index - currentImageIndex)
-                    }}
-                    animate={{ 
-                      x: "-50%",
-                      y: "-50%",
-                      rotate: (index - currentImageIndex) * 5,
-                      scale: 1 - Math.abs(index - currentImageIndex) * 0.1,
-                      zIndex: images.length - Math.abs(index - currentImageIndex)
-                    }}
-                    transition={{ duration: 0.7, ease: "easeInOut" }}
-                    style={{
-                      transformOrigin: "center center"
-                    }}
-                  >
-                    <img 
-                      src={image} 
-                      alt={`Story card ${index + 1}`}
-                      className="w-[217px] md:w-[272px] h-[480px] md:h-[600px] object-contain m-[1px]"
-                    />
-                  </motion.div>
-                ))}
-              </motion.div>
             </div>
           </div>
         </section>
@@ -329,30 +366,11 @@ function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="text-white py-4 bg-gradient-to-r from-yellow-700/70 via-yellow-600/70 to-yellow-700/70 backdrop-blur-md mt-8">
-          <div className="container mx-auto max-w-4xl px-4 md:px-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-2">
-              <div className="text-center md:text-left">
-                <h4 className="text-xl font-semibold mb-2 text-white drop-shadow-lg">Kontakt</h4>
-                <p className="text-gray-300 tracking-wide">info@grodis.app</p>
-              </div>
-              <div className="text-center">
-                <h4 className="text-xl font-semibold mb-2 text-white drop-shadow-lg">Följ Grodis</h4>
-                <div>
-                  <a href="https://www.facebook.com/profile.php?id=61572057778646" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors duration-300 tracking-wide">Facebook</a>
-                </div>
-              </div>
-
-            </div>
-            <div className="border-t border-white/20 mt-6 pt-4 text-center text-gray-300">
-              <p className="tracking-wide mb-2 text-sm md:text-base">&copy; 2024 Grodis. Alla rättigheter förbehållna.</p>
-              <a 
-                href="#/privacy-policy" 
-                className="text-sm md:text-base text-gray-300 hover:text-white transition-colors duration-300 tracking-wide underline"
-              >
-                Integritetspolicy
-              </a>
-            </div>
+        <footer className="bg-gradient-to-r from-yellow-800/90 via-yellow-700/90 to-yellow-800/90 backdrop-blur-sm py-8">
+          <div className="container mx-auto px-4 text-center">
+            <p className="text-white/80 text-sm">
+              © 2024 Grodis - Magiska interaktiva sagor för barn
+            </p>
           </div>
         </footer>
       </div>
