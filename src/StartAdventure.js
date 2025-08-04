@@ -1,28 +1,12 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getApiUrl } from './config';
 import userDataManager, { 
-  updateNamesAndGenders, 
-  toggleFavorite, 
-  isFavorite, 
-  markAsRead, 
-  isRead,
-  setLastReadStory,
-  getLastReadStory,
-  clearAllData
+  updateNamesAndGenders
 } from './utils/cookieManager';
 
 export default function StartAdventure() {
   const [names, setNames] = useState(userDataManager.userData.names.length > 0 && userDataManager.userData.names[0] ? userDataManager.userData.names : ['']);
   const [genders, setGenders] = useState(userDataManager.userData.genders.length > 0 ? userDataManager.userData.genders : ['kvinna']);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedStory, setSelectedStory] = useState(null);
-  const [stories, setStories] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState('all');
-  const [randomSeed, setRandomSeed] = useState(0);
   const navigate = useNavigate();
   const [genderDropdownOpen, setGenderDropdownOpen] = useState(-1);
   const dropdownRef = useRef(null);
@@ -41,26 +25,6 @@ export default function StartAdventure() {
   useEffect(() => {
     gendersRef.current = genders;
   }, [genders]);
-
-  useEffect(() => {
-    if (showModal && stories.length === 0 && !loading) {
-      setLoading(true);
-      fetch(`${getApiUrl()}/getStories`)
-        .then(res => {
-          if (!res.ok) throw new Error('Kunde inte hämta stories');
-          return res.json();
-        })
-        .then(data => {
-          setStories(data);
-          setError(null);
-        })
-        .catch(err => {
-          console.error('API-fel:', err);
-          setError('Kunde inte hämta stories. Kontrollera din internetanslutning.');
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [showModal, stories.length, loading]);
 
   useEffect(() => {
     // Normalisera ALLTID genders-arrayen till 'man' eller 'kvinna' vid mount
@@ -103,146 +67,9 @@ export default function StartAdventure() {
     updateNamesAndGenders(newNames, newGenders);
   };
 
-  const filteredStories = useMemo(() => {
-    let filtered = stories;
-    
-    // Filtrera baserat på antal deltagare först
-    const participantCount = names.length;
-    filtered = stories.filter(story => {
-      // Om story har participant_count, matcha det med antal deltagare
-      if (story.participant_count) {
-        return story.participant_count === participantCount;
-      }
-      // Om story inte har participant_count, visa bara för 1 deltagare (bakåtkompatibilitet)
-      return participantCount === 1;
-    });
-    
-    // Filtrera baserat på sökterm sedan
-    if (searchTerm.trim()) {
-      const searchLower = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(story => 
-        (story.title?.toLowerCase() || '').includes(searchLower) ||
-        (story.name?.toLowerCase() || '').includes(searchLower) ||
-        (story.description?.toLowerCase() || '').includes(searchLower)
-      );
-    }
-    
-    // Sedan applicera sorterings-filter
-    switch (filter) {
-      case 'favorites':
-        return filtered.filter(story => isFavorite(story.id));
-      case 'read':
-        return filtered.filter(story => isRead(story.id));
-      case 'unread':
-        return filtered.filter(story => !isRead(story.id));
-      case 'lastRead':
-        const lastReadId = getLastReadStory();
-        if (lastReadId) {
-          const lastReadStory = filtered.find(story => story.id === lastReadId);
-          if (lastReadStory) {
-            return [lastReadStory, ...filtered.filter(story => story.id !== lastReadId)];
-          }
-        }
-        return filtered;
-      case 'latest':
-        return [...filtered].sort((a, b) => {
-          const idA = typeof a.id === 'string' ? parseInt(a.id, 10) || 0 : a.id;
-          const idB = typeof b.id === 'string' ? parseInt(b.id, 10) || 0 : b.id;
-          return idB - idA;
-        });
-      case 'oldest':
-        return [...filtered].sort((a, b) => {
-          const idA = typeof a.id === 'string' ? parseInt(a.id, 10) || 0 : a.id;
-          const idB = typeof b.id === 'string' ? parseInt(b.id, 10) || 0 : b.id;
-          return idA - idB;
-        });
-      case 'random':
-        // Visa bara EN slumpmässig story (använd randomSeed för att tvinga ny slumpmässig story)
-        if (filtered.length > 0) {
-          const seededRandom = (randomSeed + filtered.length) % filtered.length;
-          const randomIndex = Math.floor((Math.random() + seededRandom) * filtered.length) % filtered.length;
-          return [filtered[randomIndex]];
-        }
-        return filtered;
-      default:
-        // "Alla" - visa senaste stories först (högst ID först)
-        return [...filtered].sort((a, b) => {
-          const idA = typeof a.id === 'string' ? parseInt(a.id, 10) || 0 : a.id;
-          const idB = typeof b.id === 'string' ? parseInt(b.id, 10) || 0 : b.id;
-          return idB - idA;
-        });
-    }
-  }, [stories, names.length, searchTerm, filter, randomSeed]);
-
-  // Pronomen-map för personalisering
-  const pronounMap = {
-    'man': 'han',
-    'kvinna': 'hon',
-    'pojke': 'han',
-    'flicka': 'hon'
-  };
-
-  // Ersätt platshållare för namn och pronomen för flera personer
-  function personalize(text) {
-    if (!text) return text;
-    let result = text;
-    const mainName = (names[0] && names[0].trim()) || "Kim";
-    const mainPronoun = pronounMap[genders[0]] || "hen";
-    
-    // Ersätt {namn} och {pronomen} (bakåtkompatibilitet)
-    result = result
-      .replace(/\{namn\}/gi, mainName)
-      .replace(/\{pronomen\}/gi, mainPronoun)
-      .replace(/\{hans\/hennes\}/gi, mainPronoun === 'han' ? 'hans' : 'hennes')
-      .replace(/\{honom\/henne\}/gi, mainPronoun === 'han' ? 'honom' : 'henne')
-      .replace(/\{pojke\/flicka\}/gi, mainPronoun === 'han' ? 'pojke' : 'flicka');
-    // Ersätt {person1}, {han/hon1}, {person2}, {han/hon2} osv.
-    for (let i = 0; i < names.length; i++) {
-      const name = (names[i] && names[i].trim()) || `Person ${i + 1}`;
-      const gender = genders[i] || 'kvinna';
-      const pronoun = pronounMap[gender] || 'hen';
-      // {person1}, {person2} ...
-      const nameRegex = new RegExp(`\\{person${i+1}\\}`, 'gi');
-      result = result.replace(nameRegex, name);
-      // {person1s}, {person2s} ...
-      const possessiveRegex = new RegExp(`\\{person${i+1}s\\}`, 'gi');
-      result = result.replace(possessiveRegex, name ? name + 's' : '');
-      // {han/hon1}, {han/hon2} ...
-      const pronounRegex = new RegExp(`\\{han\/hon${i+1}\\}`, 'gi');
-      result = result.replace(pronounRegex, pronoun);
-      // {hans/hennes1}, {hans/hennes2} ...
-      const possessiveRegex2 = new RegExp(`\\{hans\/hennes${i+1}\\}`, 'gi');
-      result = result.replace(possessiveRegex2, pronoun === 'han' ? 'hans' : 'hennes');
-      // {honom/henne1}, {honom/henne2} ...
-      const objectRegex = new RegExp(`\\{honom\/henne${i+1}\\}`, 'gi');
-      result = result.replace(objectRegex, pronoun === 'han' ? 'honom' : 'henne');
-      // {pojke/flicka1}, {pojke/flicka2} ...
-      const genderWordRegex = new RegExp(`\\{pojke\/flicka${i+1}\\}`, 'gi');
-      result = result.replace(genderWordRegex, pronoun === 'han' ? 'pojke' : 'flicka');
-      // {sig själv1}, {sig själv2} ...
-      const selfRegex = new RegExp(`\\{sig själv${i+1}\\}`, 'gi');
-      result = result.replace(selfRegex, 'sig själv');
-    }
-    return result;
-  }
-
-  const handleChooseStory = (story) => {
-    setSelectedStory(story);
-    setShowModal(false);
-    
-    // Markera som läst och sätt som senast läst
-    markAsRead(story.id);
-    setLastReadStory(story.id);
-    
-    setTimeout(() => {
-      const normalizedGenders = gendersRef.current.map(g => {
-        if (g === 'pojke') return 'man';
-        if (g === 'flicka') return 'kvinna';
-        return g;
-      });
-      console.log('SKICKAR:', normalizedGenders);
-      navigate(`/read/${story.id}`, { state: { names, genders: normalizedGenders } });
-    }, 300);
+  const handleOpenStorySelector = () => {
+    // Navigera till story-väljaren
+    navigate('/story-selector', { state: { names, genders } });
   };
 
   return (
@@ -318,33 +145,33 @@ export default function StartAdventure() {
                   </svg>
                 </button>
               )}
-                              <input
-                  type="text"
-                  value={name}
-                  maxLength={20}
-                  onChange={e => handleNameChange(idx, e.target.value)}
-                  placeholder="Namn"
-                  className="flex-1 text-lg font-semibold outline-none placeholder-white rounded-xl border-none focus:ring-2 focus:ring-yellow-300"
-                  style={{
-                    color: '#fff',
-                    fontFamily: 'Kidzone',
-                    textShadow: '0 2px 12px #000a, 0 1px 0 #ffb300',
-                    letterSpacing: '0.5px',
-                    fontWeight: 700,
-                    fontSize: '2.5rem',
-                    minWidth: names.length > 1 ? 100 : 120,
-                    maxWidth: names.length > 1 ? 180 : 220,
-                    margin: '0 0.5rem',
-                    paddingLeft: 48,
-                    paddingRight: 48,
-                    paddingTop: 8,
-                    paddingBottom: 8,
-                    height: '36px',
-                    overflow: 'visible',
-                    boxSizing: 'content-box',
-                    background: 'transparent'
-                  }}
-                />
+              <input
+                type="text"
+                value={name}
+                maxLength={20}
+                onChange={e => handleNameChange(idx, e.target.value)}
+                placeholder="Namn"
+                className="flex-1 text-lg font-semibold outline-none placeholder-white rounded-xl border-none focus:ring-2 focus:ring-yellow-300"
+                style={{
+                  color: '#fff',
+                  fontFamily: 'Kidzone',
+                  textShadow: '0 2px 12px #000a, 0 1px 0 #ffb300',
+                  letterSpacing: '0.5px',
+                  fontWeight: 700,
+                  fontSize: '2.5rem',
+                  minWidth: names.length > 1 ? 100 : 120,
+                  maxWidth: names.length > 1 ? 180 : 220,
+                  margin: '0 0.5rem',
+                  paddingLeft: 48,
+                  paddingRight: 48,
+                  paddingTop: 8,
+                  paddingBottom: 8,
+                  height: '36px',
+                  overflow: 'visible',
+                  boxSizing: 'content-box',
+                  background: 'transparent'
+                }}
+              />
               {/* Custom gender dropdown */}
               <div ref={dropdownRef} style={{ position: 'relative', minWidth: names.length > 1 ? 80 : 90 }}>
                 <button
@@ -417,6 +244,7 @@ export default function StartAdventure() {
             </div>
           ))}
         </div>
+
         {/* Lägg till-knapp */}
         <div className="flex items-center mb-6" style={{gap: '1rem'}}>
           <button
@@ -444,10 +272,9 @@ export default function StartAdventure() {
         
 
         
-
         {/* Välj Story-knapp */}
         <button
-          onClick={() => setShowModal(true)}
+          onClick={handleOpenStorySelector}
           className="w-full py-8 rounded-2xl text-5xl font-bold text-white bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-2 border-white/80 shadow-xl mt-2 hover:scale-105 transition-all duration-200"
           style={{
             fontFamily: 'Kidzone',
@@ -457,440 +284,9 @@ export default function StartAdventure() {
             width: '100%'
           }}
         >
-                                    {selectedStory ? personalize((selectedStory.title || selectedStory.name || '').replace(/_/g, ' ')) : 'Välj Story här'}
+          Välj Story här
         </button>
       </div>
-      {/* Modal för att välja story */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div 
-            className="rounded-2xl p-6 md:p-8 shadow-2xl max-w-2xl w-full mx-4 relative"
-            style={{
-              background: `
-                linear-gradient(135deg, 
-                  rgba(139, 69, 19, 0.95) 0%, 
-                  rgba(210, 105, 30, 0.95) 25%, 
-                  rgba(255, 140, 0, 0.95) 50%, 
-                  rgba(178, 34, 34, 0.95) 75%, 
-                  rgba(139, 69, 19, 0.95) 100%
-                )
-              `,
-              backdropFilter: 'blur(10px)',
-              border: '3px solid rgba(255, 255, 255, 0.3)',
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
-              maxHeight: '90vh'
-            }}
-          >
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-white hover:text-red-300 text-3xl font-bold z-10"
-              style={{
-                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                transition: 'all 0.3s ease'
-              }}
-              title="Stäng"
-            >
-              ×
-            </button>
-            
-            {/* Header med sökfält */}
-            <div className="text-center mb-6">
-              
-              {/* Sökfält */}
-              <div 
-                className="relative mb-6"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  borderRadius: '25px',
-                  padding: '5px',
-                  border: '2px solid rgba(255, 255, 255, 0.7)',
-                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)'
-                }}
-              >
-                <input
-                  type="text"
-                  placeholder="Sök bland storys..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '12px 20px',
-                    fontSize: '16px',
-                    border: 'none',
-                    borderRadius: '25px',
-                    outline: 'none',
-                    backgroundColor: 'transparent',
-                    color: '#8B4513',
-                    fontWeight: '600'
-                  }}
-                />
-              </div>
-              
-              {/* Filterknappar */}
-              <div className="flex justify-center gap-3 mb-6 flex-wrap" style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                borderRadius: '1rem',
-                padding: '0.75rem 1rem',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                backdropFilter: 'blur(10px)',
-                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)'
-              }}>
-                {[
-                  { key: 'all', label: 'Alla' },
-                  { key: 'favorites', label: 'Favoriter' },
-                  { key: 'read', label: 'Lästa' },
-                  { key: 'unread', label: 'Olästa' },
-                  { key: 'lastRead', label: 'Senast läst' },
-                  { key: 'random', label: 'Slumpa' }
-                ].map(filterOption => (
-                  <button
-                    key={filterOption.key}
-                    onClick={() => {
-                      if (filterOption.key === 'random' && filter === 'random') {
-                        // Om man klickar på "Slumpa" igen, öka randomSeed för ny slumpmässig story
-                        setRandomSeed(prev => prev + 1);
-                      } else {
-                        setFilter(filterOption.key);
-                        if (filterOption.key === 'random') {
-                          setRandomSeed(prev => prev + 1);
-                        }
-                      }
-                    }}
-                    style={{
-                      padding: '12px 20px',
-                      borderRadius: '25px',
-                      border: '2px solid rgba(255, 255, 255, 0.3)',
-                      backgroundColor: filter === filterOption.key ? 
-                        'linear-gradient(135deg, #ff8c00, #ff6b35)' : 
-                        'rgba(255, 255, 255, 0.15)',
-                      background: filter === filterOption.key ? 
-                        'linear-gradient(135deg, #ff8c00, #ff6b35)' : 
-                        'rgba(255, 255, 255, 0.15)',
-                      color: 'white',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
-                      fontSize: '15px',
-                      transform: filter === filterOption.key ? 'scale(1.05)' : 'scale(1)',
-                      boxShadow: filter === filterOption.key ? 
-                        '0 6px 20px rgba(255, 140, 0, 0.5)' : 
-                        '0 2px 8px rgba(0, 0, 0, 0.2)',
-                      backdropFilter: 'blur(5px)',
-                      minWidth: '80px'
-                    }}
-                                          onMouseEnter={(e) => {
-                        if (filter !== filterOption.key) {
-                          e.target.style.background = 'rgba(255, 255, 255, 0.25)';
-                          e.target.style.transform = 'scale(1.02)';
-                          e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (filter !== filterOption.key) {
-                          e.target.style.background = 'rgba(255, 255, 255, 0.15)';
-                          e.target.style.transform = 'scale(1)';
-                          e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.2)';
-                        }
-                      }}
-                  >
-                    {filterOption.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            {loading && (
-              <div 
-                className="text-center font-bold py-8"
-                style={{
-                  color: 'white',
-                  textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
-                  fontSize: '18px'
-                }}
-              >
-                Laddar stories...
-              </div>
-            )}
-            
-            {error && (
-              <div 
-                className="text-center font-bold py-8"
-                style={{
-                  color: '#ff6b6b',
-                  textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
-                  fontSize: '18px'
-                }}
-              >
-                {error}
-              </div>
-            )}
-            
-            {!loading && !error && (
-              <>
-
-                
-                {/* Statistik för användaren */}
-                <div 
-                  className="text-center mb-4"
-                  style={{
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
-                    fontSize: '14px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    borderRadius: '8px',
-                    padding: '6px 10px',
-                    border: '1px solid rgba(255, 255, 255, 0.1)'
-                  }}
-                >
-                  📚 Lästa: {userDataManager.getStats().totalRead} | ⭐ Favoriter: {userDataManager.getStats().totalFavorites}
-                </div>
-                
-                <div 
-                  style={{
-                    maxHeight: '50vh',
-                    overflowY: 'auto',
-                    padding: '10px 5px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '15px',
-                    scrollbarWidth: 'thin',
-                    scrollbarColor: '#d2691e rgba(255, 255, 255, 0.2)'
-                  }}
-                >
-                {filteredStories.length === 0 ? (
-                  <div 
-                    className="text-center py-8"
-                    style={{
-                      color: 'white',
-                      textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
-                      fontSize: '18px'
-                    }}
-                  >
-                    Inga stories matchade din sökning
-                  </div>
-                ) : (
-                  filteredStories.map(story => {
-                    let touchStartY = null;
-                    let touchMoved = false;
-                    return (
-                      <div
-                        key={story.id || story.title || story.name}
-                        style={{
-                          marginLeft: '10px',
-                          marginRight: '10px',
-                          marginTop: '10px',
-                          marginBottom: '10px',
-                          borderRadius: '12px',
-                          padding: '4px',
-                          backgroundColor: 'rgba(255, 140, 0, 0.9)',
-                          overflow: 'visible',
-                          width: '80%',
-                          alignSelf: 'center',
-                          margin: '10px auto',
-                          boxShadow: '0 6px 7px rgba(0, 0, 0, 0.5)',
-                          maxWidth: '320px',
-                          cursor: 'pointer',
-                          userSelect: 'none',
-                          touchAction: 'manipulation',
-                        }}
-                        onClick={e => {
-                          if (!touchMoved) handleChooseStory(story);
-                        }}
-                        onTouchStart={e => {
-                          touchMoved = false;
-                          if (e.touches && e.touches.length === 1) {
-                            touchStartY = e.touches[0].clientY;
-                          }
-                        }}
-                        onTouchMove={e => {
-                          if (e.touches && e.touches.length === 1 && touchStartY !== null) {
-                            const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
-                            if (deltaY > 10) touchMoved = true;
-                          }
-                        }}
-                        onTouchEnd={e => {
-                          if (!touchMoved) handleChooseStory(story);
-                          touchStartY = null;
-                          touchMoved = false;
-                        }}
-                      >
-                        {/* Gradient inuti */}
-                        <div style={{
-                          background: 'linear-gradient(180deg, rgba(178, 34, 34, 0.9) 0%, rgba(255, 140, 0, 0.9) 100%)',
-                          padding: '8px',
-                          borderRadius: '8px',
-                          overflow: 'hidden'
-                        }}>
-                          {/* Titel Banner */}
-                          <div style={{
-                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                            padding: '8px',
-                            borderRadius: '15px',
-                            marginBottom: '8px'
-                          }}>
-                            <span style={{
-                              fontSize: '20px',
-                              color: 'white',
-                              fontFamily: 'KidZone',
-                              textAlign: 'center',
-                              display: 'block',
-                              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
-                            }}>
-                              {personalize((story.name || story.title || 'Namnlös saga').replace(/_/g, ' '))}
-                            </span>
-                          </div>
-
-                          {/* Image Frame */}
-                          <div style={{
-                            width: '100%',
-                            aspectRatio: '1/1',
-                            borderWidth: '2px',
-                            borderStyle: 'solid',
-                            borderColor: isRead(story.id) ? 'rgba(76, 175, 80, 0.8)' : 'rgba(64, 64, 64, 0.8)',
-                            borderRadius: '8px',
-                            overflow: 'hidden',
-                            marginBottom: '8px',
-                            position: 'relative'
-                          }}>
-                            {story.thumbnail_url && (
-                              <img
-                                src={story.thumbnail_url}
-                                alt={story.title || story.name}
-                                style={{
-                                  width: '100%',
-                                  height: '100%',
-                                  objectFit: 'cover',
-                                  opacity: isRead(story.id) ? 0.8 : 1
-                                }}
-                              />
-                            )}
-                            {/* Läst-indikator */}
-                            {isRead(story.id) && (
-                              <div style={{
-                                position: 'absolute',
-                                top: '8px',
-                                right: '8px',
-                                background: 'rgba(76, 175, 80, 0.9)',
-                                color: 'white',
-                                borderRadius: '50%',
-                                width: '24px',
-                                height: '24px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontSize: '12px',
-                                fontWeight: 'bold',
-                                boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                              }}>
-                                ✓
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Text Box */}
-                          <div style={{
-                            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                            padding: '8px',
-                            borderRadius: '5px',
-                            marginBottom: '8px',
-                            minHeight: '60px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <span style={{
-                              fontSize: '16px',
-                              color: 'rgba(255, 255, 255, 0.8)',
-                              fontFamily: 'KidZone',
-                              textAlign: 'center',
-                              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                              lineHeight: '22px'
-                            }}>
-                              {personalize(story.description || 'När man är så liten att man knappt syns.')}
-                            </span>
-                          </div>
-
-                          {/* Status Bar */}
-                          <div style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-evenly',
-                            alignItems: 'center',
-                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                            padding: '6px',
-                            borderRadius: '5px'
-                          }}>
-                            {/* Favorite Button */}
-                            <button
-                              onClick={e => { 
-                                e.stopPropagation(); 
-                                toggleFavorite(story.id);
-                                // Uppdatera UI genom att tvinga re-render
-                                setStories([...stories]);
-                              }}
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                gap: '5px',
-                                justifyContent: 'center',
-                                background: 'transparent',
-                                border: 'none',
-                                cursor: 'pointer',
-                                padding: '4px 8px'
-                              }}
-                            >
-                              <span style={{ 
-                                fontSize: '16px', 
-                                color: isFavorite(story.id) ? '#FFD700' : 'white',
-                                textShadow: isFavorite(story.id) ? '0 0 8px #FFD700' : 'none'
-                              }}>
-                                {isFavorite(story.id) ? '★' : '☆'}
-                              </span>
-                              <span style={{ 
-                                fontFamily: 'KidZone', 
-                                fontSize: '14px', 
-                                color: isFavorite(story.id) ? '#FFD700' : 'white', 
-                                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' 
-                              }}>
-                                {isFavorite(story.id) ? 'Favorit' : 'Markera som favorit'}
-                              </span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </>
-            )}
-            
-            {/* Scrollbar styling */}
-            <style>
-              {`
-                div[style*="overflowY: auto"]::-webkit-scrollbar {
-                  width: 12px;
-                }
-                div[style*="overflowY: auto"]::-webkit-scrollbar-track {
-                  background: rgba(139, 69, 19, 0.2);
-                  border-radius: 10px;
-                }
-                div[style*="overflowY: auto"]::-webkit-scrollbar-thumb {
-                  background: linear-gradient(180deg, #d2691e, #8b4513);
-                  border-radius: 10px;
-                  border: 2px solid rgba(139, 69, 19, 0.3);
-                  background-clip: padding-box;
-                }
-                div[style*="overflowY: auto"]::-webkit-scrollbar-thumb:hover {
-                  background: linear-gradient(180deg, #ff8c00, #a0522d);
-                }
-              `}
-            </style>
-          </div>
-        </div>
-      )}
     </div>
   );
 } 
