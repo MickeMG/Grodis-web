@@ -182,7 +182,7 @@ export default function StorySelector() {
   };
 
   return (
-    <div className="min-h-screen relative" style={{ fontFamily: 'Kidzone', textShadow: '0 2px 8px #0008' }}>
+         <div className="min-h-screen relative" style={{ fontFamily: 'Kidzone', textShadow: '0 2px 8px #0008', backgroundColor: '#8B4513' }}>
       {/* Bakgrundsbild */}
       <div className="fixed inset-0 z-0">
         <img 
@@ -243,17 +243,17 @@ export default function StorySelector() {
            )}
 
                      {/* Filterknappar och sök-knapp */}
-           <div className="flex justify-center gap-3 mb-6 flex-wrap" style={{
-             background: 'rgba(255, 255, 255, 0.15)',
-             borderRadius: '1.5rem',
-             padding: '1rem 1.5rem',
-             border: '1px solid rgba(255, 255, 255, 0.3)',
-             backdropFilter: 'blur(15px)',
-             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
-             maxWidth: '600px',
-             margin: '0 auto',
-             position: 'relative'
-           }}>
+                       <div className="flex justify-center gap-1 mb-6 flex-wrap" style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              borderRadius: '1.5rem',
+              padding: '0.6rem 1rem',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              backdropFilter: 'blur(15px)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
+              maxWidth: '600px',
+              margin: '0 auto',
+              position: 'relative'
+            }}>
             {[
               { key: 'all', label: 'Alla' },
               { key: 'favorites', label: 'Favoriter' },
@@ -277,29 +277,30 @@ export default function StorySelector() {
                      }
                    }
                  }}
-                style={{
-                  padding: '10px 18px',
-                  borderRadius: '20px',
-                  border: filter === filterOption.key ? 
-                    '2px solid rgba(255, 255, 255, 0.8)' : 
-                    '1px solid rgba(255, 255, 255, 0.4)',
-                  backgroundColor: filter === filterOption.key ? 
-                    '#d2691e' : 
-                    'rgba(255, 255, 255, 0.2)',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  textShadow: filter === filterOption.key ? 
-                    '1px 1px 3px rgba(0, 0, 0, 0.8)' : 
-                    '1px 1px 2px rgba(0, 0, 0, 0.6)',
-                  fontSize: '14px',
-                  transform: filter === filterOption.key ? 'scale(1.02)' : 'scale(1)',
-                  boxShadow: filter === filterOption.key ? 
-                    '0 4px 12px rgba(210, 105, 30, 0.4)' : 
-                    '0 2px 6px rgba(0, 0, 0, 0.2)',
-                  minWidth: '70px'
-                }}
+                                 style={{
+                   padding: '6px 12px',
+                   borderRadius: '20px',
+                   border: filter === filterOption.key ? 
+                     '2px solid rgba(255, 255, 255, 0.9)' : 
+                     '1px solid rgba(255, 255, 255, 0.5)',
+                   backgroundColor: filter === filterOption.key ? 
+                     '#d2691e' : 
+                     'rgba(0, 0, 0, 0.4)',
+                   color: 'white',
+                   fontWeight: 'bold',
+                   cursor: 'pointer',
+                   transition: 'all 0.3s ease',
+                   textShadow: filter === filterOption.key ? 
+                     '1px 1px 3px rgba(0, 0, 0, 0.9)' : 
+                     '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                   fontSize: '17px',
+                   transform: filter === filterOption.key ? 'scale(1.02)' : 'scale(1)',
+                   boxShadow: filter === filterOption.key ? 
+                     '0 4px 12px rgba(210, 105, 30, 0.4)' : 
+                     '0 2px 6px rgba(0, 0, 0, 0.3)',
+                   minWidth: '70px',
+                   letterSpacing: '0.5px'
+                 }}
                 
               >
                                  {filterOption.label}
@@ -309,22 +310,22 @@ export default function StorySelector() {
              {/* Sök-knapp */}
              <button
                onClick={() => setShowSearch(!showSearch)}
-               style={{
-                 padding: '10px 18px',
-                 borderRadius: '20px',
-                 border: '1px solid rgba(255, 255, 255, 0.4)',
-                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                 color: 'white',
-                 fontWeight: 'bold',
-                 cursor: 'pointer',
-                 transition: 'all 0.3s ease',
-                 textShadow: '1px 1px 2px rgba(0, 0, 0, 0.6)',
-                 fontSize: '16px',
-                 minWidth: '50px',
-                 display: 'flex',
-                 alignItems: 'center',
-                 justifyContent: 'center'
-               }}
+                               style={{
+                  padding: '6px 12px',
+                  borderRadius: '20px',
+                  border: '1px solid rgba(255, 255, 255, 0.5)',
+                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                  color: 'white',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                  fontSize: '17px',
+                  minWidth: '50px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
              >
                🔍
              </button>
@@ -364,26 +365,26 @@ export default function StorySelector() {
           )}
           
                      {!loading && !error && (
-                                                       <div 
-                 style={{
-                   display: 'flex',
-                   flexDirection: 'column',
-                   gap: '20px',
-                   maxWidth: '400px',
-                   margin: '0 auto',
-                   overflowY: 'auto',
-                   padding: '10px 0',
-                   height: '750px',
-                   alignItems: 'center',
-                   scrollbarWidth: 'none',
-                   msOverflowStyle: 'none'
-                 }}
-                 onScroll={(e) => {
-                   // Dölj scrollbaren
-                   e.target.style.scrollbarWidth = 'none';
-                   e.target.style.msOverflowStyle = 'none';
-                 }}
-               >
+                                                                       <div 
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '20px',
+                    maxWidth: '400px',
+                    margin: '0 auto',
+                    overflowY: 'auto',
+                    padding: '10px 0',
+                    height: '750px',
+                    alignItems: 'center',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none'
+                  }}
+                  onScroll={(e) => {
+                    // Dölj scrollbaren
+                    e.target.style.scrollbarWidth = 'none';
+                    e.target.style.msOverflowStyle = 'none';
+                  }}
+                >
               {filteredStories.length === 0 ? (
                                                    <div 
                     className="text-center py-8"
