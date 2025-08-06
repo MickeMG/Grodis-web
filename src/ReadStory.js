@@ -43,6 +43,79 @@ export default function ReadStory() {
     fetchData();
   }, [id]);
 
+  // Scrolla upp när kapitel ändras
+  useEffect(() => {
+    if (!loading && chapters.length > 0) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [current, loading, chapters.length]);
+
+  // Bildhanteringsfunktion - samma logik som i StoryCard
+  const getStoryImageUrl = (story) => {
+    console.log('getStoryImageUrl anropad med story:', story);
+    
+    if (!story) {
+      console.log('Ingen story, använder placeholder');
+      return '/placeholder-image.svg';
+    }
+
+    // Om ingen thumbnail_url finns, försök hitta bild baserat på titel
+    if (!story.thumbnail_url) {
+      const storyTitle = story.title || '';
+      if (storyTitle) {
+        const fileName = storyTitle.replace(/\s+/g, '_') + '.png';
+        const fallbackUrl = `/images/stories/${fileName}`;
+        console.log('Ingen thumbnail_url, försöker fallback:', fallbackUrl);
+        return fallbackUrl;
+      }
+      console.log('Ingen thumbnail_url eller titel, använder placeholder');
+      return '/placeholder-image.svg';
+    }
+
+    console.log('Story thumbnail_url:', story.thumbnail_url);
+    let imageUrl = '/placeholder-image.svg';
+    
+    // ALDRIG använda AWS-länkar
+    if (story.thumbnail_url.includes('amazonaws.com') || story.thumbnail_url.includes('grodisbucket')) {
+      console.log('Ignorerar AWS-länk i ReadStory');
+      imageUrl = '/placeholder-image.svg';
+    } else if (story.thumbnail_url.startsWith('/placeholders/')) {
+      // Det är en av våra platshållarbilder
+      imageUrl = story.thumbnail_url;
+      console.log('Använder platshållarbild:', imageUrl);
+    } else if (story.thumbnail_url.startsWith('/images/')) {
+      // Det är en direkt sökväg till vår images-katalog, använd den som den är
+      imageUrl = story.thumbnail_url;
+      console.log('Använder direkt sökväg:', imageUrl);
+    } else if (story.thumbnail_url.includes('stories/')) {
+      // Det är en story-bild, använd den direkt
+      imageUrl = story.thumbnail_url;
+      console.log('Använder story-bild:', imageUrl);
+    } else if (story.thumbnail_url.includes('.')) {
+      // Det är ett filnamn, försök bygga rätt sökväg
+      if (story.thumbnail_url.includes('uploads/')) {
+        const fileName = story.thumbnail_url.split('/').pop();
+        imageUrl = `/images/uploads/${fileName}`;
+        console.log('Byggde uploads-sökväg:', imageUrl);
+      } else if (story.thumbnail_url.includes('stories/')) {
+        // Försök hitta story-bild baserat på titel
+        const storyTitle = story.title || '';
+        const fileName = storyTitle.replace(/\s+/g, '_') + '.png';
+        imageUrl = `/images/stories/${fileName}`;
+        console.log('Byggde story-bild-sökväg:', imageUrl);
+      } else {
+        const fileName = story.thumbnail_url.split('/').pop();
+        imageUrl = `/images/thumbnails/${fileName}`;
+        console.log('Byggde thumbnails-sökväg:', imageUrl);
+      }
+    } else {
+      console.warn('Oväntad thumbnail_url-format, kan inte bearbeta:', story.thumbnail_url);
+    }
+    
+    console.log('Slutlig imageUrl:', imageUrl);
+    return imageUrl;
+  };
+
   if (loading) return <div className="text-center py-12">Laddar berättelse...</div>;
   if (error) return (
     <div className="min-h-screen flex flex-col items-center justify-center py-12 px-2 relative">
@@ -249,7 +322,7 @@ export default function ReadStory() {
               padding: '0.75rem 2rem',
               fontSize: '2.2rem',
               fontWeight: 700,
-              marginBottom: '2rem',
+              marginBottom: '1rem',
               textAlign: 'center',
               boxShadow: '0 2px 8px #0004',
               fontFamily: 'Kidzone',
@@ -257,6 +330,42 @@ export default function ReadStory() {
             }}>
               {personalize(story.title)}
             </div>
+            
+            {/* Story-bild */}
+            <div style={{
+              width: '100%',
+              height: '200px',
+              borderRadius: '1rem',
+              overflow: 'hidden',
+              marginBottom: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#fff',
+              border: '3px solid #fff',
+              boxShadow: '0 4px 12px #0004',
+            }}>
+              <img 
+                src={getStoryImageUrl(story)}
+                alt={story.title || 'Sagobild'}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block'
+                }}
+                onLoad={() => {
+                  console.log('Bild laddades framgångsrikt:', getStoryImageUrl(story));
+                }}
+                onError={(e) => {
+                  console.error('Fel vid laddning av bild:', getStoryImageUrl(story));
+                  const target = e.target;
+                  target.onerror = null;
+                  target.src = '/placeholder-image.svg';
+                }}
+              />
+            </div>
+            
             <div style={{
               color: '#ffd43b',
               fontWeight: 700,
@@ -299,7 +408,11 @@ export default function ReadStory() {
                     opacity: 1,
                     transition: 'opacity 0.2s',
                   }}
-                  onClick={() => setCurrent(c => Math.max(0, c - 1))}
+                  onClick={() => {
+                    setCurrent(c => Math.max(0, c - 1));
+                    // Scrolla upp till början av sidan
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                 >
                   Föregående kapitel
                 </button>
@@ -323,7 +436,11 @@ export default function ReadStory() {
                     opacity: 1,
                     transition: 'opacity 0.2s',
                   }}
-                  onClick={() => setCurrent(c => Math.min(chapters.length - 1, c + 1))}
+                  onClick={() => {
+                    setCurrent(c => Math.min(chapters.length - 1, c + 1));
+                    // Scrolla upp till början av sidan
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                 >
                   Nästa kapitel
                 </button>
