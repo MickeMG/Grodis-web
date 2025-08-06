@@ -46,11 +46,23 @@ export default function ReadStory() {
   // Scrolla upp när kapitel ändras
   useEffect(() => {
     if (!loading && chapters.length > 0) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Försök flera sätt att scrolla upp
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (e) {
+        // Fallback för äldre webbläsare
+        window.scrollTo(0, 0);
+      }
+      
+      // Alternativ metod för att scrolla upp
+      setTimeout(() => {
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 100);
     }
   }, [current, loading, chapters.length]);
 
-  // Bildhanteringsfunktion - samma logik som i StoryCard
+    // Bildhanteringsfunktion - använder Firebase Storage URLs som StorySelector
   const getStoryImageUrl = (story) => {
     console.log('getStoryImageUrl anropad med story:', story);
     
@@ -63,57 +75,41 @@ export default function ReadStory() {
     if (!story.thumbnail_url) {
       const storyTitle = story.title || '';
       if (storyTitle) {
-        const fileName = storyTitle.replace(/\s+/g, '_') + '.png';
-        const fallbackUrl = `/images/stories/${fileName}`;
-        console.log('Ingen thumbnail_url, försöker fallback:', fallbackUrl);
-        return fallbackUrl;
+        // Försök olika varianter av filnamnet
+        const possibleNames = [
+          storyTitle.replace(/\s+/g, '_') + '.png',
+          storyTitle.replace(/\s+/g, '_').replace(/[åäö]/g, (match) => {
+            const replacements = { 'å': 'a', 'ä': 'a', 'ö': 'o' };
+            return replacements[match] || match;
+          }) + '.png',
+          storyTitle.replace(/[åäö]/g, (match) => {
+            const replacements = { 'å': 'a', 'ä': 'a', 'ö': 'o' };
+            return replacements[match] || match;
+          }).replace(/\s+/g, '_') + '.png'
+        ];
+        
+        console.log('Ingen thumbnail_url, försöker fallback med titel:', storyTitle);
+        console.log('Möjliga filnamn:', possibleNames);
+        
+        // Returnera första möjliga filnamnet (vi kan inte testa om filen finns i frontend)
+        return `/images/stories/${possibleNames[0]}`;
       }
       console.log('Ingen thumbnail_url eller titel, använder placeholder');
       return '/placeholder-image.svg';
     }
 
     console.log('Story thumbnail_url:', story.thumbnail_url);
-    let imageUrl = '/placeholder-image.svg';
     
-    // ALDRIG använda AWS-länkar
-    if (story.thumbnail_url.includes('amazonaws.com') || story.thumbnail_url.includes('grodisbucket')) {
-      console.log('Ignorerar AWS-länk i ReadStory');
-      imageUrl = '/placeholder-image.svg';
-    } else if (story.thumbnail_url.startsWith('/placeholders/')) {
-      // Det är en av våra platshållarbilder
-      imageUrl = story.thumbnail_url;
-      console.log('Använder platshållarbild:', imageUrl);
-    } else if (story.thumbnail_url.startsWith('/images/')) {
-      // Det är en direkt sökväg till vår images-katalog, använd den som den är
-      imageUrl = story.thumbnail_url;
-      console.log('Använder direkt sökväg:', imageUrl);
-    } else if (story.thumbnail_url.includes('stories/')) {
-      // Det är en story-bild, använd den direkt
-      imageUrl = story.thumbnail_url;
-      console.log('Använder story-bild:', imageUrl);
-    } else if (story.thumbnail_url.includes('.')) {
-      // Det är ett filnamn, försök bygga rätt sökväg
-      if (story.thumbnail_url.includes('uploads/')) {
-        const fileName = story.thumbnail_url.split('/').pop();
-        imageUrl = `/images/uploads/${fileName}`;
-        console.log('Byggde uploads-sökväg:', imageUrl);
-      } else if (story.thumbnail_url.includes('stories/')) {
-        // Försök hitta story-bild baserat på titel
-        const storyTitle = story.title || '';
-        const fileName = storyTitle.replace(/\s+/g, '_') + '.png';
-        imageUrl = `/images/stories/${fileName}`;
-        console.log('Byggde story-bild-sökväg:', imageUrl);
-      } else {
-        const fileName = story.thumbnail_url.split('/').pop();
-        imageUrl = `/images/thumbnails/${fileName}`;
-        console.log('Byggde thumbnails-sökväg:', imageUrl);
-      }
-    } else {
-      console.warn('Oväntad thumbnail_url-format, kan inte bearbeta:', story.thumbnail_url);
+    // Använd thumbnail_url direkt som StorySelector gör
+    // Detta inkluderar Firebase Storage URLs
+    if (story.thumbnail_url) {
+      console.log('Använder thumbnail_url direkt:', story.thumbnail_url);
+      return story.thumbnail_url;
     }
     
-    console.log('Slutlig imageUrl:', imageUrl);
-    return imageUrl;
+    // Fallback till placeholder
+    console.log('Ingen thumbnail_url, använder placeholder');
+    return '/placeholder-image.svg';
   };
 
   if (loading) return <div className="text-center py-12">Laddar berättelse...</div>;
@@ -277,22 +273,7 @@ export default function ReadStory() {
       justifyContent: 'center',
       position: 'relative',
     }}>
-      <div style={{ zIndex: 20, position: 'relative', width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-        <button className="font-bold" onClick={() => navigate(-1)} style={{
-          background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
-          color: '#fff',
-          borderRadius: '1rem',
-          border: '2px solid #fff8',
-          boxShadow: '0 2px 8px #0008',
-          padding: '0.5rem 1.5rem',
-          fontFamily: 'Kidzone',
-          textShadow: '0 2px 8px #0008',
-          fontSize: '1.1rem',
-          minWidth: '240px',
-        }}>
-          &larr; Tillbaka till alla äventyr
-        </button>
-      </div>
+
       {/* Bakgrundsbild */}
       <div className="fixed inset-0 z-0">
         <img 
@@ -315,56 +296,148 @@ export default function ReadStory() {
         alignItems: 'center',
       }}>
         {/* Kapitelvy direkt */}
-            <div style={{
-              background: '#a13a1b',
-              color: '#fff',
-              borderRadius: '1rem',
-              padding: '0.75rem 2rem',
-              fontSize: '2.2rem',
-              fontWeight: 700,
-              marginBottom: '1rem',
-              textAlign: 'center',
-              boxShadow: '0 2px 8px #0004',
-              fontFamily: 'Kidzone',
-              border: '2.5px solid #bbb',
-            }}>
-              {personalize(story.title)}
-            </div>
+            {current === 0 && (
+              <div style={{
+                background: '#a13a1b',
+                color: '#fff',
+                borderRadius: '1rem',
+                padding: '0.75rem 2rem',
+                fontSize: '2.2rem',
+                fontWeight: 700,
+                marginBottom: '1rem',
+                textAlign: 'center',
+                boxShadow: '0 2px 8px #0004',
+                fontFamily: 'Kidzone',
+                border: '2.5px solid #bbb',
+              }}>
+                {personalize(story.title)}
+              </div>
+            )}
             
-            {/* Story-bild */}
-            <div style={{
-              width: '100%',
-              height: '200px',
-              borderRadius: '1rem',
-              overflow: 'hidden',
-              marginBottom: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: '#fff',
-              border: '3px solid #fff',
-              boxShadow: '0 4px 12px #0004',
-            }}>
-              <img 
-                src={getStoryImageUrl(story)}
-                alt={story.title || 'Sagobild'}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  display: 'block'
-                }}
-                onLoad={() => {
-                  console.log('Bild laddades framgångsrikt:', getStoryImageUrl(story));
-                }}
-                onError={(e) => {
-                  console.error('Fel vid laddning av bild:', getStoryImageUrl(story));
-                  const target = e.target;
-                  target.onerror = null;
-                  target.src = '/placeholder-image.svg';
-                }}
-              />
-            </div>
+            {/* Story-bild eller apple-touch-icon */}
+            {current === 0 ? (
+              // Kapitel 1 - visa story-bild med vit ram
+              <div style={{
+                width: '100%',
+                aspectRatio: '1',
+                borderRadius: '1rem',
+                overflow: 'hidden',
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#fff',
+                border: '3px solid #fff',
+                boxShadow: '0 4px 12px #0004',
+                position: 'relative',
+              }}>
+                {/* Debug-knapp (endast i utvecklingsläge) */}
+                {process.env.NODE_ENV === 'development' && (
+                  <button 
+                    onClick={() => {
+                      console.log('Story debug:', story);
+                      console.log('Story title:', story.title);
+                      console.log('Story thumbnail_url:', story.thumbnail_url);
+                      console.log('Generated image URL:', getStoryImageUrl(story));
+                      console.log('Current chapter:', current + 1);
+                    }} 
+                    style={{
+                      position: 'absolute',
+                      top: '5px',
+                      right: '5px',
+                      zIndex: 10,
+                      background: 'rgba(0,0,0,0.5)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: '24px',
+                      height: '24px',
+                      fontSize: '12px',
+                      cursor: 'pointer'
+                    }}
+                    title="Visa debug-info i konsol"
+                  >
+                    🐞
+                  </button>
+                )}
+                                  <img 
+                    src={getStoryImageUrl(story)}
+                    alt={story.title || 'Sagobild'}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                      display: 'block'
+                    }}
+                  onLoad={() => {
+                    console.log('Story-bild laddades framgångsrikt:', getStoryImageUrl(story));
+                  }}
+                  onError={(e) => {
+                    console.error('Fel vid laddning av bild:', getStoryImageUrl(story));
+                    const target = e.target;
+                    target.onerror = null;
+                    target.src = '/placeholder-image.svg';
+                  }}
+                />
+              </div>
+            ) : (
+              // Kapitel 2-5 - visa groda direkt på orange bakgrund
+              <div style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '1rem',
+                position: 'relative',
+              }}>
+                {/* Debug-knapp (endast i utvecklingsläge) */}
+                {process.env.NODE_ENV === 'development' && (
+                  <button 
+                    onClick={() => {
+                      console.log('Story debug:', story);
+                      console.log('Story title:', story.title);
+                      console.log('Current chapter:', current + 1);
+                    }} 
+                    style={{
+                      position: 'absolute',
+                      top: '5px',
+                      right: '5px',
+                      zIndex: 10,
+                      background: 'rgba(0,0,0,0.5)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: '24px',
+                      height: '24px',
+                      fontSize: '12px',
+                      cursor: 'pointer'
+                    }}
+                    title="Visa debug-info i konsol"
+                  >
+                    🐞
+                  </button>
+                )}
+                <img 
+                  src="/trans.png"
+                  alt="Grodis ikon"
+                  style={{
+                    width: '150px',
+                    height: '150px',
+                    objectFit: 'contain',
+                    display: 'block'
+                  }}
+                  onLoad={() => {
+                    console.log('Trans-bild laddades framgångsrikt');
+                  }}
+                  onError={(e) => {
+                    console.error('Fel vid laddning av bild:', '/trans.png');
+                    const target = e.target;
+                    target.onerror = null;
+                    target.src = '/placeholder-image.svg';
+                  }}
+                />
+              </div>
+            )}
             
             <div style={{
               color: '#ffd43b',
@@ -374,6 +447,7 @@ export default function ReadStory() {
               textAlign: 'center',
               fontFamily: 'Kidzone',
               letterSpacing: '0.02em',
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
             }}>
               Kapitel {current + 1}/{chapters.length}
             </div>
@@ -411,7 +485,15 @@ export default function ReadStory() {
                   onClick={() => {
                     setCurrent(c => Math.max(0, c - 1));
                     // Scrolla upp till början av sidan
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(() => {
+                      try {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      } catch (e) {
+                        window.scrollTo(0, 0);
+                      }
+                      document.documentElement.scrollTop = 0;
+                      document.body.scrollTop = 0;
+                    }, 50);
                   }}
                 >
                   Föregående kapitel
@@ -439,12 +521,63 @@ export default function ReadStory() {
                   onClick={() => {
                     setCurrent(c => Math.min(chapters.length - 1, c + 1));
                     // Scrolla upp till början av sidan
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(() => {
+                      try {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      } catch (e) {
+                        window.scrollTo(0, 0);
+                      }
+                      document.documentElement.scrollTop = 0;
+                      document.body.scrollTop = 0;
+                    }, 50);
                   }}
                 >
                   Nästa kapitel
                 </button>
               )}
+              {/* Avsluta Story-knapp endast på sista kapitlet */}
+              {current === chapters.length - 1 && (
+                <button
+                  className="font-bold"
+                  style={{
+                    background: 'linear-gradient(90deg, #4CAF50 0%, #45a049 100%)',
+                    color: '#fff',
+                    borderRadius: '1rem',
+                    border: '2px solid #fff8',
+                    boxShadow: '0 2px 8px #0008',
+                    fontFamily: 'Kidzone',
+                    textShadow: '0 2px 8px #0008',
+                    padding: '0.75rem 1.75rem',
+                    fontSize: '1.15rem',
+                    minWidth: '180px',
+                    margin: '0 0.25rem',
+                    cursor: 'pointer',
+                    opacity: 1,
+                    transition: 'opacity 0.2s',
+                  }}
+                  onClick={() => navigate(-1)}
+                >
+                  Avsluta Story
+                </button>
+              )}
+            </div>
+            
+            {/* Tillbaka-knapp längst ner */}
+            <div style={{ zIndex: 20, position: 'relative', width: '100%', display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+              <button className="font-bold" onClick={() => navigate(-1)} style={{
+                background: 'linear-gradient(90deg, #ffb300 0%, #ff9800 100%)',
+                color: '#fff',
+                borderRadius: '1rem',
+                border: '2px solid #fff8',
+                boxShadow: '0 2px 8px #0008',
+                padding: '0.5rem 1.5rem',
+                fontFamily: 'Kidzone',
+                textShadow: '0 2px 8px #0008',
+                fontSize: '1.1rem',
+                minWidth: '240px',
+              }}>
+                &larr; Tillbaka till alla äventyr
+              </button>
             </div>
       </div>
     </div>
