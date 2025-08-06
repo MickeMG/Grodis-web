@@ -160,6 +160,7 @@ export default function ReadStory() {
   // Ersätt platshållare för namn och pronomen för flera personer
   function personalize(text) {
     let result = text;
+    
     // Ersätt {namn} och {pronomen} (bakåtkompatibilitet)
     result = result
       .replace(/\{namn\}/gi, mainName)
@@ -167,33 +168,39 @@ export default function ReadStory() {
       .replace(/\{hans\/hennes\}/gi, mainPronoun === 'han' ? 'hans' : 'hennes')
       .replace(/\{honom\/henne\}/gi, mainPronoun === 'han' ? 'honom' : 'henne')
       .replace(/\{pojke\/flicka\}/gi, mainPronoun === 'han' ? 'pojke' : 'flicka');
-    // Ersätt {person1}, {han/hon1}, {person2}, {han/hon2} osv.
+    
+    // Ersätt {person1}, {person2} ...
     for (let i = 0; i < names.length; i++) {
       const name = names[i] || '';
       const gender = genders[i] || 'hen';
       const pronoun = pronounMap[gender] || 'hen';
+      
       // {person1}, {person2} ...
       const nameRegex = new RegExp(`\\{person${i+1}\\}`, 'gi');
       result = result.replace(nameRegex, name);
+      
       // {person1s}, {person2s} ...
       const possessiveRegex = new RegExp(`\\{person${i+1}s\\}`, 'gi');
       result = result.replace(possessiveRegex, name ? name + 's' : '');
-      // {han/hon1}, {han/hon2} ...
-      const pronounRegex = new RegExp(`\\{han\/hon${i+1}\\}`, 'gi');
-      result = result.replace(pronounRegex, pronoun);
-      // {hans/hennes1}, {hans/hennes2} ...
-      const possessiveRegex2 = new RegExp(`\\{hans\/hennes${i+1}\\}`, 'gi');
-      result = result.replace(possessiveRegex2, pronoun === 'han' ? 'hans' : 'hennes');
-      // {honom/henne1}, {honom/henne2} ...
-      const objectRegex = new RegExp(`\\{honom\/henne${i+1}\\}`, 'gi');
-      result = result.replace(objectRegex, pronoun === 'han' ? 'honom' : 'henne');
-      // {pojke/flicka1}, {pojke/flicka2} ...
-      const genderWordRegex = new RegExp(`\\{pojke\/flicka${i+1}\\}`, 'gi');
-      result = result.replace(genderWordRegex, pronoun === 'han' ? 'pojke' : 'flicka');
-      // {sig själv1}, {sig själv2} ...
-      const selfRegex = new RegExp(`\\{sig själv${i+1}\\}`, 'gi');
-      result = result.replace(selfRegex, 'sig själv');
     }
+    
+    // Hantera neutrala platshållare baserat på huvudpersonens kön
+    const mainGender = genders[0] || 'hen';
+    if (mainGender === 'man') {
+      result = result
+        .replace(/\{han\/hon\}/g, 'han')
+        .replace(/\{hans\/hennes\}/g, 'hans')
+        .replace(/\{honom\/henne\}/g, 'honom')
+        .replace(/\{pojke\/flicka\}/g, 'pojke');
+    } else {
+      result = result
+        .replace(/\{han\/hon\}/g, 'hon')
+        .replace(/\{hans\/hennes\}/g, 'hennes')
+        .replace(/\{honom\/henne\}/g, 'henne')
+        .replace(/\{pojke\/flicka\}/g, 'flicka');
+    }
+    
+    // {sig själv} är neutralt och behöver inte ändras
     
     // Textformateringen är redan gjord när kapitlen skapades, så vi behöver inte göra det igen
     // result = improveTextFormatting(result);
