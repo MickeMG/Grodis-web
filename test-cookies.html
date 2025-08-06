@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Cookies</title>
+</head>
+<body>
+    <h1>Test Cookie Manager</h1>
+    <button onclick="testFavorites()">Test Favorites</button>
+    <div id="output"></div>
+
+    <script type="module">
+        import userDataManager, { toggleFavorite, isFavorite } from './src/utils/cookieManager.js';
+        
+        window.testFavorites = function() {
+            const output = document.getElementById('output');
+            
+            // Test med olika datatyper
+            const testIds = [1, "1", 41, "41"];
+            
+            output.innerHTML = '<h2>Testing favorites...</h2>';
+            
+            testIds.forEach(id => {
+                const before = isFavorite(id);
+                toggleFavorite(id);
+                const after = isFavorite(id);
+                
+                output.innerHTML += `
+                    <p>ID: ${id} (type: ${typeof id})</p>
+                    <p>Before: ${before}, After: ${after}</p>
+                `;
+            });
+            
+            // Visa alla favoriter
+            const allFavorites = userDataManager.exportUserData().favorites;
+            output.innerHTML += `<h3>All favorites: ${JSON.stringify(allFavorites)}</h3>`;
+        };
+    </script>
+</body>
+</html> 

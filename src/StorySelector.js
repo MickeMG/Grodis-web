@@ -17,6 +17,7 @@ export default function StorySelector() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
   const [randomSeed, setRandomSeed] = useState(0);
+  const [favoritesUpdate, setFavoritesUpdate] = useState(0); // State för att tvinga omrendering
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -42,6 +43,8 @@ export default function StorySelector() {
   }, []);
 
   const filteredStories = useMemo(() => {
+    // Inkludera favoritesUpdate i dependencies för att uppdatera när favoriter ändras
+    const _ = favoritesUpdate; // Använd variabeln för att tvinga omrendering
     let filtered = stories;
     
     // Filtrera baserat på antal deltagare först
@@ -110,7 +113,7 @@ export default function StorySelector() {
           return idB - idA;
         });
     }
-  }, [stories, names.length, searchTerm, filter, randomSeed]);
+  }, [stories, names.length, searchTerm, filter, randomSeed, favoritesUpdate]);
 
   // Pronomen-map för personalisering
   const pronounMap = {
@@ -511,6 +514,7 @@ export default function StorySelector() {
                         onClick={(e) => { 
                           e.stopPropagation(); 
                           toggleFavorite(story.id);
+                          setFavoritesUpdate(prev => prev + 1); // Tvinga omrendering
                         }}
                         style={{
                           backgroundColor: '#8B4513',

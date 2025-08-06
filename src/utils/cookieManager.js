@@ -8,24 +8,31 @@ const COOKIE_EXPIRY_DAYS = 365; // 1 år
 function setCookie(name, value, days = COOKIE_EXPIRY_DAYS) {
   const expires = new Date();
   expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-  document.cookie = `${COOKIE_PREFIX}${name}=${encodeURIComponent(JSON.stringify(value))};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+  const cookieValue = `${COOKIE_PREFIX}${name}=${encodeURIComponent(JSON.stringify(value))};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+  console.log('Setting cookie:', cookieValue);
+  document.cookie = cookieValue;
 }
 
 function getCookie(name) {
   const nameEQ = `${COOKIE_PREFIX}${name}=`;
+  console.log('Looking for cookie with prefix:', nameEQ);
   const ca = document.cookie.split(';');
+  console.log('All cookies:', document.cookie);
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
     while (c.charAt(0) === ' ') c = c.substring(1, c.length);
     if (c.indexOf(nameEQ) === 0) {
       try {
-        return JSON.parse(decodeURIComponent(c.substring(nameEQ.length, c.length)));
+        const value = JSON.parse(decodeURIComponent(c.substring(nameEQ.length, c.length)));
+        console.log('Found cookie:', name, value);
+        return value;
       } catch (e) {
         console.warn('Kunde inte parsa cookie:', name, e);
         return null;
       }
     }
   }
+  console.log('Cookie not found:', name);
   return null;
 }
 
@@ -57,6 +64,7 @@ class UserDataManager {
   // Ladda användardata från cookies
   loadUserData() {
     const savedData = getCookie('user_data');
+    console.log('Loading user data from cookies:', savedData);
     if (savedData) {
       // Merge med default data för att hantera nya fält
       return { ...defaultUserData, ...savedData };
@@ -66,6 +74,7 @@ class UserDataManager {
 
   // Spara användardata till cookies
   saveUserData() {
+    console.log('Saving user data:', this.userData);
     setCookie('user_data', this.userData);
   }
 
@@ -85,35 +94,44 @@ class UserDataManager {
 
   // Hantera favoriter
   toggleFavorite(storyId) {
-    const index = this.userData.favorites.indexOf(storyId);
+    // Konvertera storyId till sträng för konsistent jämförelse
+    const storyIdStr = String(storyId);
+    const index = this.userData.favorites.indexOf(storyIdStr);
     if (index > -1) {
       this.userData.favorites.splice(index, 1);
     } else {
-      this.userData.favorites.push(storyId);
+      this.userData.favorites.push(storyIdStr);
     }
     this.saveUserData();
     return this.userData.favorites;
   }
 
   isFavorite(storyId) {
-    return this.userData.favorites.includes(storyId);
+    // Konvertera storyId till sträng för konsistent jämförelse
+    const storyIdStr = String(storyId);
+    return this.userData.favorites.includes(storyIdStr);
   }
 
   // Hantera lästa stories
   markAsRead(storyId) {
-    if (!this.userData.readStories.includes(storyId)) {
-      this.userData.readStories.push(storyId);
+    // Konvertera storyId till sträng för konsistent jämförelse
+    const storyIdStr = String(storyId);
+    if (!this.userData.readStories.includes(storyIdStr)) {
+      this.userData.readStories.push(storyIdStr);
       this.saveUserData();
     }
   }
 
   isRead(storyId) {
-    return this.userData.readStories.includes(storyId);
+    // Konvertera storyId till sträng för konsistent jämförelse
+    const storyIdStr = String(storyId);
+    return this.userData.readStories.includes(storyIdStr);
   }
 
   // Sätt senast lästa story
   setLastReadStory(storyId) {
-    this.userData.lastReadStory = storyId;
+    // Konvertera storyId till sträng för konsistent jämförelse
+    this.userData.lastReadStory = String(storyId);
     this.saveUserData();
   }
 
