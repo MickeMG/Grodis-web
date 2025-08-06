@@ -293,20 +293,7 @@ export default function StorySelector() {
                     '0 2px 6px rgba(0, 0, 0, 0.2)',
                   minWidth: '70px'
                 }}
-                onMouseEnter={(e) => {
-                  if (filter !== filterOption.key) {
-                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
-                    e.target.style.transform = 'scale(1.02)';
-                    e.target.style.boxShadow = '0 3px 8px rgba(0, 0, 0, 0.25)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (filter !== filterOption.key) {
-                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-                    e.target.style.transform = 'scale(1)';
-                    e.target.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.2)';
-                  }
-                }}
+                
               >
                 {filterOption.label}
               </button>
@@ -401,14 +388,7 @@ export default function StorySelector() {
                       display: 'flex',
                       flexDirection: 'column'
                     }}
-                    onMouseEnter={(e) => {
-                      e.target.style.transform = 'translateY(-5px)';
-                      e.target.style.boxShadow = '0 12px 35px rgba(0,0,0,0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 8px 25px rgba(0,0,0,0.3)';
-                    }}
+                    
                   >
                     {/* Gradient container som i gamla appen */}
                     <div style={{
@@ -428,16 +408,17 @@ export default function StorySelector() {
                         marginBottom: '8px',
                         textAlign: 'center'
                       }}>
-                        <h3 
-                          style={{
-                            color: 'white',
-                            fontSize: '20px',
-                            fontWeight: 'bold',
-                            margin: 0,
-                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                            fontFamily: 'KidZone'
-                          }}
-                        >
+                                                 <h3 
+                           style={{
+                             color: 'white',
+                             fontSize: '20px',
+                             fontWeight: 'bold',
+                             margin: 0,
+                             textShadow: '1px 1px 3px rgba(0, 0, 0, 0.7)',
+                             fontFamily: 'KidZone',
+                             letterSpacing: '0.8px'
+                           }}
+                         >
                           {personalize((story.name || story.title || 'Namnlös saga').replace(/_/g, ' '))}
                         </h3>
                       </div>
@@ -484,17 +465,18 @@ export default function StorySelector() {
                         minHeight: '60px',
                         flex: 1
                       }}>
-                        <p 
-                          style={{
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                            margin: 0,
-                            lineHeight: '22px',
-                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                            fontFamily: 'KidZone'
-                          }}
-                        >
+                                                 <p 
+                           style={{
+                             color: 'rgba(255, 255, 255, 0.8)',
+                             fontSize: '16px',
+                             fontWeight: '600',
+                             margin: 0,
+                             lineHeight: '22px',
+                             textShadow: '1px 1px 2px rgba(0, 0, 0, 0.6)',
+                             fontFamily: 'KidZone',
+                             letterSpacing: '0.3px'
+                           }}
+                         >
                           {personalize(story.description || 'En spännande saga väntar på dig!')}
                         </p>
                       </div>
@@ -519,12 +501,13 @@ export default function StorySelector() {
                             justifyContent: 'center'
                           }}>
                             <span style={{ fontSize: '16px' }}>📖</span>
-                            <span style={{
-                              color: '#90EE90',
-                              fontFamily: 'KidZone',
-                              fontSize: '14px',
-                              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
-                            }}>Läst</span>
+                                                         <span style={{
+                               color: '#90EE90',
+                               fontFamily: 'KidZone',
+                               fontSize: '14px',
+                               textShadow: '1px 1px 2px rgba(0, 0, 0, 0.6)',
+                               letterSpacing: '0.2px'
+                             }}>Läst</span>
                           </div>
                         )}
                         
@@ -555,23 +538,19 @@ export default function StorySelector() {
                             textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
                             fontFamily: 'KidZone'
                           }}
-                          onMouseEnter={(e) => {
-                            e.target.style.transform = 'scale(1.1)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.transform = 'scale(1)';
-                          }}
+                          
                         >
                           <span style={{ fontSize: '16px' }}>
                             {isFavorite(story.id) ? '★' : '⭐'}
                           </span>
-                          <span style={{
-                            fontFamily: 'KidZone',
-                            fontSize: '14px',
-                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
-                          }}>
-                            {isFavorite(story.id) ? 'Favorit' : 'Markera som favorit'}
-                          </span>
+                                                     <span style={{
+                             fontFamily: 'KidZone',
+                             fontSize: '14px',
+                             textShadow: '1px 1px 2px rgba(0, 0, 0, 0.6)',
+                             letterSpacing: '0.2px'
+                           }}>
+                             {isFavorite(story.id) ? 'Favorit' : 'Markera som favorit'}
+                           </span>
                         </button>
                       </div>
                     </div>
