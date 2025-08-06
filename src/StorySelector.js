@@ -398,19 +398,20 @@ export default function StorySelector() {
                     key={story.id || story.title || story.name}
                     onClick={() => handleChooseStory(story)}
                     style={{
-                      width: '100%',
-                      maxWidth: '480px',
-                      backgroundColor: '#d2691e',
-                      borderRadius: '20px',
-                      overflow: 'hidden',
+                      width: '80%',
+                      maxWidth: '400px',
+                      backgroundColor: 'rgba(255, 140, 0, 0.9)',
+                      borderRadius: '12px',
+                      overflow: 'visible',
                       margin: '0 auto 15px auto',
                       display: 'flex',
                       flexDirection: 'column',
-                      boxShadow: '0 8px 25px rgba(0,0,0,0.3)',
-                      border: '3px solid rgba(255, 255, 255, 0.8)',
+                      boxShadow: '0 6px 25px rgba(0,0,0,0.5)',
+                      border: '4px solid rgba(255, 140, 0, 0.9)',
                       position: 'relative',
                       cursor: 'pointer',
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
+                      padding: '4px'
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.transform = 'translateY(-5px)';
@@ -423,17 +424,19 @@ export default function StorySelector() {
                   >
                     {/* Titel container */}
                     <div style={{
-                      backgroundColor: '#8B4513',
-                      padding: '15px 10px',
+                      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                      padding: '8px',
+                      borderRadius: '15px',
+                      marginBottom: '8px',
                       textAlign: 'center'
                     }}>
                       <h3 
                         style={{
                           color: 'white',
-                          fontSize: '26px',
+                          fontSize: '20px',
                           fontWeight: 'bold',
                           margin: 0,
-                          textShadow: '2px 2px 6px rgba(0, 0, 0, 0.5)',
+                          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
                           fontFamily: 'Kidzone'
                         }}
                       >
@@ -445,8 +448,12 @@ export default function StorySelector() {
                     {story.thumbnail_url && (
                       <div style={{
                         width: '100%',
-                        height: '220px',
+                        aspectRatio: '1',
+                        borderWidth: '2px',
+                        borderColor: 'rgba(64, 64, 64, 0.8)',
+                        borderRadius: '8px',
                         overflow: 'hidden',
+                        marginBottom: '8px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -463,53 +470,67 @@ export default function StorySelector() {
                             display: 'block'
                           }}
                         />
-                        {/* Läst-indikator */}
-                        {isRead(story.id) && (
-                          <div style={{
-                            position: 'absolute',
-                            top: '10px',
-                            right: '10px',
-                            background: '#4CAF50',
-                            color: 'white',
-                            borderRadius: '50%',
-                            width: '30px',
-                            height: '30px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '14px',
-                            fontWeight: 'bold',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
-                          }}>
-                            ✓
-                          </div>
-                        )}
+
                       </div>
                     )}
 
                     {/* Beskrivning och favorit-knapp container */}
                     <div style={{
-                      padding: '15px',
+                      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                      padding: '8px',
+                      borderRadius: '5px',
+                      marginBottom: '8px',
+                      minHeight: '60px',
                       textAlign: 'center',
-                      flex: 1,
                       display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between'
+                      alignItems: 'center',
+                      justifyContent: 'center'
                     }}>
                       <p 
                         style={{
-                          color: 'white',
-                          fontSize: '18px',
+                          color: 'rgba(255, 255, 255, 0.8)',
+                          fontSize: '16px',
                           fontWeight: '600',
-                          margin: '0 0 15px 0',
-                          lineHeight: '1.4',
-                          textShadow: '1px 1px 3px rgba(0, 0, 0, 0.3)'
+                          margin: 0,
+                          lineHeight: '22px',
+                          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                          fontFamily: 'Kidzone'
                         }}
                       >
                         {personalize(story.description || 'En spännande saga väntar på dig!')}
                       </p>
-
-                      {/* Favorit-knapp */}
+                    </div>
+                    
+                    {/* Statusbar */}
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-evenly',
+                      alignItems: 'center',
+                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                      padding: '6px',
+                      borderRadius: '5px'
+                    }}>
+                      {/* Läs-status */}
+                      {isRead(story.id) && (
+                        <div style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: '4px',
+                          justifyContent: 'center'
+                        }}>
+                          <span style={{ fontSize: '16px' }}>📖</span>
+                          <span style={{
+                            color: '#90EE90',
+                            fontFamily: 'Kidzone',
+                            fontSize: '14px',
+                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+                          }}>Läst</span>
+                        </div>
+                      )}
+                      
+                      {/* Favoritknapp */}
                       <button
                         onClick={(e) => { 
                           e.stopPropagation(); 
@@ -517,37 +538,42 @@ export default function StorySelector() {
                           setFavoritesUpdate(prev => prev + 1); // Tvinga omrendering
                         }}
                         style={{
-                          backgroundColor: '#8B4513',
+                          backgroundColor: 'transparent',
                           color: 'white',
                           border: 'none',
-                          borderRadius: '25px',
-                          padding: '12px 20px',
-                          fontSize: '16px',
+                          borderRadius: '0',
+                          padding: '0',
+                          fontSize: '14px',
                           fontWeight: 'bold',
                           cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          gap: '8px',
-                          margin: '0 auto',
-                          minWidth: '200px',
-                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                          gap: '5px',
+                          margin: '0',
+                          minWidth: 'auto',
+                          boxShadow: 'none',
                           transition: 'all 0.3s ease',
-                          textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)'
+                          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                          fontFamily: 'Kidzone'
                         }}
                         onMouseEnter={(e) => {
-                          e.target.style.backgroundColor = '#A0522D';
-                          e.target.style.transform = 'scale(1.05)';
+                          e.target.style.transform = 'scale(1.1)';
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.backgroundColor = '#8B4513';
                           e.target.style.transform = 'scale(1)';
                         }}
                       >
-                        <span style={{ fontSize: '18px' }}>
+                        <span style={{ fontSize: '16px' }}>
                           {isFavorite(story.id) ? '★' : '⭐'}
                         </span>
-                        {isFavorite(story.id) ? 'Favorit' : 'Markera som favorit'}
+                        <span style={{
+                          fontFamily: 'Kidzone',
+                          fontSize: '14px',
+                          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+                        }}>
+                          {isFavorite(story.id) ? 'Favorit' : 'Markera som favorit'}
+                        </span>
                       </button>
                     </div>
                   </div>
