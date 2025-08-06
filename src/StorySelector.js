@@ -397,22 +397,23 @@ export default function StorySelector() {
                   <div
                     key={story.id || story.title || story.name}
                     onClick={() => handleChooseStory(story)}
-                    style={{
-                      width: '80%',
-                      maxWidth: '400px',
-                      backgroundColor: 'rgba(255, 140, 0, 0.9)',
-                      borderRadius: '12px',
-                      overflow: 'visible',
-                      margin: '0 auto 15px auto',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      boxShadow: '0 6px 25px rgba(0,0,0,0.5)',
-                      border: '4px solid rgba(255, 140, 0, 0.9)',
-                      position: 'relative',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      padding: '4px'
-                    }}
+                                         style={{
+                       width: '80%',
+                       maxWidth: '400px',
+                       backgroundColor: 'rgba(255, 140, 0, 0.9)',
+                       borderRadius: '12px',
+                       overflow: 'visible',
+                       margin: '0 auto 15px auto',
+                       display: 'flex',
+                       flexDirection: 'column',
+                       boxShadow: '0 6px 25px rgba(0,0,0,0.5)',
+                       border: '4px solid rgba(255, 140, 0, 0.9)',
+                       position: 'relative',
+                       cursor: 'pointer',
+                       transition: 'all 0.3s ease',
+                       padding: '4px',
+                       minHeight: '400px'
+                     }}
                     onMouseEnter={(e) => {
                       e.target.style.transform = 'translateY(-5px)';
                       e.target.style.boxShadow = '0 12px 35px rgba(0,0,0,0.4)';
@@ -474,43 +475,45 @@ export default function StorySelector() {
                       </div>
                     )}
 
-                    {/* Beskrivning och favorit-knapp container */}
-                    <div style={{
-                      backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                      padding: '8px',
-                      borderRadius: '5px',
-                      marginBottom: '8px',
-                      minHeight: '60px',
-                      textAlign: 'center',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <p 
-                        style={{
-                          color: 'rgba(255, 255, 255, 0.8)',
-                          fontSize: '16px',
-                          fontWeight: '600',
-                          margin: 0,
-                          lineHeight: '22px',
-                          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                          fontFamily: 'Kidzone'
-                        }}
-                      >
-                        {personalize(story.description || 'En spännande saga väntar på dig!')}
-                      </p>
-                    </div>
-                    
-                    {/* Statusbar */}
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'space-evenly',
-                      alignItems: 'center',
-                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                      padding: '6px',
-                      borderRadius: '5px'
-                    }}>
+                                         {/* Beskrivning container */}
+                     <div style={{
+                       backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                       padding: '8px',
+                       borderRadius: '5px',
+                       marginBottom: '8px',
+                       minHeight: '60px',
+                       textAlign: 'center',
+                       display: 'flex',
+                       alignItems: 'center',
+                       justifyContent: 'center',
+                       flex: 1
+                     }}>
+                       <p 
+                         style={{
+                           color: 'rgba(255, 255, 255, 0.8)',
+                           fontSize: '16px',
+                           fontWeight: '600',
+                           margin: 0,
+                           lineHeight: '22px',
+                           textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                           fontFamily: 'Kidzone'
+                         }}
+                       >
+                         {personalize(story.description || 'En spännande saga väntar på dig!')}
+                       </p>
+                     </div>
+                     
+                     {/* Statusbar - alltid längst ner */}
+                     <div style={{
+                       display: 'flex',
+                       flexDirection: 'row',
+                       justifyContent: 'space-evenly',
+                       alignItems: 'center',
+                       backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                       padding: '6px',
+                       borderRadius: '5px',
+                       marginTop: 'auto'
+                     }}>
                       {/* Läs-status */}
                       {isRead(story.id) && (
                         <div style={{
