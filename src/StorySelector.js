@@ -18,6 +18,7 @@ export default function StorySelector() {
   const [filter, setFilter] = useState('all');
   const [randomSeed, setRandomSeed] = useState(0);
   const [favoritesUpdate, setFavoritesUpdate] = useState(0); // State för att tvinga omrendering
+  const [showSearch, setShowSearch] = useState(false); // State för att visa/dölja sökfält
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -209,47 +210,50 @@ export default function StorySelector() {
 
           
 
-          {/* Sökfält */}
-          <div 
-            className="relative mb-6 max-w-md mx-auto"
-            style={{
-              background: 'rgba(255, 255, 255, 0.9)',
-              borderRadius: '25px',
-              padding: '5px',
-              border: '2px solid rgba(255, 255, 255, 0.7)',
-              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)'
-            }}
-          >
-            <input
-              type="text"
-              placeholder="Sök bland storys..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '12px 20px',
-                fontSize: '16px',
-                border: 'none',
-                borderRadius: '25px',
-                outline: 'none',
-                backgroundColor: 'transparent',
-                color: '#8B4513',
-                fontWeight: '600'
-              }}
-            />
-          </div>
+                     {/* Sökfält - visas endast när showSearch är true */}
+           {showSearch && (
+             <div 
+               className="relative mb-6 max-w-md mx-auto"
+               style={{
+                 background: 'rgba(255, 255, 255, 0.9)',
+                 borderRadius: '25px',
+                 padding: '5px',
+                 border: '2px solid rgba(255, 255, 255, 0.7)',
+                 boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)'
+               }}
+             >
+               <input
+                 type="text"
+                 placeholder="Sök bland storys..."
+                 value={searchTerm}
+                 onChange={(e) => setSearchTerm(e.target.value)}
+                 style={{
+                   width: '100%',
+                   padding: '12px 20px',
+                   fontSize: '16px',
+                   border: 'none',
+                   borderRadius: '25px',
+                   outline: 'none',
+                   backgroundColor: 'transparent',
+                   color: '#8B4513',
+                   fontWeight: '600'
+                 }}
+               />
+             </div>
+           )}
 
-          {/* Filterknappar */}
-          <div className="flex justify-center gap-3 mb-6 flex-wrap" style={{
-            background: 'rgba(255, 255, 255, 0.15)',
-            borderRadius: '1.5rem',
-            padding: '1rem 1.5rem',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            backdropFilter: 'blur(15px)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
-            maxWidth: '600px',
-            margin: '0 auto'
-          }}>
+                     {/* Filterknappar och sök-knapp */}
+           <div className="flex justify-center gap-3 mb-6 flex-wrap" style={{
+             background: 'rgba(255, 255, 255, 0.15)',
+             borderRadius: '1.5rem',
+             padding: '1rem 1.5rem',
+             border: '1px solid rgba(255, 255, 255, 0.3)',
+             backdropFilter: 'blur(15px)',
+             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
+             maxWidth: '600px',
+             margin: '0 auto',
+             position: 'relative'
+           }}>
             {[
               { key: 'all', label: 'Alla' },
               { key: 'favorites', label: 'Favoriter' },
@@ -260,16 +264,19 @@ export default function StorySelector() {
             ].map(filterOption => (
               <button
                 key={filterOption.key}
-                onClick={() => {
-                  if (filterOption.key === 'random' && filter === 'random') {
-                    setRandomSeed(prev => prev + 1);
-                  } else {
-                    setFilter(filterOption.key);
-                    if (filterOption.key === 'random') {
-                      setRandomSeed(prev => prev + 1);
-                    }
-                  }
-                }}
+                                 onClick={() => {
+                   // Dölj sökfältet när man klickar på filterknappar
+                   setShowSearch(false);
+                   
+                   if (filterOption.key === 'random' && filter === 'random') {
+                     setRandomSeed(prev => prev + 1);
+                   } else {
+                     setFilter(filterOption.key);
+                     if (filterOption.key === 'random') {
+                       setRandomSeed(prev => prev + 1);
+                     }
+                   }
+                 }}
                 style={{
                   padding: '10px 18px',
                   borderRadius: '20px',
@@ -295,10 +302,33 @@ export default function StorySelector() {
                 }}
                 
               >
-                {filterOption.label}
-              </button>
-            ))}
-          </div>
+                                 {filterOption.label}
+               </button>
+             ))}
+             
+             {/* Sök-knapp */}
+             <button
+               onClick={() => setShowSearch(!showSearch)}
+               style={{
+                 padding: '10px 18px',
+                 borderRadius: '20px',
+                 border: '1px solid rgba(255, 255, 255, 0.4)',
+                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                 color: 'white',
+                 fontWeight: 'bold',
+                 cursor: 'pointer',
+                 transition: 'all 0.3s ease',
+                 textShadow: '1px 1px 2px rgba(0, 0, 0, 0.6)',
+                 fontSize: '16px',
+                 minWidth: '50px',
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center'
+               }}
+             >
+               🔍
+             </button>
+           </div>
 
           
         </div>
@@ -540,9 +570,9 @@ export default function StorySelector() {
                           }}
                           
                         >
-                          <span style={{ fontSize: '16px' }}>
-                            {isFavorite(story.id) ? '★' : '⭐'}
-                          </span>
+                                                     <span style={{ fontSize: '16px' }}>
+                             {isFavorite(story.id) ? '⭐' : '★'}
+                           </span>
                                                      <span style={{
                              fontFamily: 'KidZone',
                              fontSize: '14px',
