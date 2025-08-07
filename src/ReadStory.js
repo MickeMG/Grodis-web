@@ -182,9 +182,33 @@ export default function ReadStory() {
       // {person1s}, {person2s} ...
       const possessiveRegex = new RegExp(`\\{person${i+1}s\\}`, 'gi');
       result = result.replace(possessiveRegex, name ? name + 's' : '');
+      
+      // Hantera specifika pronomen per person
+      const personNumber = i + 1;
+      if (gender === 'man') {
+        result = result
+          .replace(new RegExp(`\\{han${personNumber}\\/hon${personNumber}\\}`, 'g'), 'han')
+          .replace(new RegExp(`\\{Han${personNumber}\\/Hon${personNumber}\\}`, 'g'), 'Han')
+          .replace(new RegExp(`\\{hans${personNumber}\\/hennes${personNumber}\\}`, 'g'), 'hans')
+          .replace(new RegExp(`\\{Hans${personNumber}\\/Hennes${personNumber}\\}`, 'g'), 'Hans')
+          .replace(new RegExp(`\\{honom${personNumber}\\/henne${personNumber}\\}`, 'g'), 'honom')
+          .replace(new RegExp(`\\{Honom${personNumber}\\/Henne${personNumber}\\}`, 'g'), 'Honom')
+          .replace(new RegExp(`\\{pojke${personNumber}\\/flicka${personNumber}\\}`, 'g'), 'pojke')
+          .replace(new RegExp(`\\{Pojke${personNumber}\\/Flicka${personNumber}\\}`, 'g'), 'Pojke');
+      } else {
+        result = result
+          .replace(new RegExp(`\\{han${personNumber}\\/hon${personNumber}\\}`, 'g'), 'hon')
+          .replace(new RegExp(`\\{Han${personNumber}\\/Hon${personNumber}\\}`, 'g'), 'Hon')
+          .replace(new RegExp(`\\{hans${personNumber}\\/hennes${personNumber}\\}`, 'g'), 'hennes')
+          .replace(new RegExp(`\\{Hans${personNumber}\\/Hennes${personNumber}\\}`, 'g'), 'Hennes')
+          .replace(new RegExp(`\\{honom${personNumber}\\/henne${personNumber}\\}`, 'g'), 'henne')
+          .replace(new RegExp(`\\{Honom${personNumber}\\/Henne${personNumber}\\}`, 'g'), 'Henne')
+          .replace(new RegExp(`\\{pojke${personNumber}\\/flicka${personNumber}\\}`, 'g'), 'flicka')
+          .replace(new RegExp(`\\{Pojke${personNumber}\\/Flicka${personNumber}\\}`, 'g'), 'Flicka');
+      }
     }
     
-    // Hantera neutrala platshållare baserat på huvudpersonens kön
+    // Hantera neutrala platshållare baserat på huvudpersonens kön (bakåtkompatibilitet)
     const mainGender = genders[0] || 'hen';
     if (mainGender === 'man') {
       result = result
@@ -201,6 +225,8 @@ export default function ReadStory() {
     }
     
     // {sig själv} är neutralt och behöver inte ändras
+    result = result.replace(/\{sig själv\}/g, 'sig själv');
+    result = result.replace(/\{Sig själv\}/g, 'Sig själv');
     
     // Textformateringen är redan gjord när kapitlen skapades, så vi behöver inte göra det igen
     // result = improveTextFormatting(result);
